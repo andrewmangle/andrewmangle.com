@@ -120,6 +120,12 @@ main{padding-top:80px;min-height:100vh;}
 .band-ready{background:var(--gold-dim);color:var(--gold-light);border:1px solid var(--gold-border);}
 .reveal-sub{font-family:var(--serif);font-style:italic;font-size:16px;color:var(--cream-dim);
   max-width:480px;margin:20px auto 0;line-height:1.6;}
+/* ── RADAR DIAGRAM ── */
+.radar-wrap{display:flex;flex-direction:column;align-items:center;margin:44px 0 0;}
+.radar-section-title{font-family:var(--display);font-size:22px;letter-spacing:.04em;
+  color:var(--cream);margin-bottom:24px;text-align:center;}
+.radar-container{position:relative;display:inline-block;}
+.radar-svg{overflow:visible;display:block;}
 /* ── DIM BREAKDOWN ── */
 .breakdown{margin-top:48px;}
 .breakdown-title{font-family:var(--display);font-size:22px;letter-spacing:.04em;color:var(--cream);
@@ -760,6 +766,12 @@ main{padding-top:80px;min-height:100vh;}
       <p class="reveal-sub" id="reveal-sub"></p>
     </div>
 
+
+    <div class="radar-wrap">
+      <div class="radar-section-title">Your Profile Shape</div>
+      <div class="radar-container" id="radar-container"></div>
+    </div>
+
     <div id="deduction-notice-wrap"></div>
 
     <div class="breakdown">
@@ -1055,6 +1067,16 @@ function buildScoreReveal() {
     const s = calcScore();
     animateNumber('reveal-num', 0, s.total, 1400);
 
+    // Build radar
+    const radarScores  = [s.d1, s.d2, s.d3, s.d4, s.d5, s.d6, s.d7];
+    const radarMaxes   = [25, 20, 18, 15, 10, 7, 5];
+    const radarData    = buildRadarSVG(radarScores, radarMaxes, s.total);
+    const radarEl      = document.getElementById('radar-container');
+    if (radarEl) {
+      radarEl.innerHTML = radarData.svg;
+      setTimeout(() => animateRadar(radarData), 400);
+    }
+
     // Band
     const { bandClass, bandText, subText } = getBand(s.total);
     const bandEl = document.getElementById('reveal-band-label');
@@ -1122,6 +1144,96 @@ function buildScoreReveal() {
     </div>`;
 
   }, 1800);
+}
+
+
+// ── RADAR DIAGRAM ──────────────────────────────────────────────
+function buildRadarSVG(scores, maxScores, total) {
+  const cx = 200, cy = 210, R = 130, N = 7;
+  const shortLabels = ['Work Exp','Trajectory','Skills','Prof\'lism','Network','Maj. ROI','Financial'];
+  // Start top (-π/2), clockwise
+  const angles = Array.from({length:N}, (_,i) => -Math.PI/2 + (2*Math.PI*i)/N);
+  const norm   = scores.map((s,i) => Math.max(0, Math.min(1, s/maxScores[i])));
+
+  let svg = `<svg class="radar-svg" viewBox="0 0 400 430" width="320" height="344" xmlns="http://www.w3.org/2000/svg">`;
+
+  // Grid rings (25 / 50 / 75 / 100%)
+  [0.25, 0.5, 0.75, 1.0].forEach(r => {
+    const pts = angles.map(a => `${(cx+R*r*Math.cos(a)).toFixed(1)},${(cy+R*r*Math.sin(a)).toFixed(1)}`).join(' ');
+    const op  = r === 1.0 ? '0.13' : '0.07';
+    svg += `<polygon points="${pts}" fill="none" stroke="rgba(240,235,224,${op})" stroke-width="1"/>`;
+  });
+
+  // Axis lines
+  angles.forEach(a => {
+    svg += `<line x1="${cx}" y1="${cy}" x2="${(cx+R*Math.cos(a)).toFixed(1)}" y2="${(cy+R*Math.sin(a)).toFixed(1)}" stroke="rgba(240,235,224,0.1)" stroke-width="1"/>`;
+  });
+
+  // Data polygon — starts collapsed at center, will animate out
+  const startPts = Array(N).fill(`${cx},${cy}`).join(' ');
+  svg += `<polygon id="radar-poly" points="${startPts}" fill="rgba(200,146,10,0.15)" stroke="#C8920A" stroke-width="2.5" stroke-linejoin="round"/>`;
+
+  // Dot on each axis tip — also animated
+  angles.forEach((_,i) => {
+    svg += `<circle id="rpt${i}" cx="${cx}" cy="${cy}" r="4.5" fill="#F0C040" stroke="#0E0C09" stroke-width="2"/>`;
+  });
+
+  // Gold glow ring behind center score
+  svg += `<circle cx="${cx}" cy="${cy}" r="42" fill="rgba(200,146,10,0.08)" stroke="rgba(200,146,10,0.2)" stroke-width="1"/>`;
+
+  // Center score
+  svg += `<text x="${cx}" y="${cy+2}" font-family="'Bebas Neue',sans-serif" font-size="50" fill="#F0C040" text-anchor="middle" dominant-baseline="middle">${total}</text>`;
+  svg += `<text x="${cx}" y="${cy+30}" font-family="'DM Sans',sans-serif" font-size="10" fill="rgba(240,235,224,0.45)" text-anchor="middle" letter-spacing="2" font-weight="600">/100</text>`;
+
+  // Axis labels — positioned outside the ring
+  const LR = R + 30;
+  angles.forEach((a, i) => {
+    const lx = (cx + LR * Math.cos(a)).toFixed(1);
+    const ly = (cy + LR * Math.sin(a)).toFixed(1);
+    // Nudge label anchor based on position
+    const anchor = Math.cos(a) > 0.3 ? 'start' : (Math.cos(a) < -0.3 ? 'end' : 'middle');
+    svg += `<text x="${lx}" y="${ly}" font-family="'DM Sans',sans-serif" font-size="9.5" fill="rgba(240,235,224,0.52)" text-anchor="${anchor}" dominant-baseline="middle" font-weight="600" letter-spacing="0.5">${shortLabels[i]}</text>`;
+  });
+
+  svg += `</svg>`;
+
+  // Final point coordinates for animation
+  const finalPts = angles.map((a,i) => [
+    cx + R * norm[i] * Math.cos(a),
+    cy + R * norm[i] * Math.sin(a)
+  ]);
+
+  return { svg, finalPts, cx, cy, R, N, norm, angles };
+}
+
+function animateRadar(radarData) {
+  const { finalPts, cx, cy, N } = radarData;
+  const poly = document.getElementById('radar-poly');
+  if (!poly) return;
+  const duration = 1200;
+  const start = performance.now();
+
+  function frame(now) {
+    const t = Math.min((now - start) / duration, 1);
+    // Ease out cubic
+    const e = 1 - Math.pow(1 - t, 3);
+    const pts = finalPts.map(([fx, fy]) => {
+      const x = cx + (fx - cx) * e;
+      const y = cy + (fy - cy) * e;
+      return `${x.toFixed(1)},${y.toFixed(1)}`;
+    }).join(' ');
+    poly.setAttribute('points', pts);
+    // Animate dots too
+    finalPts.forEach(([fx,fy], i) => {
+      const dot = document.getElementById('rpt'+i);
+      if (dot) {
+        dot.setAttribute('cx', (cx + (fx-cx)*e).toFixed(1));
+        dot.setAttribute('cy', (cy + (fy-cy)*e).toFixed(1));
+      }
+    });
+    if (t < 1) requestAnimationFrame(frame);
+  }
+  requestAnimationFrame(frame);
 }
 
 function animateNumber(id, from, to, duration) {
