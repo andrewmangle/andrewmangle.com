@@ -1,0 +1,1244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Get Your Mangle Metric Score — andrewmangle.com</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Instrument+Serif:ital@0;1&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;font-size:16px}
+body{background:#0E0C09;color:#F0EBE0;font-family:"DM Sans",sans-serif;font-weight:400;line-height:1.65;overflow-x:hidden;min-height:100vh}
+:root{
+  --gold:#C8920A;--gold-light:#F0C040;--gold-dim:rgba(200,146,10,0.12);--gold-border:rgba(200,146,10,0.28);
+  --ink:#0E0C09;--ink2:#1A1710;--ink3:#242018;--ink4:#2E2A1E;
+  --cream:#F0EBE0;--cream-dim:rgba(240,235,224,0.65);--cream-faint:rgba(240,235,224,0.1);
+  --green:#2A7A4A;--green-dim:rgba(42,122,74,0.15);
+  --red:#8B2020;--red-dim:rgba(139,32,32,0.15);
+  --serif:"Instrument Serif",Georgia,serif;--display:"Bebas Neue",sans-serif;--r:6px;
+}
+/* ── NAV ── */
+nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:center;justify-content:space-between;
+  padding:0 32px;height:60px;background:rgba(14,12,9,0.95);backdrop-filter:blur(16px);
+  border-bottom:1px solid var(--cream-faint);}
+.nav-back{font-size:12px;font-weight:500;letter-spacing:0.08em;text-transform:uppercase;color:var(--cream-dim);
+  text-decoration:none;transition:color .2s;}
+.nav-back:hover{color:var(--cream);}
+.nav-logo{font-family:var(--display);font-size:20px;letter-spacing:0.06em;color:var(--cream);}
+.nav-logo span{color:var(--gold-light);}
+.nav-score{display:flex;align-items:center;gap:4px;background:var(--ink3);border:1px solid var(--gold-border);
+  border-radius:var(--r);padding:6px 14px;}
+.ns-num{font-family:var(--display);font-size:24px;line-height:1;color:var(--gold-light);}
+.ns-sep{font-size:14px;color:var(--cream-dim);margin:0 1px;}
+.ns-denom{font-size:14px;color:var(--cream-dim);}
+/* ── PROGRESS ── */
+.progress-track{position:fixed;top:60px;left:0;right:0;z-index:99;height:3px;background:var(--cream-faint);}
+.progress-fill{height:100%;background:linear-gradient(90deg,var(--gold),var(--gold-light));
+  width:0%;transition:width .5s ease;border-radius:0 2px 2px 0;}
+/* ── MAIN ── */
+main{padding-top:80px;min-height:100vh;}
+/* ── STEP WRAPPER ── */
+.step{display:none;max-width:760px;margin:0 auto;padding:40px 24px 80px;animation:fadeUp .4s ease forwards;}
+.step.active{display:block;}
+@keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+/* ── WELCOME ── */
+.welcome-eyebrow{display:flex;align-items:center;gap:10px;margin-bottom:20px;}
+.welcome-eyebrow-dot{width:6px;height:6px;background:var(--gold);border-radius:50%;}
+.welcome-eyebrow span{font-size:11px;font-weight:600;letter-spacing:0.18em;text-transform:uppercase;color:var(--gold);}
+.welcome h1{font-family:var(--display);font-size:clamp(52px,8vw,88px);line-height:.95;letter-spacing:.02em;
+  color:var(--cream);margin-bottom:24px;}
+.welcome h1 em{font-style:normal;color:var(--gold-light);font-family:var(--serif);}
+.welcome-sub{font-family:var(--serif);font-style:italic;font-size:18px;color:var(--cream-dim);
+  line-height:1.65;max-width:540px;margin-bottom:40px;}
+.welcome-meta{display:flex;flex-wrap:wrap;gap:24px;margin-bottom:48px;padding:24px;
+  background:var(--ink2);border-radius:var(--r);border:1px solid var(--cream-faint);}
+.meta-item{display:flex;flex-direction:column;gap:3px;}
+.meta-num{font-family:var(--display);font-size:32px;color:var(--gold-light);line-height:1;}
+.meta-label{font-size:12px;color:var(--cream-dim);letter-spacing:.04em;}
+/* ── DIM HEADER ── */
+.dim-header{margin-bottom:32px;padding:24px 28px;background:var(--ink3);border-radius:var(--r);
+  border-left:4px solid var(--gold);}
+.dim-header-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;}
+.dim-tag{font-size:10px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--gold);}
+.dim-pts{font-family:var(--display);font-size:28px;color:var(--gold-light);}
+.dim-pts span{font-size:13px;font-family:"DM Sans",sans-serif;color:var(--cream-dim);margin-left:2px;}
+.dim-title{font-family:var(--display);font-size:26px;letter-spacing:.03em;color:var(--cream);margin-bottom:6px;}
+.dim-intro{font-size:14px;color:var(--cream-dim);font-style:italic;font-family:var(--serif);}
+/* ── QUESTION ── */
+.question-block{margin-bottom:32px;}
+.question-text{font-size:16px;font-weight:500;color:var(--cream);margin-bottom:16px;line-height:1.5;}
+.question-num{font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;
+  color:var(--gold);margin-bottom:6px;display:block;}
+.options{display:flex;flex-direction:column;gap:8px;}
+.option-card{display:flex;align-items:center;gap:16px;padding:14px 18px;background:var(--ink3);
+  border:1px solid var(--cream-faint);border-radius:var(--r);cursor:pointer;transition:all .2s;
+  user-select:none;}
+.option-card:hover{background:var(--ink4);border-color:var(--gold-border);}
+.option-card.selected{background:var(--gold-dim);border-color:var(--gold);color:var(--cream);}
+.option-radio{width:16px;height:16px;border-radius:50%;border:2px solid var(--cream-dim);
+  flex-shrink:0;transition:all .2s;position:relative;}
+.option-card.selected .option-radio{border-color:var(--gold);background:var(--gold);}
+.option-card.selected .option-radio::after{content:"";position:absolute;top:50%;left:50%;
+  transform:translate(-50%,-50%);width:6px;height:6px;background:#fff;border-radius:50%;}
+.option-text{flex:1;font-size:14px;color:var(--cream-dim);line-height:1.45;}
+.option-card.selected .option-text{color:var(--cream);}
+.option-pts{font-family:var(--display);font-size:20px;color:var(--gold);flex-shrink:0;}
+.option-pts-label{font-size:10px;color:var(--cream-dim);letter-spacing:.06em;display:block;text-align:right;}
+/* ── EVIDENCE STEP ── */
+.evidence-section{margin-bottom:32px;}
+.evidence-section h3{font-family:var(--display);font-size:24px;letter-spacing:.03em;color:var(--cream);margin-bottom:8px;}
+.evidence-desc{font-size:14px;color:var(--cream-dim);line-height:1.6;margin-bottom:16px;}
+.field-label{font-size:12px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;
+  color:var(--cream-dim);margin-bottom:8px;display:block;}
+.field-label .req{color:var(--gold);}
+.text-input{width:100%;background:var(--ink3);border:1px solid var(--cream-faint);border-radius:var(--r);
+  color:var(--cream);font-family:"DM Sans",sans-serif;font-size:15px;padding:14px 16px;
+  outline:none;transition:border-color .2s;}
+.text-input:focus{border-color:var(--gold-border);}
+.text-input::placeholder{color:var(--muted,#666);}
+.resume-warning{display:none;margin-top:12px;padding:14px 16px;background:var(--red-dim);
+  border:1px solid rgba(139,32,32,0.4);border-radius:var(--r);font-size:13px;
+  color:#E88888;line-height:1.55;}
+.resume-warning.visible{display:block;}
+.resume-tip{margin-top:10px;padding:12px 16px;background:var(--gold-dim);border:1px solid var(--gold-border);
+  border-radius:var(--r);font-size:13px;color:var(--cream-dim);line-height:1.5;}
+.resume-tip strong{color:var(--gold);}
+/* ── SCORE REVEAL ── */
+.reveal-outer{text-align:center;padding:20px 0 40px;}
+.reveal-label{font-size:11px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;
+  color:var(--gold);margin-bottom:12px;}
+.reveal-number{font-family:var(--display);font-size:clamp(100px,20vw,160px);line-height:1;
+  color:var(--gold-light);transition:all .1s;}
+.reveal-denom{font-family:var(--display);font-size:32px;color:var(--cream-dim);}
+.reveal-band{display:inline-block;margin:16px auto 0;padding:8px 20px;border-radius:100px;
+  font-size:13px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;}
+.band-starting{background:rgba(139,32,32,.2);color:#E88888;border:1px solid rgba(139,32,32,.4);}
+.band-developing{background:rgba(180,100,20,.2);color:#E8A860;border:1px solid rgba(180,100,20,.4);}
+.band-ontrack{background:rgba(180,160,20,.2);color:#E8D860;border:1px solid rgba(180,160,20,.4);}
+.band-strong{background:rgba(42,122,74,.2);color:#7ED8A4;border:1px solid rgba(42,122,74,.4);}
+.band-ready{background:var(--gold-dim);color:var(--gold-light);border:1px solid var(--gold-border);}
+.reveal-sub{font-family:var(--serif);font-style:italic;font-size:16px;color:var(--cream-dim);
+  max-width:480px;margin:20px auto 0;line-height:1.6;}
+/* ── DIM BREAKDOWN ── */
+.breakdown{margin-top:48px;}
+.breakdown-title{font-family:var(--display);font-size:22px;letter-spacing:.04em;color:var(--cream);
+  margin-bottom:20px;}
+.breakdown-rows{display:flex;flex-direction:column;gap:10px;}
+.br-row{padding:16px 20px;background:var(--ink3);border-radius:var(--r);border:1px solid var(--cream-faint);}
+.br-row.gold-nugget{background:var(--gold-dim);border-color:var(--gold-border);}
+.br-meta{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;}
+.br-name{font-size:13px;font-weight:500;color:var(--cream-dim);}
+.br-row.gold-nugget .br-name{color:var(--gold);}
+.br-pts{font-size:13px;font-weight:700;color:var(--cream);}
+.br-track{height:4px;background:rgba(240,235,224,.08);border-radius:2px;overflow:hidden;}
+.br-fill{height:100%;background:var(--gold);border-radius:2px;width:0;
+  transition:width 1.2s cubic-bezier(.4,0,.2,1);}
+.br-row.gold-nugget .br-fill{background:var(--gold-light);}
+.nugget-tag{display:inline-block;font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;
+  background:var(--gold);color:var(--ink);padding:2px 8px;border-radius:3px;margin-left:8px;}
+/* ── RESUME DEDUCTION NOTICE ── */
+.deduction-notice{margin-top:24px;padding:16px 20px;background:var(--red-dim);
+  border:1px solid rgba(139,32,32,.4);border-radius:var(--r);}
+.deduction-notice p{font-size:14px;color:#E88888;line-height:1.6;}
+.deduction-notice strong{color:#F0A0A0;}
+/* ── HIRE/ASPIRE ── */
+.ha-reveal{margin-top:40px;padding:28px 32px;border-radius:var(--r);border:1px solid;}
+.ha-reveal.hire{background:var(--gold-dim);border-color:var(--gold-border);}
+.ha-reveal.aspire{background:var(--ink3);border-color:var(--cream-faint);}
+.ha-label{font-family:var(--display);font-size:40px;letter-spacing:.04em;margin-bottom:8px;}
+.ha-reveal.hire .ha-label{color:var(--gold-light);}
+.ha-reveal.aspire .ha-label{color:var(--cream);}
+.ha-desc{font-size:14px;color:var(--cream-dim);line-height:1.65;}
+.ha-reveal.hire .ha-desc{color:var(--cream);}
+/* ── PRELIMINARY NOTE ── */
+.prelim-note{margin-top:28px;padding:16px 20px;background:var(--ink3);border:1px solid var(--cream-faint);
+  border-radius:var(--r);}
+.prelim-note p{font-size:13px;color:var(--cream-dim);line-height:1.6;}
+.prelim-note strong{color:var(--gold);}
+/* ── CONTACT FORM ── */
+.contact-section{margin-bottom:32px;}
+.contact-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
+.contact-grid.single{grid-template-columns:1fr;}
+.field-group{display:flex;flex-direction:column;gap:6px;}
+.select-input{width:100%;background:var(--ink3);border:1px solid var(--cream-faint);border-radius:var(--r);
+  color:var(--cream);font-family:"DM Sans",sans-serif;font-size:15px;padding:14px 16px;
+  outline:none;transition:border-color .2s;-webkit-appearance:none;}
+.select-input:focus{border-color:var(--gold-border);}
+.select-input option{background:var(--ink2);}
+/* ── BUTTONS ── */
+.btn-next{display:inline-flex;align-items:center;gap:8px;font-size:13px;font-weight:600;
+  letter-spacing:.1em;text-transform:uppercase;background:var(--gold);color:var(--ink);
+  padding:16px 32px;border:none;border-radius:var(--r);cursor:pointer;transition:all .2s;margin-top:32px;}
+.btn-next:hover{background:var(--gold-light);transform:translateY(-1px);}
+.btn-next:disabled{opacity:.4;cursor:not-allowed;transform:none;}
+.btn-next svg{transition:transform .2s;}
+.btn-next:hover svg{transform:translateX(4px);}
+.btn-back{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:500;
+  letter-spacing:.08em;text-transform:uppercase;color:var(--cream-dim);background:none;
+  border:none;cursor:pointer;padding:8px 0;margin-top:8px;transition:color .2s;}
+.btn-back:hover{color:var(--cream);}
+.btn-row{display:flex;flex-direction:column;align-items:flex-start;}
+/* ── THANK YOU ── */
+.thankyou{text-align:center;padding:60px 24px;}
+.thankyou-icon{font-size:64px;margin-bottom:24px;}
+.thankyou h2{font-family:var(--display);font-size:clamp(40px,6vw,72px);line-height:.95;
+  letter-spacing:.02em;color:var(--cream);margin-bottom:20px;}
+.thankyou h2 em{font-style:normal;color:var(--gold-light);}
+.thankyou-sub{font-family:var(--serif);font-style:italic;font-size:18px;color:var(--cream-dim);
+  max-width:480px;margin:0 auto 40px;line-height:1.65;}
+.next-steps{text-align:left;max-width:520px;margin:0 auto;background:var(--ink2);
+  border-radius:var(--r);border:1px solid var(--cream-faint);padding:28px 32px;}
+.next-steps h3{font-family:var(--display);font-size:20px;letter-spacing:.04em;color:var(--cream);margin-bottom:16px;}
+.next-step-item{display:flex;gap:14px;align-items:flex-start;margin-bottom:16px;}
+.step-icon{width:28px;height:28px;background:var(--gold-dim);border:1px solid var(--gold-border);
+  border-radius:50%;display:flex;align-items:center;justify-content:center;
+  font-size:12px;font-weight:700;color:var(--gold);flex-shrink:0;}
+.step-text{font-size:14px;color:var(--cream-dim);line-height:1.55;}
+/* ── UTILITY ── */
+.text-center{text-align:center;}
+.mt-8{margin-top:8px;}
+.mt-16{margin-top:16px;}
+@media(max-width:600px){
+  nav{padding:0 16px;}
+  .step{padding:32px 16px 60px;}
+  .contact-grid{grid-template-columns:1fr;}
+  .welcome-meta{gap:16px;}
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="/" class="nav-back">← Back to site</a>
+  <div class="nav-logo">Mangle<span>Metric</span></div>
+  <div class="nav-score" id="nav-score" style="display:none;">
+    <span class="ns-num" id="running-score">0</span>
+    <span class="ns-sep">/</span>
+    <span class="ns-denom">100</span>
+  </div>
+</nav>
+<div class="progress-track"><div class="progress-fill" id="progress-fill"></div></div>
+
+<main>
+
+<!-- ── STEP 0: WELCOME ── -->
+<div class="step active" id="step-0">
+  <div class="welcome">
+    <div class="welcome-eyebrow">
+      <div class="welcome-eyebrow-dot"></div>
+      <span>The Mangle Metric Assessment</span>
+    </div>
+    <h1>YOUR<br><em>honest</em><br>NUMBER</h1>
+    <p class="welcome-sub">
+      13 questions. 7 dimensions. 100 points. Completely free. 
+      By the end you will know exactly where you stand — and precisely what to do next.
+    </p>
+    <div class="welcome-meta">
+      <div class="meta-item"><span class="meta-num">12</span><span class="meta-label">Minutes to complete</span></div>
+      <div class="meta-item"><span class="meta-num">7</span><span class="meta-label">Dimensions scored</span></div>
+      <div class="meta-item"><span class="meta-num">100</span><span class="meta-label">Point scale</span></div>
+      <div class="meta-item"><span class="meta-num">48h</span><span class="meta-label">Reviewed score</span></div>
+    </div>
+    <p style="font-size:13px;color:var(--cream-dim);margin-bottom:28px;line-height:1.6;">
+      You'll receive a <strong style="color:var(--cream)">preliminary score instantly</strong> when you finish, 
+      and a <strong style="color:var(--gold)">reviewed score within 48 hours</strong> after your materials have been examined. 
+      Both are included. No credit card required.
+    </p>
+    <button class="btn-next" onclick="goTo(1)">
+      Start My Assessment
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+    </button>
+  </div>
+</div>
+
+<!-- ── STEP 1: D1 Work Experience ── -->
+<div class="step" id="step-1">
+  <div class="dim-header">
+    <div class="dim-header-top">
+      <span class="dim-tag">Dimension 1 of 7</span>
+      <div><span class="dim-pts">25<span>pts</span></span></div>
+    </div>
+    <div class="dim-title">Work Experience &amp; Applied Proof</div>
+    <div class="dim-intro">"The market rewards proof, not potential. Let's see what you've actually done." — Andrew</div>
+  </div>
+
+  <div class="question-block">
+    <span class="question-num">Q1</span>
+    <div class="question-text">How many internships, co-ops, or paid professional roles have you held during college?</div>
+    <div class="options" id="opts-q1">
+      <div class="option-card" data-q="q1" data-v="0" onclick="selectOption(this)">
+        <div class="option-radio"></div><div class="option-text">None</div>
+        <div><div class="option-pts">0</div><div class="option-pts-label">pts</div></div>
+      </div>
+      <div class="option-card" data-q="q1" data-v="3" onclick="selectOption(this)">
+        <div class="option-radio"></div><div class="option-text">One unpaid or volunteer role</div>
+        <div><div class="option-pts">3</div><div class="option-pts-label">pts</div></div>
+      </div>
+      <div class="option-card" data-q="q1" data-v="6" onclick="selectOption(this)">
+        <div class="option-radio"></div><div class="option-text">One paid internship or co-op</div>
+        <div><div class="option-pts">6</div><div class="option-pts-label">pts</div></div>
+      </div>
+      <div class="option-card" data-q="q1" data-v="9" onclick="selectOption(this)">
+        <div class="option-radio"></div><div class="option-text">Two or more paid roles</div>
+        <div><div class="option-pts">9</div><div class="option-pts-label">pts</div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="question-block">
+    <span class="question-num">Q2</span>
+    <div class="question-text">How relevant was your most recent work experience to your target career?</div>
+    <div class="options" id="opts-q2">
+      <div class="option-card" data-q="q2" data-v="0" onclick="selectOption(this)">
+        <div class="option-radio"></div><div class="option-text">No work experience</div>
+        <div><div class="option-pts">0</div><div class="option-pts-label">pts</div></div>
+      </div>
+      <div class="option-card" data-q="q2" data-v="2" onclick="selectOption(this)">
+        <div class="option-radio"></div><div class="option-text">Work in an unrelated field</div>
+        <div><div class="option-pts">2</div><div class="option-pts-label">pts</div></div>
+      </div>
+      <div class="option-card" data-q="q2" data-v="5" onclick="selectOption(this)">
+        <div class="option-radio"></div><div class="option-text">Somewhat related to my target field</div>
+        <div><div class="option-pts">5</div><div class="option-pts-label">pts</div></div>
+      </div>
+      <div class="option-card" data-q="q2" data-v="8" onclick="selectOption(this)">
+        <div class="option-radio"></div><div class="option-text">Directly in my target field</div>
+        <div><div class="option-pts">8</div><div class="option-pts-label">pts</div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="question-block">
+    <span class="question-num">Q3</span>
+    <div class="question-text">In your most significant role or experience, what level of ownership did you have? (Hackathon wins, awards, and competition placements count here as applied proof.)</div>
+    <div class="options" id="opts-q3">
+      <div class="option-card" data-q="q3" data-v="0" onclick="selectOption(this)">
+        <div class="option-radio"></div><div class="option-text">No experience or achievements to point to</div>
+        <div><div class="option-pts">0</div><div class="option-pts-label">pts</div></div>
+      </div>
+      <div class="option-card" data-q="q3" data-v="2" onclick="selectOption(this)">
+        <div class="option-radio"></div><div class="option-text">Mostly observed or handled administrative tasks</div>
+        <div><div class="option-pts">2</div><div class="option-pts-label">pts</div></div>
+      </div>
+      <div class="option-card" data-q="q3" data-v="4" onclick="selectOption(this)">
+        <div class="option-radio"></div><div class="option-text">Defined responsibilities but no project ownership</div>
+        <div><div class="option-pts">4</div><div class="option-pts-label">pts</div></div>
+      </div>
+      <div class="option-card" data-q="q3" data-v="8" onclick="selectOption(this)">
+        <div class="option-radio"></div><div class="option-text">Owned a project with measurable outcomes, OR won an award / competition that validated real-world capability</div>
+        <div><div class="option-pts">8</div><div class="option-pts-label">pts</div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="btn-row">
+    <button class="btn-next" id="next-1" onclick="goTo(2)" disabled>
+      Next: Career Trajectory
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+    </button>
+    <button class="btn-back" onclick="goTo(0)">← Back</button>
+  </div>
+</div>
+
+<!-- ── STEP 2: D2 Career Trajectory ── -->
+<div class="step" id="step-2">
+  <div class="dim-header">
+    <div class="dim-header-top">
+      <span class="dim-tag">Dimension 2 of 7</span>
+      <div><span class="dim-pts">20<span>pts</span></span></div>
+    </div>
+    <div class="dim-title">Career Trajectory &amp; Strategic Clarity</div>
+    <div class="dim-intro">"Busy students collect activity. Strategic students collect position. Which one are you?" — Andrew</div>
+  </div>
+
+  <div class="question-block">
+    <span class="question-num">Q4</span>
+    <div class="question-text">How would you describe your post-graduation plan right now?</div>
+    <div class="options" id="opts-q4">
+      <div class="option-card" data-q="q4" data-v="0" onclick="selectOption(this)">
+        <div class="option-radio"></div><div class="option-text">I'm not sure yet</div>
+        <div><div class="option-pts">0</div><div class="option-pts-label">pts</div></div>
+      </div>
+      <div class="option-card" data-q="q4" data-v="3" onclick="selectOption(this)">
+        <div class="option-radio"></div><div class="option-text">I have a general field in mind</div>
+        <div><div class="option-pts">3</div><div class="option-pts-label">pts</div></div>
+      </div>
+      <div class="option-card" data-q="q4" data-v="7" onclick="selectOption(this)">
+        <div class="option-radio"></div><div class="option-text">I have a specific role type and target industry</div>
+        <div><div class="option-pts">7</div><div class="option-pts-label">pts</div></div>
+      </div>
+      <div class="option-card" data-q="q4" data-v="10" onclick="selectOption(this)">
+        <div class="option-radio"></div><div class="option-text">I have a specific role, industry, and at least one target company I am actively pursuing</div>
+        <div><div class="option-pts">10</div><div class="option-pts-label">pts</div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="question-block">
+    <span class="question-num">Q5</span>
+    <div class="question-text">What concrete steps have you taken in the last 90 days toward your post-graduation goal?</div>
+    <div class="options" id="opts-q5">
+      <div class="option-card" data-q="q5" data-v="0" onclick="selectOption(this)">
+        <div class="option-radio"></div><div class="option-text">Nothing specific</div>
+        <div><div class="option-pts">0</div><div class="option-pts-label">pts</div></div>
+      </div>
+      <div class="option-card" data-q="q5" data-v="2" onclick="selectOption(this)">
+        <div class="option-radio"></div><div class="option-text">I've done some research</div>
+        <div><div class="option-pts">2</div><div class="option-pts-label">pts</div></div>
+      </div>
+      <div class="option-card" data-q="q5" data-v="4" onclick="selectOption(this)">
+        <div class="option-radio"></div><div class="option-text">I've taken one concrete action — applied somewhere, reached out to someone, completed something</div>
+        <div><div class="option-pts">4</div><div class="option-pts-label">pts</div></div>
+      </div>
+      <div class="option-card" data-q="q5" data-v="6" onclick="selectOption(this)">
+        <div class="option-radio"></div><div class="option-text">I've taken multiple concrete actions and I can name them specifically</div>
+        <div><div class="option-pts">6</div><div class="option-pts-label">pts</div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="question-block">
+    <span class="question-num">Q6</span>
+    <div class="question-text">Have you had informational interviews or professional conversations with people working in your target field?</div>
+    <div class="options" id="opts-q6">
+      <div class="option-card" data-q="q6" data-v="0" onclick="selectOption(this)">
+        <div class="option-radio"></div><div class="option-text">None</div>
+        <div><div class="option-pts">0</div><div class="option-pts-label">pts</div></div>
+      </div>
+      <div class="option-card" data-q="q6" data-v="2" onclick="selectOption(this)">
+        <div class="option-radio"></div><div class="option-text">One or two, mostly surface-level conversations</div>
+        <div><div class="option-pts">2</div><div class="option-pts-label">pts</div></div>
+      </div>
+      <div class="option-card" data-q="q6" data-v="4" onclick="selectOption(this)">
+        <div class="option-radio"></div><div class="option-text">Three or more, with at least one ongoing professional relationship</div>
+        <div><div class="option-pts">4</div><div class="option-pts-label">pts</div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="btn-row">
+    <button class="btn-next" id="next-2" onclick="goTo(3)" disabled>
+      Next: Skill Marketability
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+    </button>
+    <button class="btn-back" onclick="goTo(1)">← Back</button>
+  </div>
+</div>
+
+<!-- ── STEP 3: D3 Skill Marketability ── -->
+<div class="step" id="step-3">
+  <div class="dim-header">
+    <div class="dim-header-top">
+      <span class="dim-tag">Dimension 3 of 7</span>
+      <div><span class="dim-pts">18<span>pts</span></span></div>
+    </div>
+    <div class="dim-title">Skill Marketability &amp; Demonstrated Output</div>
+    <div class="dim-intro">"Not what you claim — what you can show. There is a significant difference." — Andrew</div>
+  </div>
+
+  <div class="question-block">
+    <span class="question-num">Q7</span>
+    <div class="question-text">What skills relevant to your target field can you demonstrate with actual work? (Projects, portfolio pieces, certifications, published work, case competition wins, open-source contributions, research.)</div>
+    <div class="options" id="opts-q7">
+      <div class="option-card" data-q="q7" data-v="0" onclick="selectOption(this)">
+        <div class="option-radio"></div><div class="option-text">I can't point to anything specific outside of coursework</div>
+        <div><div class="option-pts">0</div><div class="option-pts-label">pts</div></div>
+      </div>
+      <div class="option-card" data-q="q7" data-v="4" onclick="selectOption(this)">
+        <div class="option-radio"></div><div class="option-text">I have coursework that demonstrates some skills, but nothing external</div>
+        <div><div class="option-pts">4</div><div class="option-pts-label">pts</div></div>
+      </div>
+      <div class="option-card" data-q="q7" data-v="8" onclick="selectOption(this)">
+        <div class="option-radio"></div><div class="option-text">I have one external project, certification, award, hackathon win, or published piece</div>
+        <div><div class="option-pts">8</div><div class="option-pts-label">pts</div></div>
+      </div>
+      <div class="option-card" data-q="q7" data-v="12" onclick="selectOption(this)">
+        <div class="option-radio"></div><div class="option-text">I have multiple demonstrable outputs — portfolio, publications, competition wins, certifications — I could show an employer today</div>
+        <div><div class="option-pts">12</div><div class="option-pts-label">pts</div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="question-block">
+    <span class="question-num">Q8</span>
+    <div class="question-text">How in-demand are your demonstrable skills in the current job market for your target field?</div>
+    <div class="options" id="opts-q8">
+      <div class="option-card" data-q="q8" data-v="0" onclick="selectOption(this)">
+        <div class="option-radio"></div><div class="option-text">I'm not sure what skills my target employers want</div>
+        <div><div class="option-pts">0</div><div class="option-pts-label">pts</div></div>
+      </div>
+      <div class="option-card" data-q="q8" data-v="2" onclick="selectOption(this)">
+        <div class="option-radio"></div><div class="option-text">I have a general sense but haven't researched job postings specifically</div>
+        <div><div class="option-pts">2</div><div class="option-pts-label">pts</div></div>
+      </div>
+      <div class="option-card" data-q="q8" data-v="4" onclick="selectOption(this)">
+        <div class="option-radio"></div><div class="option-text">I've reviewed job postings and know which skills appear most frequently</div>
+        <div><div class="option-pts">4</div><div class="option-pts-label">pts</div></div>
+      </div>
+      <div class="option-card" data-q="q8" data-v="6" onclick="selectOption(this)">
+        <div class="option-radio"></div><div class="option-text">I've reviewed postings and I'm actively building toward the most in-demand skills right now</div>
+        <div><div class="option-pts">6</div><div class="option-pts-label">pts</div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="btn-row">
+    <button class="btn-next" id="next-3" onclick="goTo(4)" disabled>
+      Next: Professionalism
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+    </button>
+    <button class="btn-back" onclick="goTo(2)">← Back</button>
+  </div>
+</div>
+
+<!-- ── STEP 4: D4 Professionalism ── -->
+<div class="step" id="step-4">
+  <div class="dim-header">
+    <div class="dim-header-top">
+      <span class="dim-tag">Dimension 4 of 7</span>
+      <div><span class="dim-pts">15<span>pts</span></span></div>
+    </div>
+    <div class="dim-title">Professionalism &amp; Self-Leadership</div>
+    <div class="dim-intro">"This is the dimension you cannot fake. It shows in how you operate — not what you say about yourself." — Andrew</div>
+  </div>
+
+  <div class="question-block">
+    <span class="question-num">Q9</span>
+    <div class="question-text">If someone at a networking event asked for your resume right now, what would happen?</div>
+    <div class="options" id="opts-q9">
+      <div class="option-card" data-q="q9" data-v="0" onclick="selectOption(this)">
+        <div class="option-radio"></div><div class="option-text">I don't have a resume / haven't made one yet</div>
+        <div><div class="option-pts">0</div><div class="option-pts-label">pts</div></div>
+      </div>
+      <div class="option-card" data-q="q9" data-v="2" onclick="selectOption(this)">
+        <div class="option-radio"></div><div class="option-text">I have one but it's outdated or hard to find quickly</div>
+        <div><div class="option-pts">2</div><div class="option-pts-label">pts</div></div>
+      </div>
+      <div class="option-card" data-q="q9" data-v="4" onclick="selectOption(this)">
+        <div class="option-radio"></div><div class="option-text">I have a current resume but I'd need a day or two to send it</div>
+        <div><div class="option-pts">4</div><div class="option-pts-label">pts</div></div>
+      </div>
+      <div class="option-card" data-q="q9" data-v="8" onclick="selectOption(this)">
+        <div class="option-radio"></div><div class="option-text">I have a current, polished resume I could share within the hour — right now</div>
+        <div><div class="option-pts">8</div><div class="option-pts-label">pts</div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="question-block">
+    <span class="question-num">Q10</span>
+    <div class="question-text">Think of a professional commitment you made to a professor, employer, or professional contact in the last 90 days. What happened?</div>
+    <div class="options" id="opts-q10">
+      <div class="option-card" data-q="q10" data-v="0" onclick="selectOption(this)">
+        <div class="option-radio"></div><div class="option-text">I can't think of a professional commitment I've made recently</div>
+        <div><div class="option-pts">0</div><div class="option-pts-label">pts</div></div>
+      </div>
+      <div class="option-card" data-q="q10" data-v="1" onclick="selectOption(this)">
+        <div class="option-radio"></div><div class="option-text">I made one but didn't fully follow through</div>
+        <div><div class="option-pts">1</div><div class="option-pts-label">pts</div></div>
+      </div>
+      <div class="option-card" data-q="q10" data-v="3" onclick="selectOption(this)">
+        <div class="option-radio"></div><div class="option-text">I followed through, though not always on time or as promised</div>
+        <div><div class="option-pts">3</div><div class="option-pts-label">pts</div></div>
+      </div>
+      <div class="option-card" data-q="q10" data-v="7" onclick="selectOption(this)">
+        <div class="option-radio"></div><div class="option-text">I followed through completely and on time — I can name the specific commitment right now</div>
+        <div><div class="option-pts">7</div><div class="option-pts-label">pts</div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="btn-row">
+    <button class="btn-next" id="next-4" onclick="goTo(5)" disabled>
+      Next: Network Capital
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+    </button>
+    <button class="btn-back" onclick="goTo(3)">← Back</button>
+  </div>
+</div>
+
+<!-- ── STEP 5: D5 Network ── -->
+<div class="step" id="step-5">
+  <div class="dim-header">
+    <div class="dim-header-top">
+      <span class="dim-tag">Dimension 5 of 7</span>
+      <div><span class="dim-pts">10<span>pts</span></span></div>
+    </div>
+    <div class="dim-title">Network &amp; Relationship Capital</div>
+    <div class="dim-intro">"LinkedIn connections don't count. Who would actually go to bat for you?" — Andrew</div>
+  </div>
+
+  <div class="question-block">
+    <span class="question-num">Q11</span>
+    <div class="question-text">If you needed a professional reference or warm introduction in your target industry today, how many people could you realistically call?</div>
+    <div class="options" id="opts-q11">
+      <div class="option-card" data-q="q11" data-v="0" onclick="selectOption(this)">
+        <div class="option-radio"></div><div class="option-text">Zero — I don't have professional contacts in my field</div>
+        <div><div class="option-pts">0</div><div class="option-pts-label">pts</div></div>
+      </div>
+      <div class="option-card" data-q="q11" data-v="2" onclick="selectOption(this)">
+        <div class="option-radio"></div><div class="option-text">One or two, but I'm not confident they'd respond or vouch for me</div>
+        <div><div class="option-pts">2</div><div class="option-pts-label">pts</div></div>
+      </div>
+      <div class="option-card" data-q="q11" data-v="6" onclick="selectOption(this)">
+        <div class="option-radio"></div><div class="option-text">Three to five people who know my work and would take my call</div>
+        <div><div class="option-pts">6</div><div class="option-pts-label">pts</div></div>
+      </div>
+      <div class="option-card" data-q="q11" data-v="10" onclick="selectOption(this)">
+        <div class="option-radio"></div><div class="option-text">More than five, including at least one person with hiring authority in my target field</div>
+        <div><div class="option-pts">10</div><div class="option-pts-label">pts</div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="btn-row">
+    <button class="btn-next" id="next-5" onclick="goTo(6)" disabled>
+      Next: Major ROI
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+    </button>
+    <button class="btn-back" onclick="goTo(4)">← Back</button>
+  </div>
+</div>
+
+<!-- ── STEP 6: D6 Major ROI ── -->
+<div class="step" id="step-6">
+  <div class="dim-header">
+    <div class="dim-header-top">
+      <span class="dim-tag">Dimension 6 of 7</span>
+      <div><span class="dim-pts">7<span>pts</span></span></div>
+    </div>
+    <div class="dim-title">Major ROI &amp; Field Awareness</div>
+    <div class="dim-intro">"You are making a $100K+ investment. Have you done the math?" — Andrew</div>
+  </div>
+
+  <div class="question-block">
+    <span class="question-num">Q12</span>
+    <div class="question-text">What do you know about the economic reality of your major and target field?</div>
+    <div class="options" id="opts-q12">
+      <div class="option-card" data-q="q12" data-v="0" onclick="selectOption(this)">
+        <div class="option-radio"></div><div class="option-text">I don't know the median salary or employment rate for my field</div>
+        <div><div class="option-pts">0</div><div class="option-pts-label">pts</div></div>
+      </div>
+      <div class="option-card" data-q="q12" data-v="1" onclick="selectOption(this)">
+        <div class="option-radio"></div><div class="option-text">I have a rough idea but haven't looked up specific numbers</div>
+        <div><div class="option-pts">1</div><div class="option-pts-label">pts</div></div>
+      </div>
+      <div class="option-card" data-q="q12" data-v="4" onclick="selectOption(this)">
+        <div class="option-radio"></div><div class="option-text">I know the median starting salary AND the employment rate for my major at my school tier</div>
+        <div><div class="option-pts">4</div><div class="option-pts-label">pts</div></div>
+      </div>
+      <div class="option-card" data-q="q12" data-v="7" onclick="selectOption(this)">
+        <div class="option-radio"></div><div class="option-text">I know all of the above AND have calculated my debt-to-income ratio at graduation</div>
+        <div><div class="option-pts">7</div><div class="option-pts-label">pts</div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="btn-row">
+    <button class="btn-next" id="next-6" onclick="goTo(7)" disabled>
+      Next: Financial Self-Leadership
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+    </button>
+    <button class="btn-back" onclick="goTo(5)">← Back</button>
+  </div>
+</div>
+
+<!-- ── STEP 7: D7 Financial Self-Leadership ── -->
+<div class="step" id="step-7">
+  <div class="dim-header">
+    <div class="dim-header-top">
+      <span class="dim-tag">Dimension 7 of 7</span>
+      <div><span class="dim-pts">5<span>pts</span></span></div>
+    </div>
+    <div class="dim-title">Financial Self-Leadership</div>
+    <div class="dim-intro">"CEO of You, Inc. Employers can teach skills. They cannot install financial judgment." — Andrew</div>
+  </div>
+
+  <div class="question-block">
+    <span class="question-num">Q13</span>
+    <div class="question-text">How would you describe your financial self-awareness as it relates to your education and career investment?</div>
+    <div class="options" id="opts-q13">
+      <div class="option-card" data-q="q13" data-v="0" onclick="selectOption(this)">
+        <div class="option-radio"></div><div class="option-text">I haven't thought about my projected debt, monthly payments, or the ROI of my degree</div>
+        <div><div class="option-pts">0</div><div class="option-pts-label">pts</div></div>
+      </div>
+      <div class="option-card" data-q="q13" data-v="1" onclick="selectOption(this)">
+        <div class="option-radio"></div><div class="option-text">I know roughly what I'll owe but haven't calculated the monthly payment vs. my expected income</div>
+        <div><div class="option-pts">1</div><div class="option-pts-label">pts</div></div>
+      </div>
+      <div class="option-card" data-q="q13" data-v="3" onclick="selectOption(this)">
+        <div class="option-radio"></div><div class="option-text">I've calculated my debt-to-income ratio and I understand the financial picture at graduation</div>
+        <div><div class="option-pts">3</div><div class="option-pts-label">pts</div></div>
+      </div>
+      <div class="option-card" data-q="q13" data-v="5" onclick="selectOption(this)">
+        <div class="option-radio"></div><div class="option-text">I've done all of the above AND have a repayment strategy, budget, and intentional ROI mindset about my educational investment</div>
+        <div><div class="option-pts">5</div><div class="option-pts-label">pts</div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="btn-row">
+    <button class="btn-next" id="next-7" onclick="goTo(8)" disabled>
+      Final Step: Your Evidence
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+    </button>
+    <button class="btn-back" onclick="goTo(6)">← Back</button>
+  </div>
+</div>
+
+<!-- ── STEP 8: EVIDENCE ── -->
+<div class="step" id="step-8">
+  <div class="dim-header" style="border-left-color:var(--cream-dim);">
+    <div class="dim-header-top">
+      <span class="dim-tag" style="color:var(--cream-dim);">Evidence &amp; Verification</span>
+    </div>
+    <div class="dim-title">Back Your Score Up</div>
+    <div class="dim-intro" style="color:var(--cream-dim);">Your preliminary score is calculated from your answers. Your reviewed score is based on what you can actually show. These two fields are where the gap closes — or widens.</div>
+  </div>
+
+  <div class="evidence-section">
+    <h3>Your Resume</h3>
+    <p class="evidence-desc">
+      Share a link to your current resume — Google Drive, Dropbox, a personal site, anywhere it lives online. 
+      This signals that your resume is ready and accessible when opportunity calls. 
+      <strong style="color:var(--cream)">Not providing a resume link deducts 5 points from your Professionalism score.</strong>
+    </p>
+    <label class="field-label">Resume Link <span style="color:var(--cream-dim);font-weight:400;letter-spacing:0;">(not required, but it costs you 5 pts)</span></label>
+    <input type="url" class="text-input" id="resume-link" placeholder="https://drive.google.com/your-resume" oninput="handleResumeInput(this.value)">
+    <div class="resume-warning" id="resume-warning">
+      <strong>⚠ No resume provided — 5 points deducted from Professionalism.</strong> 
+      This is one of the most common professional gaps Andrew sees. When opportunity shows up, 
+      students who are not ready lose it. A resume link costs you nothing to add. 
+      You can update this before submitting.
+    </div>
+    <div class="resume-tip" id="resume-tip" style="display:none;">
+      <strong>✓ Resume link received.</strong> Your Professionalism score reflects the full 15-point potential. 
+      Andrew's team will review your resume as part of the 48-hour reviewed score process.
+    </div>
+  </div>
+
+  <div class="evidence-section" style="margin-top:32px;">
+    <h3>Your E-Portfolio</h3>
+    <p class="evidence-desc">
+      Share a single link to your e-portfolio — a website, Notion page, GitHub, Google Site, or any page 
+      that aggregates your work, projects, certifications, and evidence. One link is all it takes. 
+      Students who provide a portfolio link typically receive higher reviewed scores because the evidence is visible. 
+      <em style="color:var(--cream-dim);">Optional but strongly encouraged.</em>
+    </p>
+    <label class="field-label">E-Portfolio / Evidence Link <span style="color:var(--cream-dim);font-weight:400;letter-spacing:0;">(optional — but it helps)</span></label>
+    <input type="url" class="text-input" id="portfolio-link" placeholder="https://yourname.com/portfolio">
+    <div class="resume-tip" style="margin-top:10px;">
+      <strong>No e-portfolio yet?</strong> That's valuable information. A portfolio is one of the highest-leverage things 
+      you can build this semester. Your reviewed score feedback will tell you exactly what to put in it.
+    </div>
+  </div>
+
+  <div class="btn-row" style="margin-top:40px;">
+    <button class="btn-next" onclick="goTo(9)">
+      Calculate My Score
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+    </button>
+    <button class="btn-back" onclick="goTo(7)">← Back</button>
+  </div>
+</div>
+
+<!-- ── STEP 9: SCORE REVEAL ── -->
+<div class="step" id="step-9">
+  <div id="score-calculating" style="text-align:center;padding:80px 0;">
+    <div style="font-family:var(--display);font-size:28px;color:var(--cream-dim);letter-spacing:.04em;margin-bottom:20px;">CALCULATING</div>
+    <div id="calc-dots" style="font-size:24px;color:var(--gold);">●</div>
+  </div>
+
+  <div id="score-revealed" style="display:none;">
+    <div class="reveal-outer">
+      <div class="reveal-label">Your Mangle Metric Score</div>
+      <div>
+        <span class="reveal-number" id="reveal-num">0</span><span class="reveal-denom">/100</span>
+      </div>
+      <div id="reveal-band-label"></div>
+      <p class="reveal-sub" id="reveal-sub"></p>
+    </div>
+
+    <div id="deduction-notice-wrap"></div>
+
+    <div class="breakdown">
+      <div class="breakdown-title">Score Breakdown</div>
+      <div class="breakdown-rows" id="breakdown-rows"></div>
+    </div>
+
+    <div id="ha-reveal-wrap" style="margin-top:40px;"></div>
+
+    <div class="prelim-note">
+      <p>
+        <strong>This is your preliminary score</strong> — calculated from your self-reported answers. 
+        Your <strong style="color:var(--gold)">reviewed score arrives within 48 hours</strong> after Andrew's team 
+        examines your resume and portfolio evidence. Reviewed scores may adjust up or down based on what your 
+        materials actually show. To receive your reviewed score, complete the next step.
+      </p>
+    </div>
+
+    <div class="btn-row" style="align-items:center;">
+      <button class="btn-next" onclick="goTo(10)">
+        Get My Reviewed Score
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- ── STEP 10: CONTACT + SUBMIT ── -->
+<div class="step" id="step-10">
+  <div class="dim-header" style="border-left-color:var(--gold);">
+    <div class="dim-header-top">
+      <span class="dim-tag">Final Step</span>
+    </div>
+    <div class="dim-title">Lock In Your Score</div>
+    <div class="dim-intro">Complete the form below to receive your reviewed Mangle Metric score within 48 hours. Your preliminary score is saved and will be included.</div>
+  </div>
+
+  <div class="contact-section">
+    <div class="contact-grid">
+      <div class="field-group">
+        <label class="field-label">First &amp; Last Name <span class="req">*</span></label>
+        <input type="text" class="text-input" id="c-name" placeholder="Your full name" required>
+      </div>
+      <div class="field-group">
+        <label class="field-label">Email Address <span class="req">*</span></label>
+        <input type="email" class="text-input" id="c-email" placeholder="your@email.com" required>
+      </div>
+    </div>
+
+    <div class="contact-grid" style="margin-top:16px;">
+      <div class="field-group">
+        <label class="field-label">Phone Number <span style="color:var(--cream-dim);font-weight:400;letter-spacing:0;">(optional)</span></label>
+        <input type="tel" class="text-input" id="c-phone" placeholder="(555) 000-0000">
+      </div>
+      <div class="field-group">
+        <label class="field-label">Current Year <span class="req">*</span></label>
+        <select class="select-input" id="c-year" required>
+          <option value="">Select year</option>
+          <option>Freshman</option>
+          <option>Sophomore</option>
+          <option>Junior</option>
+          <option>Senior</option>
+          <option>Graduate Student</option>
+          <option>Recent Graduate (within 1 year)</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="contact-grid" style="margin-top:16px;">
+      <div class="field-group">
+        <label class="field-label">Major / Degree Program <span class="req">*</span></label>
+        <input type="text" class="text-input" id="c-major" placeholder="e.g. Business Administration">
+      </div>
+      <div class="field-group">
+        <label class="field-label">School / University <span class="req">*</span></label>
+        <input type="text" class="text-input" id="c-school" placeholder="e.g. Ball State University">
+      </div>
+    </div>
+
+    <div class="contact-grid single" style="margin-top:16px;">
+      <div class="field-group">
+        <label class="field-label">Target Industry / Career Field <span class="req">*</span></label>
+        <input type="text" class="text-input" id="c-industry" placeholder="e.g. FinTech, Healthcare, Consulting">
+      </div>
+    </div>
+
+    <div class="contact-grid single" style="margin-top:16px;">
+      <div class="field-group">
+        <label class="field-label">LinkedIn Profile URL <span style="color:var(--cream-dim);font-weight:400;letter-spacing:0;">(optional but strongly encouraged)</span></label>
+        <input type="url" class="text-input" id="c-linkedin" placeholder="https://linkedin.com/in/yourname">
+      </div>
+    </div>
+  </div>
+
+  <div style="padding:20px;background:var(--ink3);border-radius:var(--r);border:1px solid var(--cream-faint);margin-top:8px;">
+    <p style="font-size:13px;color:var(--cream-dim);line-height:1.6;">
+      By submitting, you agree to be contacted at the email provided with your reviewed Mangle Metric score 
+      and personalized improvement recommendations. Your information is used solely for scoring and coaching purposes 
+      and is not shared with employers without your explicit consent.
+    </p>
+  </div>
+
+  <div class="btn-row" style="margin-top:28px;">
+    <button class="btn-next" id="submit-btn" onclick="submitForm()">
+      Submit for Reviewed Score
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+    </button>
+    <button class="btn-back" onclick="goTo(9)">← Back to Score</button>
+  </div>
+  <div id="submit-error" style="display:none;margin-top:16px;padding:14px 16px;background:var(--red-dim);border-radius:var(--r);font-size:13px;color:#E88888;"></div>
+</div>
+
+<!-- ── STEP 11: THANK YOU ── -->
+<div class="step" id="step-11">
+  <div class="thankyou">
+    <div class="thankyou-icon">🎯</div>
+    <h2>SCORE<br><em>locked in</em></h2>
+    <p class="thankyou-sub">Your preliminary score has been recorded. Your reviewed score and personalized roadmap arrive within 48 hours.</p>
+    <div class="next-steps">
+      <h3>What Happens Next</h3>
+      <div class="next-step-item">
+        <div class="step-icon">1</div>
+        <div class="step-text"><strong style="color:var(--cream);">Within 48 hours</strong> — Andrew's team reviews your resume and portfolio evidence and sends your reviewed score with a personalized dimension-by-dimension feedback email to the address you provided.</div>
+      </div>
+      <div class="next-step-item">
+        <div class="step-icon">2</div>
+        <div class="step-text"><strong style="color:var(--cream);">Watch the show</strong> — See how other students score and what separates the ones who land from the ones who don't. <a href="https://youtube.com/@MangleMetric" target="_blank" style="color:var(--gold);">YouTube @MangleMetric →</a></div>
+      </div>
+      <div class="next-step-item">
+        <div class="step-icon">3</div>
+        <div class="step-text"><strong style="color:var(--cream);">Monthly check-in</strong> — You'll receive a monthly follow-up to rescore your improving dimensions. Every 10-point gain unlocks something new.</div>
+      </div>
+      <div class="next-step-item">
+        <div class="step-icon">4</div>
+        <div class="step-text"><strong style="color:var(--cream);">Share your score</strong> — "How do you score?" Drop your number on social. Challenge a classmate. The more honest conversations happening on campus, the better for everyone.</div>
+      </div>
+    </div>
+    <div style="margin-top:32px;">
+      <a href="/" class="btn-next" style="display:inline-flex;text-decoration:none;">
+        Return to andrewmangle.com
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+      </a>
+    </div>
+  </div>
+</div>
+
+</main>
+
+<!-- HIDDEN FORMSPREE FORM -->
+<form id="fs-form" action="https://formspree.io/f/FORMSPREE_ENDPOINT" method="POST" style="display:none;">
+  <input type="hidden" name="_subject" id="fs-subject">
+  <input type="hidden" name="name" id="fs-name">
+  <input type="hidden" name="email" id="fs-email">
+  <input type="hidden" name="phone" id="fs-phone">
+  <input type="hidden" name="year" id="fs-year">
+  <input type="hidden" name="major" id="fs-major">
+  <input type="hidden" name="school" id="fs-school">
+  <input type="hidden" name="industry" id="fs-industry">
+  <input type="hidden" name="linkedin" id="fs-linkedin">
+  <input type="hidden" name="preliminary_score" id="fs-score">
+  <input type="hidden" name="score_breakdown" id="fs-breakdown">
+  <input type="hidden" name="hire_or_aspire" id="fs-ha">
+  <input type="hidden" name="resume_link" id="fs-resume">
+  <input type="hidden" name="portfolio_link" id="fs-portfolio">
+  <input type="hidden" name="resume_provided" id="fs-resume-flag">
+  <input type="hidden" name="all_answers" id="fs-answers">
+  <input type="hidden" name="submitted_at" id="fs-time">
+</form>
+
+<script>
+// ── STATE ──────────────────────────────────────────────────────
+const state = {
+  answers: { q1:null,q2:null,q3:null,q4:null,q5:null,q6:null,q7:null,q8:null,q9:null,q10:null,q11:null,q12:null,q13:null },
+  resumeLink: '',
+  portfolioLink: '',
+  resumeProvided: false,
+};
+
+const DIMS = [
+  { id:'d1', label:'Work Experience & Applied Proof',    qs:['q1','q2','q3'], max:25 },
+  { id:'d2', label:'Career Trajectory & Strategic Clarity', qs:['q4','q5','q6'], max:20 },
+  { id:'d3', label:'Skill Marketability & Demonstrated Output', qs:['q7','q8'], max:18 },
+  { id:'d4', label:'Professionalism & Self-Leadership',  qs:['q9','q10'],    max:15 },
+  { id:'d5', label:'Network & Relationship Capital',     qs:['q11'],         max:10 },
+  { id:'d6', label:'Major ROI & Field Awareness',        qs:['q12'],         max:7  },
+  { id:'d7', label:'Financial Self-Leadership',          qs:['q13'],         max:5  },
+];
+
+const Q_LABELS = {
+  q1:'Internships/roles held',q2:'Experience relevance',q3:'Ownership level',
+  q4:'Post-grad plan clarity',q5:'90-day concrete steps',q6:'Informational interviews',
+  q7:'Demonstrable outputs',q8:'Market demand awareness',
+  q9:'Resume readiness',q10:'Follow-through history',
+  q11:'Professional contacts',q12:'Salary/field awareness',q13:'Financial planning'
+};
+
+const STEP_QS = { 1:['q1','q2','q3'], 2:['q4','q5','q6'], 3:['q7','q8'], 4:['q9','q10'], 5:['q11'], 6:['q12'], 7:['q13'] };
+const TOTAL_STEPS = 11;
+
+// ── SCORE CALCULATION ──────────────────────────────────────────
+function calcScore() {
+  const a = state.answers;
+  const d1 = (a.q1||0)+(a.q2||0)+(a.q3||0);
+  const d2 = (a.q4||0)+(a.q5||0)+(a.q6||0);
+  const d3 = (a.q7||0)+(a.q8||0);
+  const d4_base = (a.q9||0)+(a.q10||0);
+  const d4_deduct = state.resumeProvided ? 0 : 5;
+  const d4 = Math.max(0, d4_base - d4_deduct);
+  const d5 = (a.q11||0);
+  const d6 = (a.q12||0);
+  const d7 = (a.q13||0);
+  return { d1,d2,d3,d4,d4_base,d4_deduct,d5,d6,d7, total:d1+d2+d3+d4+d5+d6+d7 };
+}
+
+// ── RUNNING SCORE ──────────────────────────────────────────────
+function updateRunningScore() {
+  const s = calcScore();
+  document.getElementById('running-score').textContent = s.total;
+}
+
+// ── OPTION SELECTION ──────────────────────────────────────────
+function selectOption(el) {
+  const q = el.dataset.q;
+  const v = parseInt(el.dataset.v);
+  document.querySelectorAll(`[data-q="${q}"]`).forEach(c => c.classList.remove('selected'));
+  el.classList.add('selected');
+  state.answers[q] = v;
+  updateRunningScore();
+  updateNextButton(currentStep);
+}
+
+// ── NEXT BUTTON STATE ──────────────────────────────────────────
+function updateNextButton(step) {
+  const btn = document.getElementById('next-' + step);
+  if (!btn) return;
+  const qs = STEP_QS[step] || [];
+  const allAnswered = qs.every(q => state.answers[q] !== null);
+  btn.disabled = !allAnswered;
+}
+
+// ── RESUME HANDLING ────────────────────────────────────────────
+function handleResumeInput(val) {
+  state.resumeLink = val.trim();
+  state.resumeProvided = val.trim().length > 5;
+  document.getElementById('resume-warning').classList.toggle('visible', !state.resumeProvided);
+  document.getElementById('resume-tip').style.display = state.resumeProvided ? 'block' : 'none';
+  updateRunningScore();
+}
+
+// ── NAVIGATION ────────────────────────────────────────────────
+let currentStep = 0;
+
+function goTo(step) {
+  document.getElementById('step-' + currentStep).classList.remove('active');
+  document.getElementById('step-' + step).classList.add('active');
+  currentStep = step;
+
+  // Progress bar
+  const pct = step === 0 ? 0 : Math.round((Math.min(step, 8) / 9) * 100);
+  document.getElementById('progress-fill').style.width = pct + '%';
+
+  // Running score badge
+  document.getElementById('nav-score').style.display = step > 0 ? 'flex' : 'none';
+
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+
+  if (step === 9) buildScoreReveal();
+  if (step === 8) {
+    // Show resume warning if applicable
+    if (!state.resumeProvided) {
+      document.getElementById('resume-warning').classList.add('visible');
+    }
+  }
+}
+
+// ── SCORE REVEAL ──────────────────────────────────────────────
+function buildScoreReveal() {
+  document.getElementById('score-calculating').style.display = 'block';
+  document.getElementById('score-revealed').style.display = 'none';
+
+  let dots = 1;
+  const dotsEl = document.getElementById('calc-dots');
+  const dotInterval = setInterval(() => {
+    dots = dots >= 3 ? 1 : dots + 1;
+    dotsEl.textContent = '●'.repeat(dots);
+  }, 300);
+
+  setTimeout(() => {
+    clearInterval(dotInterval);
+    document.getElementById('score-calculating').style.display = 'none';
+    document.getElementById('score-revealed').style.display = 'block';
+
+    const s = calcScore();
+    animateNumber('reveal-num', 0, s.total, 1400);
+
+    // Band
+    const { bandClass, bandText, subText } = getBand(s.total);
+    const bandEl = document.getElementById('reveal-band-label');
+    bandEl.innerHTML = `<span class="reveal-band ${bandClass}">${bandText}</span>`;
+    document.getElementById('reveal-sub').textContent = subText;
+
+    // Deduction notice
+    const dw = document.getElementById('deduction-notice-wrap');
+    if (s.d4_deduct > 0) {
+      dw.innerHTML = `<div class="deduction-notice"><p>
+        <strong>⚠ Resume not provided — 5 points deducted from Professionalism.</strong><br>
+        Your base Professionalism score from your answers was ${s.d4_base}/15. 
+        The 5-point deduction reflects the professional standard: when opportunity asks, 
+        your resume should be ready. Add your resume link and resubmit to recover those points.
+      </p></div>`;
+    } else { dw.innerHTML = ''; }
+
+    // Breakdown
+    const brows = document.getElementById('breakdown-rows');
+    brows.innerHTML = '';
+    const scores = [s.d1,s.d2,s.d3,s.d4,s.d5,s.d6,s.d7];
+    const maxScores = [25,20,18,15,10,7,5];
+
+    // Find gold nugget
+    let goldIdx = 0, goldPct = 0;
+    scores.forEach((sc, i) => {
+      const pct = sc / maxScores[i];
+      if (pct > goldPct) { goldPct = pct; goldIdx = i; }
+    });
+
+    DIMS.forEach((dim, i) => {
+      const sc = scores[i], mx = maxScores[i];
+      const pct = Math.round((sc/mx)*100);
+      const isGold = i === goldIdx;
+      const row = document.createElement('div');
+      row.className = 'br-row' + (isGold ? ' gold-nugget' : '');
+      row.innerHTML = `
+        <div class="br-meta">
+          <span class="br-name">${dim.label}${isGold ? '<span class="nugget-tag">Gold Nugget</span>' : ''}</span>
+          <span class="br-pts">${sc} / ${mx}</span>
+        </div>
+        <div class="br-track"><div class="br-fill" id="fill-${dim.id}" style="--pct:${pct}%"></div></div>
+      `;
+      brows.appendChild(row);
+    });
+
+    // Animate bars
+    setTimeout(() => {
+      DIMS.forEach(dim => {
+        const fill = document.getElementById('fill-' + dim.id);
+        if (fill) fill.style.width = fill.style.getPropertyValue('--pct') || '0%';
+      });
+    }, 200);
+
+    // Hire/Aspire
+    const hw = document.getElementById('ha-reveal-wrap');
+    const isHire = s.total >= 90;
+    hw.innerHTML = `<div class="ha-reveal ${isHire ? 'hire' : 'aspire'}">
+      <div class="ha-label">${isHire ? 'HIRE ✓' : 'ASPIRE →'}</div>
+      <h3 style="color:var(--cream);font-size:17px;margin-bottom:10px;">${isHire ? 'Ready Now' : 'Ready to Grow'}</h3>
+      <p class="ha-desc">${isHire
+        ? 'Your score and track record qualify you for the Mangle Metric employer network. You will be visible to hiring partners.'
+        : 'You have real strengths — at least one gold-nugget dimension. Your reviewed score feedback will give you a specific 90-day roadmap to your next level.'
+      }</p>
+    </div>`;
+
+  }, 1800);
+}
+
+function animateNumber(id, from, to, duration) {
+  const el = document.getElementById(id);
+  const start = performance.now();
+  function step(now) {
+    const progress = Math.min((now - start) / duration, 1);
+    const eased = 1 - Math.pow(1 - progress, 3);
+    el.textContent = Math.round(from + (to - from) * eased);
+    if (progress < 1) requestAnimationFrame(step);
+  }
+  requestAnimationFrame(step);
+}
+
+function getBand(score) {
+  if (score >= 90) return { bandClass:'band-ready', bandText:'Employer Ready', subText:'Top tier. Your growth trajectory and profile are ready for employer introductions.' };
+  if (score >= 75) return { bandClass:'band-strong', bandText:'Strong', subText:'Demonstrably prepared. You are visible to employer partners and close to direct introductions.' };
+  if (score >= 60) return { bandClass:'band-ontrack', bandText:'On Track', subText:'Solid position relative to your peers. One or two dimensions are ready to surface to employers right now.' };
+  if (score >= 40) return { bandClass:'band-developing', bandText:'Developing', subText:'Foundation exists. Your reviewed feedback will identify the highest-leverage gap to close first.' };
+  return { bandClass:'band-starting', bandText:'Starting Out', subText:'This is your baseline, not your ceiling. The score is the starting gun. Your reviewed feedback shows exactly where to begin.' };
+}
+
+// ── FORM SUBMISSION ────────────────────────────────────────────
+function validateContact() {
+  const name = document.getElementById('c-name').value.trim();
+  const email = document.getElementById('c-email').value.trim();
+  const year  = document.getElementById('c-year').value;
+  const major = document.getElementById('c-major').value.trim();
+  const school= document.getElementById('c-school').value.trim();
+  const industry = document.getElementById('c-industry').value.trim();
+  return name && email && year && major && school && industry;
+}
+
+function submitForm() {
+  if (!validateContact()) {
+    const err = document.getElementById('submit-error');
+    err.style.display = 'block';
+    err.textContent = 'Please fill in all required fields (marked with *) before submitting.';
+    return;
+  }
+
+  const s = calcScore();
+  const name = document.getElementById('c-name').value.trim();
+
+  // Populate Formspree fields
+  document.getElementById('fs-subject').value  = `Mangle Metric Submission — ${name} — Score: ${s.total}/100`;
+  document.getElementById('fs-name').value     = name;
+  document.getElementById('fs-email').value    = document.getElementById('c-email').value.trim();
+  document.getElementById('fs-phone').value    = document.getElementById('c-phone').value.trim();
+  document.getElementById('fs-year').value     = document.getElementById('c-year').value;
+  document.getElementById('fs-major').value    = document.getElementById('c-major').value.trim();
+  document.getElementById('fs-school').value   = document.getElementById('c-school').value.trim();
+  document.getElementById('fs-industry').value = document.getElementById('c-industry').value.trim();
+  document.getElementById('fs-linkedin').value = document.getElementById('c-linkedin').value.trim();
+  document.getElementById('fs-score').value    = s.total;
+  document.getElementById('fs-resume').value   = state.resumeLink || 'Not provided';
+  document.getElementById('fs-portfolio').value= state.portfolioLink || document.getElementById('portfolio-link').value.trim() || 'Not provided';
+  document.getElementById('fs-resume-flag').value = state.resumeProvided ? 'Yes' : 'No — 5pt deduction applied';
+  document.getElementById('fs-ha').value       = s.total >= 90 ? 'HIRE' : 'ASPIRE';
+  document.getElementById('fs-time').value     = new Date().toLocaleString();
+
+  const breakdown = DIMS.map((d,i) => {
+    const scores = [s.d1,s.d2,s.d3,s.d4,s.d5,s.d6,s.d7];
+    const maxes  = [25,20,18,15,10,7,5];
+    return `${d.label}: ${scores[i]}/${maxes[i]}`;
+  }).join(' | ');
+  document.getElementById('fs-breakdown').value = breakdown;
+
+  const allAnswers = Object.entries(state.answers).map(([q,v]) =>
+    `${Q_LABELS[q]||q}: ${v !== null ? v + ' pts' : 'unanswered'}`
+  ).join('\n');
+  document.getElementById('fs-answers').value = allAnswers;
+
+  const btn = document.getElementById('submit-btn');
+  btn.textContent = 'Submitting...';
+  btn.disabled = true;
+
+  const form = document.getElementById('fs-form');
+  const data = new FormData(form);
+
+  fetch(form.action, {
+    method: 'POST',
+    body: data,
+    headers: { 'Accept': 'application/json' }
+  }).then(res => {
+    if (res.ok) {
+      goTo(11);
+    } else {
+      btn.textContent = 'Submit for Reviewed Score';
+      btn.disabled = false;
+      const err = document.getElementById('submit-error');
+      err.style.display = 'block';
+      err.textContent = 'Submission failed. Please email your score directly to submissions@andrewmangle.com and include your name and school.';
+    }
+  }).catch(() => {
+    btn.textContent = 'Submit for Reviewed Score';
+    btn.disabled = false;
+    const err = document.getElementById('submit-error');
+    err.style.display = 'block';
+    err.textContent = 'Network error. Please email submissions@andrewmangle.com directly with your name, school, and the score shown on this page.';
+  });
+}
+
+// ── INIT ───────────────────────────────────────────────────────
+document.addEventListener('DOMContentLoaded', () => {
+  // Portfolio link tracking
+  document.getElementById('portfolio-link').addEventListener('input', function() {
+    state.portfolioLink = this.value.trim();
+  });
+  // Validate contact fields on input
+  ['c-name','c-email','c-year','c-major','c-school','c-industry'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.addEventListener('input', () => {
+      document.getElementById('submit-error').style.display = 'none';
+    });
+  });
+});
+</script>
+</body>
+</html>
