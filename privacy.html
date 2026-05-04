@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Privacy Policy — andrewmangle.com</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Instrument+Serif:ital@0;1&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;font-size:16px}
+body{background:#0E0C09;color:#F0EBE0;font-family:"DM Sans",sans-serif;font-weight:400;line-height:1.7;overflow-x:hidden;}
+:root{
+  --gold:#C8920A;--gold-light:#F0C040;--gold-dim:rgba(200,146,10,0.12);--gold-border:rgba(200,146,10,0.25);
+  --ink:#0E0C09;--ink2:#1A1710;--ink3:#242018;
+  --cream:#F0EBE0;--cream-dim:rgba(240,235,224,0.65);--cream-faint:rgba(240,235,224,0.1);
+  --serif:"Instrument Serif",Georgia,serif;--display:"Bebas Neue",sans-serif;--r:6px;
+}
+nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:center;
+  justify-content:space-between;padding:0 48px;height:60px;
+  background:rgba(14,12,9,0.95);backdrop-filter:blur(16px);
+  border-bottom:1px solid var(--cream-faint);}
+.nav-back{font-size:12px;font-weight:500;letter-spacing:.08em;text-transform:uppercase;
+  color:var(--cream-dim);text-decoration:none;transition:color .2s;}
+.nav-back:hover{color:var(--cream);}
+.nav-logo{font-family:var(--display);font-size:20px;letter-spacing:.06em;color:var(--cream);}
+.nav-logo span{color:var(--gold-light);}
+.container{max-width:760px;margin:0 auto;padding:100px 24px 80px;}
+.page-eyebrow{display:flex;align-items:center;gap:10px;margin-bottom:20px;}
+.page-eyebrow::before{content:"";display:block;width:32px;height:2px;background:var(--gold);}
+.page-eyebrow span{font-size:11px;font-weight:600;letter-spacing:.18em;text-transform:uppercase;color:var(--gold);}
+h1{font-family:var(--display);font-size:clamp(52px,7vw,80px);line-height:.95;
+  letter-spacing:.02em;color:var(--cream);margin-bottom:16px;}
+.effective-date{font-size:13px;color:var(--cream-dim);margin-bottom:48px;
+  padding:12px 16px;background:var(--ink2);border-radius:var(--r);
+  border-left:3px solid var(--gold);}
+.effective-date strong{color:var(--cream);}
+.intro{font-family:var(--serif);font-style:italic;font-size:18px;
+  color:var(--cream-dim);line-height:1.7;margin-bottom:48px;
+  padding-bottom:40px;border-bottom:1px solid var(--cream-faint);}
+.toc{background:var(--ink2);border:1px solid var(--cream-faint);
+  border-radius:var(--r);padding:28px 32px;margin-bottom:48px;}
+.toc-title{font-family:var(--display);font-size:18px;letter-spacing:.04em;
+  color:var(--cream);margin-bottom:16px;}
+.toc ol{padding-left:20px;display:flex;flex-direction:column;gap:6px;}
+.toc a{font-size:14px;color:var(--cream-dim);text-decoration:none;transition:color .2s;}
+.toc a:hover{color:var(--gold-light);}
+.section{margin-bottom:48px;padding-bottom:48px;border-bottom:1px solid var(--cream-faint);}
+.section:last-child{border-bottom:none;}
+.section-num{font-size:11px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;
+  color:var(--gold);margin-bottom:8px;display:block;}
+h2{font-family:var(--display);font-size:28px;letter-spacing:.03em;
+  color:var(--cream);margin-bottom:16px;}
+h3{font-family:"DM Sans",sans-serif;font-size:16px;font-weight:600;
+  color:var(--cream);margin:24px 0 8px;}
+p{font-size:15px;color:var(--cream-dim);line-height:1.75;margin-bottom:14px;}
+p:last-child{margin-bottom:0;}
+ul,ol{padding-left:20px;margin-bottom:14px;}
+li{font-size:15px;color:var(--cream-dim);line-height:1.7;margin-bottom:6px;}
+li::marker{color:var(--gold);}
+.callout{background:var(--gold-dim);border:1px solid var(--gold-border);
+  border-left:4px solid var(--gold);border-radius:var(--r);
+  padding:18px 22px;margin:20px 0;}
+.callout p{font-size:14px;color:var(--cream);margin:0;}
+.callout strong{color:var(--gold-light);}
+.data-table{width:100%;border-collapse:collapse;margin:20px 0;}
+.data-table th{font-size:12px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;
+  color:var(--cream);background:var(--ink3);padding:12px 16px;text-align:left;
+  border-bottom:2px solid var(--gold-border);}
+.data-table td{font-size:14px;color:var(--cream-dim);padding:12px 16px;
+  border-bottom:1px solid var(--cream-faint);vertical-align:top;}
+.data-table tr:last-child td{border-bottom:none;}
+.data-table tr:nth-child(even) td{background:var(--ink2);}
+.contact-box{background:var(--ink2);border:1px solid var(--gold-border);
+  border-radius:var(--r);padding:28px 32px;margin-top:40px;}
+.contact-box h3{margin-top:0;}
+.contact-box a{color:var(--gold-light);text-decoration:none;}
+.contact-box a:hover{text-decoration:underline;}
+hr.rule{border:none;border-top:1px solid var(--cream-faint);margin:48px 0;}
+footer{background:var(--ink2);border-top:1px solid var(--cream-faint);
+  padding:32px 48px;text-align:center;}
+.footer-logo{font-family:var(--display);font-size:18px;letter-spacing:.06em;color:var(--cream);margin-bottom:8px;}
+.footer-logo span{color:var(--gold-light);}
+.footer-copy{font-size:12px;color:var(--cream-dim);}
+.footer-links{display:flex;justify-content:center;gap:24px;margin-top:12px;flex-wrap:wrap;}
+.footer-links a{font-size:12px;letter-spacing:.06em;text-transform:uppercase;
+  color:var(--cream-dim);text-decoration:none;}
+.footer-links a:hover{color:var(--cream);}
+@media(max-width:640px){
+  nav{padding:0 16px;}
+  .container{padding:88px 16px 60px;}
+  footer{padding:24px 16px;}
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="/" class="nav-back">← Home</a>
+  <div class="nav-logo"><span>Dr. </span>Andrew <span>Mangle</span></div>
+  <div></div>
+</nav>
+
+<div class="container">
+
+  <div class="page-eyebrow"><span>Legal</span></div>
+  <h1>PRIVACY<br>POLICY</h1>
+
+  <div class="effective-date">
+    <strong>Effective Date:</strong> May 1, 2025 &nbsp;·&nbsp;
+    <strong>Last Updated:</strong> May 1, 2025 &nbsp;·&nbsp;
+    <strong>Operator:</strong> Best Entrust, LLC
+  </div>
+
+  <p class="intro">
+    This Privacy Policy explains how Best Entrust, LLC — operating andrewmangle.com and 
+    the Mangle Metric program — collects, uses, stores, and protects information you provide 
+    when you use this website or complete the Mangle Metric assessment. We have written this 
+    to be readable, not to hide anything.
+  </p>
+
+  <div class="toc">
+    <div class="toc-title">Contents</div>
+    <ol>
+      <li><a href="#who">Who We Are</a></li>
+      <li><a href="#collect">What We Collect</a></li>
+      <li><a href="#how">How We Use Your Information</a></li>
+      <li><a href="#share">What We Do Not Share</a></li>
+      <li><a href="#employers">Employer Access & Student Data</a></li>
+      <li><a href="#third-party">Third-Party Services</a></li>
+      <li><a href="#retention">Data Retention</a></li>
+      <li><a href="#rights">Your Rights</a></li>
+      <li><a href="#minors">Minors</a></li>
+      <li><a href="#changes">Changes to This Policy</a></li>
+      <li><a href="#contact">Contact Us</a></li>
+    </ol>
+  </div>
+
+  <!-- 1 -->
+  <div class="section" id="who">
+    <span class="section-num">01</span>
+    <h2>Who We Are</h2>
+    <p>
+      andrewmangle.com is operated by <strong style="color:var(--cream)">Best Entrust, LLC</strong>, 
+      an independent limited liability company. The Mangle Metric program is a privately operated 
+      career readiness platform. It is not affiliated with, sponsored by, or operated on behalf of 
+      Bowie State University or any other educational institution or employer.
+    </p>
+    <p>
+      Dr. Andrew Mangle is the founder of Best Entrust, LLC and the creator of the Mangle Metric. 
+      Any activities conducted through this website are conducted in his capacity as founder of 
+      Best Entrust, LLC — not as a representative of any academic institution.
+    </p>
+  </div>
+
+  <!-- 2 -->
+  <div class="section" id="collect">
+    <span class="section-num">02</span>
+    <h2>What We Collect</h2>
+    <p>We collect information in three ways: information you provide directly, information generated 
+    by your use of the assessment, and basic technical information from your browser.</p>
+
+    <h3>Information You Provide Directly</h3>
+    <table class="data-table">
+      <thead>
+        <tr><th>Data Point</th><th>Where Collected</th><th>Required?</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Full name</td><td>Assessment submission form</td><td>Yes</td></tr>
+        <tr><td>Email address</td><td>Assessment submission form</td><td>Yes</td></tr>
+        <tr><td>Phone number</td><td>Assessment submission form</td><td>No</td></tr>
+        <tr><td>School / university</td><td>Assessment submission form</td><td>Yes</td></tr>
+        <tr><td>Major / degree program</td><td>Assessment submission form</td><td>Yes</td></tr>
+        <tr><td>Year in school</td><td>Assessment submission form</td><td>Yes</td></tr>
+        <tr><td>Target industry / career field</td><td>Assessment submission form</td><td>Yes</td></tr>
+        <tr><td>LinkedIn profile URL</td><td>Assessment submission form</td><td>No</td></tr>
+        <tr><td>Resume link</td><td>Assessment submission form</td><td>No</td></tr>
+        <tr><td>E-portfolio / evidence link</td><td>Assessment submission form</td><td>No</td></tr>
+        <tr><td>Assessment answers (13 questions)</td><td>Mangle Metric assessment</td><td>Yes</td></tr>
+        <tr><td>Mangle Metric score and dimension breakdown</td><td>Calculated automatically</td><td>N/A</td></tr>
+        <tr><td>Payment information</td><td>Stripe (paid tiers only — not stored by us)</td><td>If purchasing</td></tr>
+      </tbody>
+    </table>
+
+    <h3>Information Generated Automatically</h3>
+    <p>When you visit andrewmangle.com, standard web server logs may record your IP address, 
+    browser type, operating system, referring URL, pages visited, and time of visit. This 
+    information is used for security and site performance only and is not used to identify you personally.</p>
+
+    <h3>Cookies</h3>
+    <p>This website uses minimal cookies necessary for basic functionality. We do not use 
+    advertising cookies or behavioral tracking cookies. Third-party services embedded in this 
+    site (such as Calendly and Formspree) may set their own cookies governed by their respective 
+    privacy policies.</p>
+  </div>
+
+  <!-- 3 -->
+  <div class="section" id="how">
+    <span class="section-num">03</span>
+    <h2>How We Use Your Information</h2>
+    <p>We use the information you provide for the following purposes:</p>
+    <ul>
+      <li><strong style="color:var(--cream)">Delivering your Mangle Metric score</strong> — 
+      your assessment answers are used to calculate your preliminary score and generate your 
+      dimension breakdown immediately upon completion.</li>
+      <li><strong style="color:var(--cream)">Providing your reviewed score</strong> — 
+      your submission, including resume and portfolio links, is reviewed by Dr. Mangle's team 
+      within 48 hours to produce a verified, reviewed score sent to your email address.</li>
+      <li><strong style="color:var(--cream)">Monthly check-in and coaching communications</strong> — 
+      with your consent at the time of submission, we will contact you monthly to support your 
+      score improvement progress.</li>
+      <li><strong style="color:var(--cream)">Platform improvement</strong> — 
+      aggregated, anonymized score data is used to calibrate the assessment, identify patterns 
+      across student cohorts, and improve the Mangle Metric framework.</li>
+      <li><strong style="color:var(--cream)">Content production</strong> — 
+      if you have signed a separate Participant Release Agreement, your name, image, score, 
+      and interview content may be used in Mangle Metric content as authorized by that agreement.</li>
+      <li><strong style="color:var(--cream)">Processing payments</strong> — 
+      payment information is handled directly by Stripe and is not stored on our systems.</li>
+      <li><strong style="color:var(--cream)">Responding to inquiries</strong> — 
+      contact information is used to respond to your questions and scheduling requests.</li>
+    </ul>
+
+    <div class="callout">
+      <p><strong>We do not sell your data.</strong> We do not sell, rent, or trade your personal 
+      information to any third party for marketing, advertising, or any commercial purpose.</p>
+    </div>
+  </div>
+
+  <!-- 4 -->
+  <div class="section" id="share">
+    <span class="section-num">04</span>
+    <h2>What We Do Not Share</h2>
+    <p>We will never share your personal information in the following ways:</p>
+    <ul>
+      <li>We will not sell your data to advertisers, data brokers, or any third party.</li>
+      <li>We will not share your individual score or assessment results with employers without 
+      your explicit, separate written consent.</li>
+      <li>We will not share your contact information with employer partners without your 
+      explicit consent.</li>
+      <li>We will not share your information with Bowie State University or any other academic 
+      institution in connection with this program.</li>
+      <li>We will not use your information to make automated decisions that affect your 
+      employment, admissions, or any other consequential outcome without human review.</li>
+    </ul>
+    <p>We may disclose information if required by law, legal process, or to protect the rights, 
+    property, or safety of Best Entrust, LLC, our users, or the public.</p>
+  </div>
+
+  <!-- 5 -->
+  <div class="section" id="employers">
+    <span class="section-num">05</span>
+    <h2>Employer Access & Student Data</h2>
+    <p>The Mangle Metric connects high-performing students with employer partners. This section 
+    explains exactly how that works with respect to your data.</p>
+
+    <h3>What Employers Can See — Only With Your Consent</h3>
+    <p>Your individual score, profile, and contact information will <strong style="color:var(--cream)">
+    never be shared with employer partners without your explicit, affirmative consent</strong>. 
+    If you reach the Hire threshold (90+) or otherwise qualify for employer network visibility, 
+    you will be contacted separately and asked to opt in before any of your information is 
+    made visible to employer partners.</p>
+
+    <h3>Aggregated Data</h3>
+    <p>Employer partners may receive aggregated, anonymized data about the student population 
+    — for example, average scores by field of study or common gap dimensions — for the purpose 
+    of demonstrating platform quality. This data cannot be used to identify individual students.</p>
+
+    <h3>Your Control</h3>
+    <p>You may opt out of employer visibility at any time by contacting us at 
+    <a href="mailto:submissions@andrewmangle.com" style="color:var(--gold-light);">
+    submissions@andrewmangle.com</a>. Opting out does not affect your access to the free 
+    assessment, your score, or your coaching communications.</p>
+  </div>
+
+  <!-- 6 -->
+  <div class="section" id="third-party">
+    <span class="section-num">06</span>
+    <h2>Third-Party Services</h2>
+    <p>This website uses the following third-party services. Each is governed by its own 
+    privacy policy, which we encourage you to review.</p>
+
+    <table class="data-table">
+      <thead>
+        <tr><th>Service</th><th>Purpose</th><th>Data Involved</th><th>Their Privacy Policy</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong style="color:var(--cream)">Formspree</strong></td>
+          <td>Receives and delivers assessment submission data to our team</td>
+          <td>All fields submitted in the assessment form</td>
+          <td>formspree.io/legal/privacy-policy</td>
+        </tr>
+        <tr>
+          <td><strong style="color:var(--cream)">Stripe</strong></td>
+          <td>Processes payments for paid assessment tiers</td>
+          <td>Payment card information, billing details</td>
+          <td>stripe.com/privacy</td>
+        </tr>
+        <tr>
+          <td><strong style="color:var(--cream)">Calendly</strong></td>
+          <td>Manages scheduling for score review sessions</td>
+          <td>Name, email, and scheduling preferences</td>
+          <td>calendly.com/privacy</td>
+        </tr>
+        <tr>
+          <td><strong style="color:var(--cream)">GitHub Pages</strong></td>
+          <td>Hosts this website</td>
+          <td>Standard server logs (IP address, browser)</td>
+          <td>docs.github.com/en/site-policy/privacy-policies</td>
+        </tr>
+        <tr>
+          <td><strong style="color:var(--cream)">Google Fonts</strong></td>
+          <td>Loads web fonts used on this site</td>
+          <td>IP address (standard CDN request)</td>
+          <td>policies.google.com/privacy</td>
+        </tr>
+        <tr>
+          <td><strong style="color:var(--cream)">YouTube</strong></td>
+          <td>Hosts Mangle Metric video content (@MangleMetric)</td>
+          <td>Governed by YouTube when you visit their platform</td>
+          <td>policies.google.com/privacy</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <p>We are not responsible for the privacy practices of these third-party services and 
+    encourage you to review their policies before providing information directly to them.</p>
+  </div>
+
+  <!-- 7 -->
+  <div class="section" id="retention">
+    <span class="section-num">07</span>
+    <h2>Data Retention</h2>
+    <p>We retain your assessment data and contact information for as long as you are an active 
+    participant in the Mangle Metric program — defined as having received a score within the 
+    past 24 months or having opted into monthly check-in communications.</p>
+    <p>If you request deletion of your data, we will remove your personally identifiable 
+    information from our active records within 30 days of your request. Anonymized, aggregated 
+    data derived from your assessment may be retained for platform research and improvement 
+    purposes and cannot be used to identify you.</p>
+    <p>Payment records are retained by Stripe according to their data retention policies and 
+    applicable tax law requirements.</p>
+  </div>
+
+  <!-- 8 -->
+  <div class="section" id="rights">
+    <span class="section-num">08</span>
+    <h2>Your Rights</h2>
+    <p>Regardless of where you are located, you have the following rights with respect to 
+    your personal information:</p>
+    <ul>
+      <li><strong style="color:var(--cream)">Access</strong> — you may request a copy of 
+      the personal information we hold about you.</li>
+      <li><strong style="color:var(--cream)">Correction</strong> — you may request that 
+      we correct inaccurate or incomplete information.</li>
+      <li><strong style="color:var(--cream)">Deletion</strong> — you may request that we 
+      delete your personal information from our records.</li>
+      <li><strong style="color:var(--cream)">Opt-out of communications</strong> — you may 
+      unsubscribe from monthly check-in emails at any time using the unsubscribe link in 
+      any email we send, or by contacting us directly.</li>
+      <li><strong style="color:var(--cream)">Opt-out of employer visibility</strong> — 
+      you may withdraw consent for your profile to be visible to employer partners at any time.</li>
+      <li><strong style="color:var(--cream)">Portability</strong> — you may request your 
+      assessment data in a readable format.</li>
+    </ul>
+    <p>To exercise any of these rights, contact us at 
+    <a href="mailto:submissions@andrewmangle.com" style="color:var(--gold-light);">
+    submissions@andrewmangle.com</a>. We will respond within 30 days.</p>
+
+    <div class="callout">
+      <p><strong>California Residents:</strong> If you are a California resident, you may have 
+      additional rights under the California Consumer Privacy Act (CCPA). We do not sell personal 
+      information as defined under CCPA. To submit a rights request, use the contact information above.</p>
+    </div>
+  </div>
+
+  <!-- 9 -->
+  <div class="section" id="minors">
+    <span class="section-num">09</span>
+    <h2>Minors</h2>
+    <p>The Mangle Metric assessment and this website are intended for individuals who are 
+    18 years of age or older. We do not knowingly collect personal information from individuals 
+    under the age of 18 without verifiable parental or guardian consent.</p>
+    <p>If you are under 18 and wish to participate in the Mangle Metric program, a parent or 
+    legal guardian must review and consent to this Privacy Policy and any applicable Participant 
+    Release Agreement before you submit any information.</p>
+    <p>If we become aware that we have inadvertently collected personal information from a minor 
+    without appropriate consent, we will delete that information promptly. Contact us at 
+    <a href="mailto:submissions@andrewmangle.com" style="color:var(--gold-light);">
+    submissions@andrewmangle.com</a> if you believe this has occurred.</p>
+  </div>
+
+  <!-- 10 -->
+  <div class="section" id="changes">
+    <span class="section-num">10</span>
+    <h2>Changes to This Policy</h2>
+    <p>We may update this Privacy Policy from time to time as the Mangle Metric platform evolves. 
+    When we make material changes, we will update the Effective Date at the top of this page 
+    and, where appropriate, notify active participants by email.</p>
+    <p>Your continued use of andrewmangle.com after any changes are posted constitutes your 
+    acceptance of the updated policy. We encourage you to review this page periodically.</p>
+  </div>
+
+  <!-- 11 -->
+  <div class="section" id="contact">
+    <span class="section-num">11</span>
+    <h2>Contact Us</h2>
+    <p>If you have questions, concerns, or requests related to this Privacy Policy or the 
+    handling of your personal information, please contact us:</p>
+    <div class="contact-box">
+      <h3 style="color:var(--gold);margin-bottom:12px;">Best Entrust, LLC</h3>
+      <p style="margin-bottom:6px;"><strong style="color:var(--cream);">Program:</strong> Mangle Metric</p>
+      <p style="margin-bottom:6px;"><strong style="color:var(--cream);">Email:</strong>
+        <a href="mailto:submissions@andrewmangle.com">submissions@andrewmangle.com</a></p>
+      <p style="margin-bottom:6px;"><strong style="color:var(--cream);">Website:</strong>
+        <a href="https://andrewmangle.com">andrewmangle.com</a></p>
+      <p style="margin-bottom:0;"><strong style="color:var(--cream);">Response Time:</strong> 
+      Within 30 days of receipt</p>
+    </div>
+
+    <p style="margin-top:28px;font-size:13px;font-style:italic;color:var(--cream-dim);">
+      This Privacy Policy does not constitute legal advice. Best Entrust, LLC recommends 
+      consulting a licensed attorney to ensure compliance with applicable privacy laws in 
+      your jurisdiction before collecting personal data.
+    </p>
+  </div>
+
+</div>
+
+<footer>
+  <div class="footer-logo">Dr. Andrew<span>Mangle</span></div>
+  <div class="footer-links">
+    <a href="/">Home</a>
+    <a href="/score.html">Get Your Score</a>
+    <a href="/privacy.html" style="color:var(--gold-light);">Privacy Policy</a>
+    <a href="/privacy.html">Privacy Policy</a>
+    <a href="mailto:submissions@andrewmangle.com">Contact</a>
+  </div>
+  <div class="footer-copy" style="margin-top:12px;">
+    © 2025 Best Entrust, LLC · Dr. Andrew Mangle · andrewmangle.com · Independent of Bowie State University
+  </div>
+</footer>
+
+</body>
+</html>
