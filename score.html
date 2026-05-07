@@ -211,6 +211,25 @@ main{padding-top:80px;min-height:100vh;}
   .contact-grid{grid-template-columns:1fr;}
   .welcome-meta{gap:16px;}
 }
+/* ── BRANCHING QUESTION ── */
+.branch-group{display:none;margin-top:16px;animation:fadeUp .35s ease forwards;}
+.branch-group.visible{display:block;}
+.branch-options{display:flex;flex-direction:column;gap:8px;margin-top:10px;}
+.branch-card{display:flex;align-items:flex-start;gap:14px;padding:14px 18px;
+  background:var(--ink3);border:1px solid var(--cream-faint);border-radius:var(--r);
+  cursor:pointer;transition:all .2s;user-select:none;}
+.branch-card:hover{background:var(--ink4,#2E2A1E);border-color:var(--gold-border);}
+.branch-card.selected{background:var(--gold-dim);border-color:var(--gold);}
+.branch-radio{width:15px;height:15px;border-radius:50%;border:2px solid var(--cream-dim);
+  flex-shrink:0;margin-top:2px;transition:all .2s;position:relative;}
+.branch-card.selected .branch-radio{border-color:var(--gold);background:var(--gold);}
+.branch-card.selected .branch-radio::after{content:"";position:absolute;top:50%;left:50%;
+  transform:translate(-50%,-50%);width:5px;height:5px;background:#fff;border-radius:50%;}
+.branch-label{font-size:14px;color:var(--cream-dim);line-height:1.5;}
+.branch-card.selected .branch-label{color:var(--cream);}
+.branch-tag{display:inline-block;font-size:10px;font-weight:700;letter-spacing:.1em;
+  text-transform:uppercase;background:var(--gold);color:var(--ink);
+  padding:2px 8px;border-radius:3px;margin-right:6px;}
 </style>
 <!-- Google Analytics -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-C37J449NJP"></script>
@@ -259,7 +278,85 @@ main{padding-top:80px;min-height:100vh;}
       and a <strong style="color:var(--gold)">reviewed score within 48 hours</strong> after your materials have been examined. 
       Both are included. No credit card required.
     </p>
-    <button class="btn-next" onclick="goTo(1)">
+
+    <!-- ── WELCOME CONTEXT QUESTION ── -->
+    <div style="margin-bottom:28px;">
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px;">
+        <div style="width:24px;height:2px;background:var(--gold);"></div>
+        <span style="font-size:11px;font-weight:600;letter-spacing:.18em;text-transform:uppercase;color:var(--gold);">Before you begin</span>
+      </div>
+
+      <div style="margin-bottom:14px;">
+        <label style="font-size:13px;font-weight:600;color:var(--cream);display:block;margin-bottom:8px;">
+          What year are you in?
+        </label>
+        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;" id="welcome-year-grid">
+          <div class="branch-card" data-wtype="year" data-val="Freshman" onclick="selectWelcomeYear(this)">
+            <div class="branch-radio"></div><div class="branch-label">Freshman</div>
+          </div>
+          <div class="branch-card" data-wtype="year" data-val="Sophomore" onclick="selectWelcomeYear(this)">
+            <div class="branch-radio"></div><div class="branch-label">Sophomore</div>
+          </div>
+          <div class="branch-card" data-wtype="year" data-val="Junior" onclick="selectWelcomeYear(this)">
+            <div class="branch-radio"></div><div class="branch-label">Junior</div>
+          </div>
+          <div class="branch-card" data-wtype="year" data-val="Senior" onclick="selectWelcomeYear(this)">
+            <div class="branch-radio"></div><div class="branch-label">Senior</div>
+          </div>
+          <div class="branch-card" data-wtype="year" data-val="Graduate Student" onclick="selectWelcomeYear(this)">
+            <div class="branch-radio"></div><div class="branch-label">Graduate Student</div>
+          </div>
+          <div class="branch-card" data-wtype="year" data-val="Recent Graduate (within 1 year)" onclick="selectWelcomeYear(this)">
+            <div class="branch-radio"></div><div class="branch-label" style="font-size:12px;">Recent Graduate</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Senior / Recent Grad branch -->
+      <div class="branch-group" id="branch-senior">
+        <p style="font-size:13px;color:var(--cream-dim);margin-bottom:10px;line-height:1.55;">
+          As you approach graduation, which best describes your current situation?
+          <span style="color:var(--gold-light);font-style:italic;"> This frames how your answers are interpreted.</span>
+        </p>
+        <div class="branch-options">
+          <div class="branch-card" data-branch="senior" data-val="pursuing" onclick="selectBranch(this)">
+            <div class="branch-radio"></div>
+            <div class="branch-label">Actively pursuing opportunities in my <strong style="color:var(--cream);">current major field</strong></div>
+          </div>
+          <div class="branch-card" data-branch="senior" data-val="pivot" onclick="selectBranch(this)">
+            <div class="branch-radio"></div>
+            <div class="branch-label"><span class="branch-tag">Pivot</span>Pivoting to a <strong style="color:var(--cream);">different field</strong> from my major — my answers will reflect my target field, not my degree</div>
+          </div>
+          <div class="branch-card" data-branch="senior" data-val="exploring" onclick="selectBranch(this)">
+            <div class="branch-radio"></div>
+            <div class="branch-label">Still <strong style="color:var(--cream);">exploring my direction</strong> — not sure what comes after graduation</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Graduate Student branch -->
+      <div class="branch-group" id="branch-grad">
+        <p style="font-size:13px;color:var(--cream-dim);margin-bottom:10px;line-height:1.55;">
+          Which best describes your reason for pursuing your graduate degree?
+          <span style="color:var(--gold-light);font-style:italic;"> This frames how your score is interpreted.</span>
+        </p>
+        <div class="branch-options">
+          <div class="branch-card" data-branch="grad" data-val="amplify" onclick="selectBranch(this)">
+            <div class="branch-radio"></div>
+            <div class="branch-label"><span class="branch-tag">Amplify</span><strong style="color:var(--cream);">Advancing and deepening</strong> in a field I am already working in or clearly directed toward</div>
+          </div>
+          <div class="branch-card" data-branch="grad" data-val="pivot" onclick="selectBranch(this)">
+            <div class="branch-radio"></div>
+            <div class="branch-label"><span class="branch-tag">Pivot</span><strong style="color:var(--cream);">Transitioning into a new field</strong> — my answers reflect my target field more than my undergraduate background</div>
+          </div>
+          <div class="branch-card" data-branch="grad" data-val="default" onclick="selectBranch(this)">
+            <div class="branch-radio"></div>
+            <div class="branch-label">Still <strong style="color:var(--cream);">figuring out my direction</strong> — graduate school feels like the right next step while I decide</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <button class="btn-next" id="start-btn" onclick="goTo(1)">
       Start My Assessment
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
     </button>
@@ -787,6 +884,7 @@ main{padding-top:80px;min-height:100vh;}
       <div class="radar-container" id="radar-container"></div>
     </div>
 
+    <div id="context-note" style="display:none;"></div>
     <div id="ha-reveal-wrap" style="margin-top:40px;"></div>
 
     <div class="prelim-note">
@@ -836,7 +934,7 @@ main{padding-top:80px;min-height:100vh;}
       </div>
       <div class="field-group">
         <label class="field-label">Current Year <span class="req">*</span></label>
-        <select class="select-input" id="c-year" required>
+        <select class="select-input" id="c-year" required onchange="handleYearChange(this.value)">
           <option value="">Select year</option>
           <option>Freshman</option>
           <option>Sophomore</option>
@@ -847,6 +945,7 @@ main{padding-top:80px;min-height:100vh;}
         </select>
       </div>
     </div>
+
 
     <div class="contact-grid" style="margin-top:16px;">
       <div class="field-group">
@@ -945,6 +1044,7 @@ main{padding-top:80px;min-height:100vh;}
   <input type="hidden" name="resume_link" id="fs-resume">
   <input type="hidden" name="portfolio_link" id="fs-portfolio">
   <input type="hidden" name="resume_provided" id="fs-resume-flag">
+  <input type="hidden" name="enrollment_context" id="fs-enrollment">
   <input type="hidden" name="all_answers" id="fs-answers">
   <input type="hidden" name="submitted_at" id="fs-time">
 </form>
@@ -956,6 +1056,8 @@ const state = {
   resumeLink: '',
   portfolioLink: '',
   resumeProvided: false,
+  enrollmentContext: '',
+  welcomeYear: '',
 };
 
 const DIMS = [
@@ -1140,6 +1242,23 @@ function buildScoreReveal() {
     }, 200);
 
     // Hire/Aspire
+
+  // Pivot / context note in score reveal
+  const ctxNote = document.getElementById('context-note');
+  if (ctxNote) {
+    const ctx = state.enrollmentContext;
+    if (ctx === 'pivot') {
+      ctxNote.innerHTML = '<div class="prelim-note" style="background:rgba(200,146,10,0.08);border-color:var(--gold-border);margin-top:16px;"><p><strong style="color:var(--gold);">Pivot flag detected.</strong> Your answers appear to reflect your <strong style="color:var(--cream);">target field</strong> rather than your current degree. Your reviewed score will include a dual analysis — one for your current credential and one for your target path. This is normal and expected for students mid-transition.</p></div>';
+      ctxNote.style.display = 'block';
+    } else if (ctx === 'default' || ctx === 'exploring') {
+      ctxNote.innerHTML = '<div class="prelim-note" style="background:rgba(22,59,92,0.15);border-color:rgba(22,59,92,0.4);margin-top:16px;"><p><strong style="color:#6EA8D8;">Direction note.</strong> You indicated you are still exploring your path. Your reviewed score feedback will begin with a direction conversation before addressing specific dimension gaps. That is the right starting point.</p></div>';
+      ctxNote.style.display = 'block';
+    } else if (ctx === 'amplify') {
+      ctxNote.innerHTML = '<div class="prelim-note" style="background:var(--green-dim,rgba(42,122,74,0.1));border-color:rgba(42,122,74,0.3);margin-top:16px;"><p><strong style="color:#7ED8A4;">Amplify track.</strong> Your score is interpreted in the context of graduate-level career development. Gaps here are about acceleration and positioning — not survival. Your reviewed feedback reflects that distinction.</p></div>';
+      ctxNote.style.display = 'block';
+    }
+  }
+
     const hw = document.getElementById('ha-reveal-wrap');
     const isHire = s.total >= 90;
     hw.innerHTML = `<div class="ha-reveal ${isHire ? 'hire' : 'aspire'}">
@@ -1244,6 +1363,46 @@ function animateRadar(radarData) {
   requestAnimationFrame(frame);
 }
 
+
+
+// ── WELCOME YEAR SELECTION ──────────────────────────────────────
+function selectWelcomeYear(el) {
+  const val = el.dataset.val;
+  // Deselect all year cards
+  document.querySelectorAll('[data-wtype="year"]').forEach(c => c.classList.remove('selected'));
+  el.classList.add('selected');
+  // Store in state — also sync to contact form year select
+  state.welcomeYear = val;
+  const yearSelect = document.getElementById('c-year');
+  if (yearSelect) yearSelect.value = val;
+  // Trigger branch display
+  handleYearChange(val);
+}
+
+// ── BRANCHING QUESTION ─────────────────────────────────────────
+function selectBranch(el) {
+  const branch = el.dataset.branch;
+  document.querySelectorAll(`[data-branch="${branch}"]`).forEach(c => c.classList.remove('selected'));
+  el.classList.add('selected');
+  state.enrollmentContext = el.dataset.val;
+}
+
+function handleYearChange(val) {
+  const seniorBranch = document.getElementById('branch-senior');
+  const gradBranch   = document.getElementById('branch-grad');
+  // Reset both
+  seniorBranch.classList.remove('visible');
+  gradBranch.classList.remove('visible');
+  document.querySelectorAll('.branch-card').forEach(c => c.classList.remove('selected'));
+  state.enrollmentContext = '';
+
+  if (val === 'Senior' || val === 'Recent Graduate (within 1 year)') {
+    seniorBranch.classList.add('visible');
+  } else if (val === 'Graduate Student') {
+    gradBranch.classList.add('visible');
+  }
+}
+
 function animateNumber(id, from, to, duration) {
   const el = document.getElementById(id);
   const start = performance.now();
@@ -1300,6 +1459,7 @@ function submitForm() {
   document.getElementById('fs-resume').value   = state.resumeLink || 'Not provided';
   document.getElementById('fs-portfolio').value= state.portfolioLink || document.getElementById('portfolio-link').value.trim() || 'Not provided';
   document.getElementById('fs-resume-flag').value = state.resumeProvided ? 'Yes' : 'No — 5pt deduction applied';
+  document.getElementById('fs-enrollment').value = state.enrollmentContext || 'Not specified';
   document.getElementById('fs-ha').value       = s.total >= 90 ? 'HIRE' : 'ASPIRE';
   document.getElementById('fs-time').value     = new Date().toLocaleString();
 
@@ -1347,6 +1507,12 @@ function submitForm() {
 
 // ── INIT ───────────────────────────────────────────────────────
 document.addEventListener('DOMContentLoaded', () => {
+  // Pre-fill year select if already chosen on welcome screen
+  const yearSelect = document.getElementById('c-year');
+  if (yearSelect && state.welcomeYear) {
+    yearSelect.value = state.welcomeYear;
+  }
+
   // Portfolio link tracking
   document.getElementById('portfolio-link').addEventListener('input', function() {
     state.portfolioLink = this.value.trim();
@@ -1360,16 +1526,5 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 });
 </script>
-
-<footer style="background:var(--ink2);border-top:1px solid var(--cream-faint);padding:32px 48px;text-align:center;">
-  <div style="font-family:var(--display);font-size:18px;letter-spacing:.06em;color:var(--cream);margin-bottom:10px;">Dr. Andrew<span style="color:var(--gold-light);">Mangle</span></div>
-  <div style="display:flex;justify-content:center;gap:24px;flex-wrap:wrap;margin-bottom:10px;">
-    <a href="/" style="font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:rgba(240,235,224,0.65);text-decoration:none;">Home</a>
-    <a href="/score.html" style="font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:rgba(240,235,224,0.65);text-decoration:none;">Get Your Score</a>
-    <a href="/privacy.html" style="font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:rgba(240,235,224,0.65);text-decoration:none;">Privacy Policy</a>
-    <a href="mailto:submissions@andrewmangle.com" style="font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:rgba(240,235,224,0.65);text-decoration:none;">Contact</a>
-  </div>
-  <div style="font-size:12px;color:rgba(240,235,224,0.45);">© 2025 Best Entrust, LLC · Dr. Andrew Mangle · andrewmangle.com</div>
-</footer>
 </body>
 </html>
