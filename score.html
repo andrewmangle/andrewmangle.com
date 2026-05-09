@@ -915,63 +915,7 @@ main{padding-top:80px;min-height:100vh;}
 
     <div id="context-note" style="display:none;"></div>
 
-    <!-- ── OPTIONAL REFLECTION ── -->
-    <div class="reflection-section" id="reflection-section">
-      <div class="reflection-eyebrow"><span>Optional — But Worth It</span></div>
-      <div class="reflection-title">Catch Your Gold Nuggets</div>
-      <p class="reflection-intro">
-        The 13 questions give us your score. These three questions give us the full picture — 
-        and often surface strengths, context, and intentions the multiple choice can't capture. 
-        Your reflections may adjust your reviewed score upward. They always improve the quality 
-        of your feedback. Skip if you're in a hurry. Complete them if you want Dr. Mangle to 
-        really see you.
-      </p>
-
-      <div class="reflection-field">
-        <label class="reflection-label" for="r-gap">Reflection A — Your Gap</label>
-        <span class="reflection-sublabel">
-          Look at your two lowest-scoring dimensions. What specifically caused that score — 
-          and what is one concrete action you could take in the next 30 days to improve it? 
-          Name a company, program, certification, or person. Vague answers are noted.
-        </span>
-        <textarea class="reflection-textarea" id="r-gap" 
-          placeholder="Example: My Network score is low because I haven't intentionally built relationships in my target field. In the next 30 days I will reach out to three data analysts at AIG on LinkedIn and ask for a 15-minute conversation about how they built their career..."
-          oninput="countChars(this, 'char-gap')"></textarea>
-        <span class="reflection-char" id="char-gap">0 characters</span>
-      </div>
-
-      <div class="reflection-field">
-        <label class="reflection-label" for="r-market">Reflection B — Your Market</label>
-        <span class="reflection-sublabel">
-          Name one digital trend, technology shift, or competitive threat that will impact 
-          your target field in the next five years. How does your current score position you 
-          relative to that threat? What is one skill you could build this semester to increase 
-          your resilience to it?
-        </span>
-        <textarea class="reflection-textarea" id="r-market"
-          placeholder="Example: AI-powered underwriting is reducing entry-level roles in commercial insurance. My score of 55 means I have strong work experience but weak demonstrated technical skills. One thing I can build this semester is basic fluency in loss ratios and exposure reports..."
-          oninput="countChars(this, 'char-market')"></textarea>
-        <span class="reflection-char" id="char-market">0 characters</span>
-      </div>
-
-      <div class="reflection-field">
-        <label class="reflection-label" for="r-commit">Reflection C — Your 7-Day Commitment</label>
-        <span class="reflection-sublabel">
-          Name one specific action you will take in the next 7 days. Who will you contact? 
-          What will you do? What outcome are you testing? "I'll work on my resume" is not 
-          a commitment. A commitment has a name, a date, and a measurable result.
-        </span>
-        <textarea class="reflection-textarea" id="r-commit"
-          placeholder="Example: I will send three LinkedIn connection requests to commercial insurance professionals at AXA, AIG, and Travelers by Friday. Each message will reference my account management background and ask one specific question about how they entered the field. I'm testing whether targeted outreach generates at least one response..."
-          oninput="countChars(this, 'char-commit')"></textarea>
-        <span class="reflection-char" id="char-commit">0 characters</span>
-      </div>
-
-      <button class="reflection-skip" onclick="skipReflection()">
-        → Skip reflections and continue to submit
-      </button>
-    </div>
-    <div id="ha-reveal-wrap" style="margin-top:40px;"></div>
+        <div id="ha-reveal-wrap" style="margin-top:40px;"></div>
 
     <div class="prelim-note">
       <p>
@@ -984,15 +928,104 @@ main{padding-top:80px;min-height:100vh;}
 
     <div class="btn-row" style="align-items:center;">
       <button class="btn-next" onclick="goTo(10)">
-        Get My Reviewed Score
+        Complete Your Reflection
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
       </button>
     </div>
   </div>
 </div>
 
-<!-- ── STEP 10: CONTACT + SUBMIT ── -->
+
+<!-- ── STEP 10: REFLECTION ── -->
 <div class="step" id="step-10">
+  <div class="dim-header" style="border-left-color:var(--gold);background:var(--gold-dim);">
+    <div class="dim-header-top">
+      <span class="dim-tag" style="color:var(--gold);">Optional — But Worth It</span>
+    </div>
+    <div class="dim-title" style="color:var(--cream);">Catch Your Gold Nuggets</div>
+    <div class="dim-intro" style="color:var(--cream-dim);">
+      The 13 questions give us your score. These three questions give us the full picture — 
+      and often surface strengths, context, and intentions the multiple choice can't capture. 
+      Your reflections may adjust your reviewed score upward. They always improve the quality 
+      of your feedback. Skip any you'd prefer not to answer.
+    </div>
+  </div>
+
+  <div style="padding:6px 0 16px;">
+    <p style="font-size:14px;color:var(--cream-dim);line-height:1.65;font-family:var(--serif);font-style:italic;">
+      Dr. Mangle reads every reflection personally before sending your reviewed score. 
+      Specific answers — company names, programs, certifications, people — are the difference 
+      between a generic response and one that is built specifically for you.
+    </p>
+  </div>
+
+  <!-- Reflection A -->
+  <div class="reflection-field">
+    <label class="reflection-label" for="r-gap">
+      Reflection A — Your Lowest Dimension
+      <span style="font-weight:400;font-size:11px;color:var(--cream-dim);text-transform:none;letter-spacing:0;margin-left:6px;">(optional)</span>
+    </label>
+    <span class="reflection-sublabel">
+      Look at your two lowest-scoring dimensions. What specifically caused that score — 
+      and what is one concrete action you could take in the next 30 days to improve it? 
+      Name a company, program, certification, or person. Vague answers receive vague feedback.
+    </span>
+    <textarea class="reflection-textarea" id="r-gap"
+      placeholder="Example: My Network score is low because I haven't intentionally built relationships in my target field. In the next 30 days I will reach out to three data analysts at AIG on LinkedIn and ask for a 15-minute conversation about how they built their career..."
+      oninput="countChars(this, 'char-gap')"></textarea>
+    <span class="reflection-char" id="char-gap">0 characters — aim for 150+</span>
+  </div>
+
+  <!-- Reflection B -->
+  <div class="reflection-field">
+    <label class="reflection-label" for="r-market">
+      Reflection B — Your Market
+      <span style="font-weight:400;font-size:11px;color:var(--cream-dim);text-transform:none;letter-spacing:0;margin-left:6px;">(optional)</span>
+    </label>
+    <span class="reflection-sublabel">
+      Name one digital trend, technology shift, or competitive threat that will impact 
+      your target field in the next five years. How does your current score position you 
+      relative to that threat? What is one skill you could build this semester to increase 
+      your resilience?
+    </span>
+    <textarea class="reflection-textarea" id="r-market"
+      placeholder="Example: AI-powered underwriting is reducing entry-level roles in commercial insurance. My score of 55 means I have strong work experience but weak technical skills. One thing I can build this semester is basic fluency in loss ratios and exposure reports..."
+      oninput="countChars(this, 'char-market')"></textarea>
+    <span class="reflection-char" id="char-market">0 characters — aim for 150+</span>
+  </div>
+
+  <!-- Reflection C -->
+  <div class="reflection-field">
+    <label class="reflection-label" for="r-commit">
+      Reflection C — Your 7-Day Commitment
+      <span style="font-weight:400;font-size:11px;color:var(--cream-dim);text-transform:none;letter-spacing:0;margin-left:6px;">(optional)</span>
+    </label>
+    <span class="reflection-sublabel">
+      Name one specific action you will take in the next 7 days. Who will you contact? 
+      What will you do? What outcome are you testing? "I'll work on my resume" is not a 
+      commitment. A commitment has a name, a date, and a measurable result.
+    </span>
+    <textarea class="reflection-textarea" id="r-commit"
+      placeholder="Example: I will send LinkedIn connection requests to commercial insurance professionals at AXA, AIG, and Travelers by Friday. Each message will reference my account management background and ask one specific question. I am testing whether targeted outreach generates at least one response..."
+      oninput="countChars(this, 'char-commit')"></textarea>
+    <span class="reflection-char" id="char-commit">0 characters — aim for 150+</span>
+  </div>
+
+  <div class="btn-row">
+    <button class="btn-next" onclick="goTo(11)">
+      Continue to Submit
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+    </button>
+    <button class="btn-back" onclick="goTo(9)">← Back to Score</button>
+  </div>
+  <p style="font-size:12px;color:var(--cream-dim);margin-top:12px;font-style:italic;">
+    Skipping these is fine — your score and submission will be complete without them. 
+    Completing them gives Dr. Mangle the context to write you a better reviewed score.
+  </p>
+</div>
+
+<!-- ── STEP 11: CONTACT + SUBMIT ── -->
+<div class="step" id="step-11">
   <div class="dim-header" style="border-left-color:var(--gold);">
     <div class="dim-header-top">
       <span class="dim-tag">Final Step</span>
@@ -1072,13 +1105,13 @@ main{padding-top:80px;min-height:100vh;}
       Submit for Reviewed Score
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
     </button>
-    <button class="btn-back" onclick="goTo(9)">← Back to Score</button>
+    <button class="btn-back" onclick="goTo(10)">← Back</button>
   </div>
   <div id="submit-error" style="display:none;margin-top:16px;padding:14px 16px;background:var(--red-dim);border-radius:var(--r);font-size:13px;color:#E88888;"></div>
 </div>
 
 <!-- ── STEP 11: THANK YOU ── -->
-<div class="step" id="step-11">
+<div class="step" id="step-12">
   <div class="thankyou">
     <div class="thankyou-icon">🎯</div>
     <h2>SCORE<br><em>locked in</em></h2>
@@ -1170,7 +1203,7 @@ const Q_LABELS = {
 };
 
 const STEP_QS = { 1:['q1','q2','q3'], 2:['q4','q5','q6'], 3:['q7','q8'], 4:['q9','q10'], 5:['q11'], 6:['q12'], 7:['q13'] };
-const TOTAL_STEPS = 11;
+const TOTAL_STEPS = 12;
 
 // ── SCORE CALCULATION ──────────────────────────────────────────
 function calcScore() {
@@ -1231,7 +1264,7 @@ function goTo(step) {
   currentStep = step;
 
   // Progress bar
-  const pct = step === 0 ? 0 : Math.round((Math.min(step, 8) / 9) * 100);
+  const pct = step === 0 ? 0 : Math.round((Math.min(step, 9) / 10) * 100);
   document.getElementById('progress-fill').style.width = pct + '%';
 
   // Running score badge
@@ -1615,7 +1648,7 @@ function submitForm() {
     headers: { 'Accept': 'application/json' }
   }).then(res => {
     if (res.ok) {
-      goTo(11);
+      goTo(12);
     } else {
       btn.textContent = 'Submit for Reviewed Score';
       btn.disabled = false;
