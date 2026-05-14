@@ -1,11 +1,11 @@
 <!DOCTYPE html>
-<html lang="en"><head>
-<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+<html lang="en">
+<head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Get Your Mangle Metric Score — andrewmangle.com</title>
-<link rel="preconnect" href="https://fonts.googleapis.com/">
-<link href="score_files/css2.css" rel="stylesheet">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Instrument+Serif:ital@0;1&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 html{scroll-behavior:smooth;font-size:16px}
@@ -261,7 +261,7 @@ main{padding-top:80px;min-height:100vh;}
 .reflection-skip:hover{color:var(--cream);}
 </style>
 <!-- Google Analytics -->
-<script async="" src="score_files/js"></script>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-C37J449NJP"></script>
 <script>
   window.dataLayer = window.dataLayer || [];
   function gtag(){dataLayer.push(arguments);}
@@ -269,10 +269,10 @@ main{padding-top:80px;min-height:100vh;}
   gtag('config', 'G-C37J449NJP');
 </script>
 </head>
-<body data-new-gr-c-s-check-loaded="8.937.0" data-gr-ext-installed="">
+<body>
 
 <nav>
-  <a href="file:///" class="nav-back">← Back to site</a>
+  <a href="/" class="nav-back">← Back to site</a>
   <div class="nav-logo">Mangle<span>Metric</span></div>
   <div class="nav-score" id="nav-score" style="display:none;">
     <span class="ns-num" id="running-score">0</span>
@@ -360,6 +360,10 @@ main{padding-top:80px;min-height:100vh;}
             <div class="branch-radio"></div>
             <div class="branch-label">Still <strong style="color:var(--cream);">exploring my direction</strong> — not sure what comes after graduation</div>
           </div>
+          <div class="branch-card" data-branch="senior" data-val="entrepreneur" onclick="selectBranch(this)">
+            <div class="branch-radio"></div>
+            <div class="branch-label"><span class="branch-tag">Entrepreneur</span>I am <strong style="color:var(--cream);">self-employed, running a business, or building a venture</strong> — traditional employment metrics may not reflect my actual position</div>
+          </div>
         </div>
       </div>
 
@@ -382,12 +386,16 @@ main{padding-top:80px;min-height:100vh;}
             <div class="branch-radio"></div>
             <div class="branch-label">Still <strong style="color:var(--cream);">figuring out my direction</strong> — graduate school feels like the right next step while I decide</div>
           </div>
+          <div class="branch-card" data-branch="grad" data-val="entrepreneur" onclick="selectBranch(this)">
+            <div class="branch-radio"></div>
+            <div class="branch-label"><span class="branch-tag">Entrepreneur</span>I am <strong style="color:var(--cream);">self-employed or building a business</strong> — my answers reflect entrepreneurial activity, not traditional career pursuit</div>
+          </div>
         </div>
       </div>
     </div>
     <button class="btn-next" id="start-btn" onclick="goTo(1)">
       Start My Assessment
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"></path></svg>
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
     </button>
   </div>
 </div>
@@ -451,9 +459,7 @@ main{padding-top:80px;min-height:100vh;}
 
   <div class="question-block">
     <span class="question-num">Q3</span>
-    <div class="question-text">In your most significant role or 
-experience, what level of ownership did you have? (Hackathon wins, 
-awards, and competition placements count here as applied proof.)</div>
+    <div class="question-text">In your most significant role or experience, what level of ownership did you have? (Hackathon wins, awards, and competition placements count here as applied proof.)</div>
     <div class="options" id="opts-q3">
       <div class="option-card" data-q="q3" data-v="0" onclick="selectOption(this)">
         <div class="option-radio"></div><div class="option-text">No experience or achievements to point to</div>
@@ -475,9 +481,9 @@ awards, and competition placements count here as applied proof.)</div>
   </div>
 
   <div class="btn-row">
-    <button class="btn-next" id="next-1" onclick="goTo(2)" disabled="disabled">
+    <button class="btn-next" id="next-1" onclick="goTo(2)" disabled>
       Next: Career Trajectory
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"></path></svg>
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
     </button>
     <button class="btn-back" onclick="goTo(0)">← Back</button>
   </div>
@@ -560,9 +566,9 @@ awards, and competition placements count here as applied proof.)</div>
   </div>
 
   <div class="btn-row">
-    <button class="btn-next" id="next-2" onclick="goTo(3)" disabled="disabled">
+    <button class="btn-next" id="next-2" onclick="goTo(3)" disabled>
       Next: Skill Marketability
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"></path></svg>
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
     </button>
     <button class="btn-back" onclick="goTo(1)">← Back</button>
   </div>
@@ -581,10 +587,7 @@ awards, and competition placements count here as applied proof.)</div>
 
   <div class="question-block">
     <span class="question-num">Q7</span>
-    <div class="question-text">What skills relevant to your target field
- can you demonstrate with actual work? (Projects, portfolio pieces, 
-certifications, published work, case competition wins, open-source 
-contributions, research.)</div>
+    <div class="question-text">What skills relevant to your target field can you demonstrate with actual work? (Projects, portfolio pieces, certifications, published work, case competition wins, open-source contributions, research.)</div>
     <div class="options" id="opts-q7">
       <div class="option-card" data-q="q7" data-v="0" onclick="selectOption(this)">
         <div class="option-radio"></div><div class="option-text">I can't point to anything specific outside of coursework</div>
@@ -599,9 +602,7 @@ contributions, research.)</div>
         <div><div class="option-pts">8</div><div class="option-pts-label">pts</div></div>
       </div>
       <div class="option-card" data-q="q7" data-v="12" onclick="selectOption(this)">
-        <div class="option-radio"></div><div class="option-text">I have 
-multiple demonstrable outputs — portfolio, publications, competition 
-wins, certifications — I could show an employer today</div>
+        <div class="option-radio"></div><div class="option-text">I have multiple demonstrable outputs — portfolio, publications, competition wins, certifications — I could show an employer today</div>
         <div><div class="option-pts">12</div><div class="option-pts-label">pts</div></div>
       </div>
     </div>
@@ -631,9 +632,9 @@ wins, certifications — I could show an employer today</div>
   </div>
 
   <div class="btn-row">
-    <button class="btn-next" id="next-3" onclick="goTo(4)" disabled="disabled">
+    <button class="btn-next" id="next-3" onclick="goTo(4)" disabled>
       Next: Professionalism
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"></path></svg>
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
     </button>
     <button class="btn-back" onclick="goTo(2)">← Back</button>
   </div>
@@ -675,9 +676,7 @@ wins, certifications — I could show an employer today</div>
 
   <div class="question-block">
     <span class="question-num">Q10</span>
-    <div class="question-text">Think of a professional commitment you 
-made to a professor, employer, or professional contact in the last 90 
-days. What happened?</div>
+    <div class="question-text">Think of a professional commitment you made to a professor, employer, or professional contact in the last 90 days. What happened?</div>
     <div class="options" id="opts-q10">
       <div class="option-card" data-q="q10" data-v="0" onclick="selectOption(this)">
         <div class="option-radio"></div><div class="option-text">I can't think of a professional commitment I've made recently</div>
@@ -698,10 +697,33 @@ days. What happened?</div>
     </div>
   </div>
 
+  <div class="question-block">
+    <span class="question-num">Q10b</span>
+    <div class="question-text">After your last professional interaction — an interview, informational conversation, networking event, or class with a guest speaker — what did you do?</div>
+    <div class="options" id="opts-q10b">
+      <div class="option-card" data-q="q10b" data-v="0" onclick="selectOption(this)">
+        <div class="option-radio"></div><div class="option-text">I haven't had a significant professional interaction recently</div>
+        <div><div class="option-pts">0</div><div class="option-pts-label">pts</div></div>
+      </div>
+      <div class="option-card" data-q="q10b" data-v="1" onclick="selectOption(this)">
+        <div class="option-radio"></div><div class="option-text">I moved on — no follow-up communication</div>
+        <div><div class="option-pts">1</div><div class="option-pts-label">pts</div></div>
+      </div>
+      <div class="option-card" data-q="q10b" data-v="2" onclick="selectOption(this)">
+        <div class="option-radio"></div><div class="option-text">I connected on LinkedIn or sent a brief message</div>
+        <div><div class="option-pts">2</div><div class="option-pts-label">pts</div></div>
+      </div>
+      <div class="option-card" data-q="q10b" data-v="3" onclick="selectOption(this)">
+        <div class="option-radio"></div><div class="option-text">I sent a specific, personalized thank-you or follow-up that referenced something from our conversation</div>
+        <div><div class="option-pts">3</div><div class="option-pts-label">pts</div></div>
+      </div>
+    </div>
+  </div>
+
   <div class="btn-row">
-    <button class="btn-next" id="next-4" onclick="goTo(5)" disabled="disabled">
+    <button class="btn-next" id="next-4" onclick="goTo(5)" disabled>
       Next: Network Capital
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"></path></svg>
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
     </button>
     <button class="btn-back" onclick="goTo(3)">← Back</button>
   </div>
@@ -720,9 +742,7 @@ days. What happened?</div>
 
   <div class="question-block">
     <span class="question-num">Q11</span>
-    <div class="question-text">If you needed a professional reference or
- warm introduction in your target industry today, how many people could 
-you realistically call?</div>
+    <div class="question-text">If you needed a professional reference or warm introduction in your target industry today, how many people could you realistically call?</div>
     <div class="options" id="opts-q11">
       <div class="option-card" data-q="q11" data-v="0" onclick="selectOption(this)">
         <div class="option-radio"></div><div class="option-text">Zero — I don't have professional contacts in my field</div>
@@ -744,9 +764,9 @@ you realistically call?</div>
   </div>
 
   <div class="btn-row">
-    <button class="btn-next" id="next-5" onclick="goTo(6)" disabled="disabled">
+    <button class="btn-next" id="next-5" onclick="goTo(6)" disabled>
       Next: Major ROI
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"></path></svg>
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
     </button>
     <button class="btn-back" onclick="goTo(4)">← Back</button>
   </div>
@@ -787,9 +807,9 @@ you realistically call?</div>
   </div>
 
   <div class="btn-row">
-    <button class="btn-next" id="next-6" onclick="goTo(7)" disabled="disabled">
+    <button class="btn-next" id="next-6" onclick="goTo(7)" disabled>
       Next: Financial Self-Leadership
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"></path></svg>
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
     </button>
     <button class="btn-back" onclick="goTo(5)">← Back</button>
   </div>
@@ -830,9 +850,9 @@ you realistically call?</div>
   </div>
 
   <div class="btn-row">
-    <button class="btn-next" id="next-7" onclick="goTo(8)" disabled="disabled">
+    <button class="btn-next" id="next-7" onclick="goTo(8)" disabled>
       Final Step: Your Evidence
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"></path></svg>
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
     </button>
     <button class="btn-back" onclick="goTo(6)">← Back</button>
   </div>
@@ -845,10 +865,7 @@ you realistically call?</div>
       <span class="dim-tag" style="color:var(--cream-dim);">Evidence &amp; Verification</span>
     </div>
     <div class="dim-title">Back Your Score Up</div>
-    <div class="dim-intro" style="color:var(--cream-dim);">Your 
-preliminary score is calculated from your answers. Your reviewed score 
-is based on what you can actually show. These two fields are where the 
-gap closes — or widens.</div>
+    <div class="dim-intro" style="color:var(--cream-dim);">Your preliminary score is calculated from your answers. Your reviewed score is based on what you can actually show. These two fields are where the gap closes — or widens.</div>
   </div>
 
   <div class="evidence-section">
@@ -891,7 +908,7 @@ gap closes — or widens.</div>
   <div class="btn-row" style="margin-top:40px;">
     <button class="btn-next" onclick="goTo(9)">
       Calculate My Score
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"></path></svg>
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
     </button>
     <button class="btn-back" onclick="goTo(7)">← Back</button>
   </div>
@@ -943,7 +960,7 @@ gap closes — or widens.</div>
     <div class="btn-row" style="align-items:center;">
       <button class="btn-next" onclick="goTo(10)">
         Complete Your Reflection
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"></path></svg>
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
       </button>
     </div>
   </div>
@@ -984,7 +1001,9 @@ gap closes — or widens.</div>
       and what is one concrete action you could take in the next 30 days to improve it? 
       Name a company, program, certification, or person. Vague answers receive vague feedback.
     </span>
-    <textarea class="reflection-textarea" id="r-gap" placeholder="Example: My Network score is low because I haven't intentionally built relationships in my target field. In the next 30 days I will reach out to three data analysts at AIG on LinkedIn and ask for a 15-minute conversation about how they built their career..." oninput="countChars(this, 'char-gap')"></textarea>
+    <textarea class="reflection-textarea" id="r-gap"
+      placeholder="Example: My Network score is low because I haven't intentionally built relationships in my target field. In the next 30 days I will reach out to three data analysts at AIG on LinkedIn and ask for a 15-minute conversation about how they built their career..."
+      oninput="countChars(this, 'char-gap')"></textarea>
     <span class="reflection-char" id="char-gap">0 characters — aim for 150+</span>
   </div>
 
@@ -1000,7 +1019,9 @@ gap closes — or widens.</div>
       relative to that threat? What is one skill you could build this semester to increase 
       your resilience?
     </span>
-    <textarea class="reflection-textarea" id="r-market" placeholder="Example: AI-powered underwriting is reducing entry-level roles in commercial insurance. My score of 55 means I have strong work experience but weak technical skills. One thing I can build this semester is basic fluency in loss ratios and exposure reports..." oninput="countChars(this, 'char-market')"></textarea>
+    <textarea class="reflection-textarea" id="r-market"
+      placeholder="Example: AI-powered underwriting is reducing entry-level roles in commercial insurance. My score of 55 means I have strong work experience but weak technical skills. One thing I can build this semester is basic fluency in loss ratios and exposure reports..."
+      oninput="countChars(this, 'char-market')"></textarea>
     <span class="reflection-char" id="char-market">0 characters — aim for 150+</span>
   </div>
 
@@ -1015,14 +1036,16 @@ gap closes — or widens.</div>
       What will you do? What outcome are you testing? "I'll work on my resume" is not a 
       commitment. A commitment has a name, a date, and a measurable result.
     </span>
-    <textarea class="reflection-textarea" id="r-commit" placeholder="Example: I will send LinkedIn connection requests to commercial insurance professionals at AXA, AIG, and Travelers by Friday. Each message will reference my account management background and ask one specific question. I am testing whether targeted outreach generates at least one response..." oninput="countChars(this, 'char-commit')"></textarea>
+    <textarea class="reflection-textarea" id="r-commit"
+      placeholder="Example: I will send LinkedIn connection requests to commercial insurance professionals at AXA, AIG, and Travelers by Friday. Each message will reference my account management background and ask one specific question. I am testing whether targeted outreach generates at least one response..."
+      oninput="countChars(this, 'char-commit')"></textarea>
     <span class="reflection-char" id="char-commit">0 characters — aim for 150+</span>
   </div>
 
   <div class="btn-row">
     <button class="btn-next" onclick="goTo(11)">
       Continue to Submit
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"></path></svg>
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
     </button>
     <button class="btn-back" onclick="goTo(9)">← Back to Score</button>
   </div>
@@ -1039,20 +1062,18 @@ gap closes — or widens.</div>
       <span class="dim-tag">Final Step</span>
     </div>
     <div class="dim-title">Lock In Your Score</div>
-    <div class="dim-intro">Complete the form below to receive your 
-reviewed Mangle Metric score within 48 hours. Your preliminary score is 
-saved and will be included.</div>
+    <div class="dim-intro">Complete the form below to receive your reviewed Mangle Metric score within 48 hours. Your preliminary score is saved and will be included.</div>
   </div>
 
   <div class="contact-section">
     <div class="contact-grid">
       <div class="field-group">
         <label class="field-label">First &amp; Last Name <span class="req">*</span></label>
-        <input type="text" class="text-input" id="c-name" placeholder="Your full name" required="">
+        <input type="text" class="text-input" id="c-name" placeholder="Your full name" required>
       </div>
       <div class="field-group">
         <label class="field-label">Email Address <span class="req">*</span></label>
-        <input type="email" class="text-input" id="c-email" placeholder="your@email.com" required="">
+        <input type="email" class="text-input" id="c-email" placeholder="your@email.com" required>
       </div>
     </div>
 
@@ -1063,8 +1084,8 @@ saved and will be included.</div>
       </div>
       <div class="field-group">
         <label class="field-label">Current Year <span class="req">*</span></label>
-        <select class="select-input" id="c-year" required="" onchange="handleYearChange(this.value)">
-          <option value="" selected="selected">Select year</option>
+        <select class="select-input" id="c-year" required onchange="handleYearChange(this.value)">
+          <option value="">Select year</option>
           <option>Freshman</option>
           <option>Sophomore</option>
           <option>Junior</option>
@@ -1104,8 +1125,8 @@ saved and will be included.</div>
     <div class="contact-grid single" style="margin-top:16px;">
       <div class="field-group">
         <label class="field-label">How did you hear about the Mangle Metric? <span class="req">*</span></label>
-        <select class="select-input" id="c-source" required="">
-          <option value="" selected="selected">Select one</option>
+        <select class="select-input" id="c-source" required>
+          <option value="">Select one</option>
           <option value="TikTok">TikTok (@MangleMetric)</option>
           <option value="YouTube">YouTube (@MangleMetric)</option>
           <option value="Instagram">Instagram (@MangleMetric)</option>
@@ -1130,7 +1151,7 @@ saved and will be included.</div>
   <div class="btn-row" style="margin-top:28px;">
     <button class="btn-next" id="submit-btn" onclick="submitForm()">
       Submit for Reviewed Score
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"></path></svg>
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
     </button>
     <button class="btn-back" onclick="goTo(10)">← Back</button>
   </div>
@@ -1147,10 +1168,7 @@ saved and will be included.</div>
       <h3>What Happens Next</h3>
       <div class="next-step-item">
         <div class="step-icon">1</div>
-        <div class="step-text"><strong style="color:var(--cream);">Within 48 hours</strong>
- — Dr. Mangle's team reviews your resume and portfolio evidence and 
-sends your reviewed score with a personalized dimension-by-dimension 
-feedback email to the address you provided.</div>
+        <div class="step-text"><strong style="color:var(--cream);">Within 48 hours</strong> — Dr. Mangle's team reviews your resume and portfolio evidence and sends your reviewed score with a personalized dimension-by-dimension feedback email to the address you provided.</div>
       </div>
       <div class="next-step-item">
         <div class="step-icon">2</div>
@@ -1162,16 +1180,13 @@ feedback email to the address you provided.</div>
       </div>
       <div class="next-step-item">
         <div class="step-icon">4</div>
-        <div class="step-text"><strong style="color:var(--cream);">Share your score</strong>
- — "How do you score?" Drop your number on social. Challenge a 
-classmate. The more honest conversations happening on campus, the better
- for everyone.</div>
+        <div class="step-text"><strong style="color:var(--cream);">Share your score</strong> — "How do you score?" Drop your number on social. Challenge a classmate. The more honest conversations happening on campus, the better for everyone.</div>
       </div>
     </div>
     <div style="margin-top:32px;">
-      <a href="file:///" class="btn-next" style="display:inline-flex;text-decoration:none;">
+      <a href="/" class="btn-next" style="display:inline-flex;text-decoration:none;">
         Return to andrewmangle.com
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"></path></svg>
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
       </a>
     </div>
   </div>
@@ -1209,7 +1224,7 @@ classmate. The more honest conversations happening on campus, the better
 <script>
 // ── STATE ──────────────────────────────────────────────────────
 const state = {
-  answers: { q1:null,q2:null,q3:null,q4:null,q5:null,q6:null,q7:null,q8:null,q9:null,q10:null,q11:null,q12:null,q13:null },
+  answers: { q1:null,q2:null,q3:null,q4:null,q5:null,q6:null,q7:null,q8:null,q9:null,q10:null,q10b:null,q11:null,q12:null,q13:null },
   resumeLink: '',
   portfolioLink: '',
   resumeProvided: false,
@@ -1222,7 +1237,7 @@ const DIMS = [
   { id:'d1', label:'Work Experience & Applied Proof',    qs:['q1','q2','q3'], max:25 },
   { id:'d2', label:'Career Trajectory & Strategic Clarity', qs:['q4','q5','q6'], max:20 },
   { id:'d3', label:'Skill Marketability & Demonstrated Output', qs:['q7','q8'], max:18 },
-  { id:'d4', label:'Professionalism & Self-Leadership',  qs:['q9','q10'],    max:15 },
+  { id:'d4', label:'Professionalism & Self-Leadership',  qs:['q9','q10','q10b'], max:18 },
   { id:'d5', label:'Network & Relationship Capital',     qs:['q11'],         max:10 },
   { id:'d6', label:'Major ROI & Field Awareness',        qs:['q12'],         max:7  },
   { id:'d7', label:'Financial Self-Leadership',          qs:['q13'],         max:5  },
@@ -1232,20 +1247,22 @@ const Q_LABELS = {
   q1:'Internships/roles held',q2:'Experience relevance',q3:'Ownership level',
   q4:'Post-grad plan clarity',q5:'90-day concrete steps',q6:'Informational interviews',
   q7:'Demonstrable outputs',q8:'Market demand awareness',
-  q9:'Resume readiness',q10:'Follow-through history',
+  q9:'Resume readiness',q10:'Follow-through history',q10b:'Professional communication follow-up',
   q11:'Professional contacts',q12:'Salary/field awareness',q13:'Financial planning'
 };
 
-const STEP_QS = { 1:['q1','q2','q3'], 2:['q4','q5','q6'], 3:['q7','q8'], 4:['q9','q10'], 5:['q11'], 6:['q12'], 7:['q13'] };
+const STEP_QS = { 1:['q1','q2','q3'], 2:['q4','q5','q6'], 3:['q7','q8'], 4:['q9','q10','q10b'], 5:['q11'], 6:['q12'], 7:['q13'] };
 const TOTAL_STEPS = 12;
 
 // ── SCORE CALCULATION ──────────────────────────────────────────
 function calcScore() {
   const a = state.answers;
   const d1 = (a.q1||0)+(a.q2||0)+(a.q3||0);
-  const d2 = (a.q4||0)+(a.q5||0)+(a.q6||0);
+  const d2base = (a.q4||0)+(a.q5||0)+(a.q6||0);
+  const reflBonus = scoreReflectionQuality();
+  const d2 = d2base + reflBonus;
   const d3 = (a.q7||0)+(a.q8||0);
-  const d4_base = (a.q9||0)+(a.q10||0);
+  const d4_base = (a.q9||0)+(a.q10||0)+(a.q10b||0);
   const d4_deduct = state.resumeProvided ? 0 : 5;
   const d4 = Math.max(0, d4_base - d4_deduct);
   const d5 = (a.q11||0);
@@ -1337,7 +1354,7 @@ function buildScoreReveal() {
 
     // Build radar
     const radarScores  = [s.d1, s.d2, s.d3, s.d4, s.d5, s.d6, s.d7];
-    const radarMaxes   = [25, 20, 18, 15, 10, 7, 5];
+    const radarMaxes   = [25, 20, 18, 18, 10, 7, 5];
     const radarData    = buildRadarSVG(radarScores, radarMaxes, s.total);
     const radarEl      = document.getElementById('radar-container');
     if (radarEl) {
@@ -1367,6 +1384,15 @@ function buildScoreReveal() {
     brows.innerHTML = '';
     const scores = [s.d1,s.d2,s.d3,s.d4,s.d5,s.d6,s.d7];
     const maxScores = [25,20,18,15,10,7,5];
+
+    // Reflection bonus note
+    const reflBonusEarned = scoreReflectionQuality();
+    if (reflBonusEarned > 0) {
+      const rb = document.createElement('div');
+      rb.style.cssText = 'margin-bottom:12px;padding:10px 14px;background:rgba(42,122,74,0.12);border:1px solid rgba(42,122,74,0.3);border-radius:6px;font-size:13px;color:#7ED8A4;';
+      rb.textContent = '✓ Reflection bonus: +' + reflBonusEarned + ' pts added to Career Trajectory for completing your reflection with specificity.';
+      brows.parentNode.insertBefore(rb, brows);
+    }
 
     // Find gold nugget
     let goldIdx = 0, goldPct = 0;
@@ -1410,6 +1436,9 @@ function buildScoreReveal() {
       ctxNote.style.display = 'block';
     } else if (ctx === 'default' || ctx === 'exploring') {
       ctxNote.innerHTML = '<div class="prelim-note" style="background:rgba(22,59,92,0.15);border-color:rgba(22,59,92,0.4);margin-top:16px;"><p><strong style="color:#6EA8D8;">Direction note.</strong> You indicated you are still exploring your path. Your reviewed score feedback will begin with a direction conversation before addressing specific dimension gaps. That is the right starting point.</p></div>';
+      ctxNote.style.display = 'block';
+    } else if (ctx === 'entrepreneur') {
+      ctxNote.innerHTML = '<div class="prelim-note" style="background:rgba(200,146,10,0.08);border-color:var(--gold-border);margin-top:16px;"><p><strong style="color:var(--gold);">Entrepreneur track.</strong> Your score reflects a framework calibrated for traditional employment. As a self-employed or business-building student, your Work Experience, Network, and Career Trajectory scores should be interpreted through an entrepreneurial lens — not a hiring lens. Your reviewed feedback will account for this context.</p></div>';
       ctxNote.style.display = 'block';
     } else if (ctx === 'amplify') {
       ctxNote.innerHTML = '<div class="prelim-note" style="background:var(--green-dim,rgba(42,122,74,0.1));border-color:rgba(42,122,74,0.3);margin-top:16px;"><p><strong style="color:#7ED8A4;">Amplify track.</strong> Your score is interpreted in the context of graduate-level career development. Gaps here are about acceleration and positioning — not survival. Your reviewed feedback reflects that distinction.</p></div>';
@@ -1524,6 +1553,45 @@ function animateRadar(radarData) {
 
 
 
+
+// ── REFLECTION QUALITY SCORING ─────────────────────────────────
+function scoreReflectionQuality() {
+  const rGap    = document.getElementById('r-gap');
+  const rMarket = document.getElementById('r-market');
+  const rCommit = document.getElementById('r-commit');
+  const gapVal    = rGap    ? rGap.value.trim()    : '';
+  const marketVal = rMarket ? rMarket.value.trim()  : '';
+  const commitVal = rCommit ? rCommit.value.trim()  : '';
+
+  // Specificity signals — named entities that indicate depth
+  const specificityWords = [
+    /[A-Z][a-z]+\.[a-z]{2,}/,  // URLs like company.com
+    /\b(AXA|AIG|Google|Microsoft|Deloitte|McKinsey|Amazon|IBM|RIMS|CPCU|AINS|CPA|CFA|PMP|JIRA|Trello|Salesforce|Python|SQL|Tableau|Excel|LinkedIn|GitHub)\b/i,
+    /\b[A-Z][a-z]+ [A-Z][a-z]+\b/,  // Proper names (two capitalized words)
+  ];
+
+  function qualityScore(text) {
+    if (!text || text.length < 50) return 0;
+    if (text.length < 150) return 0.5;
+    let score = 1; // base for 150+ chars
+    // Extra point for specificity signals
+    if (specificityWords.some(re => re.test(text))) score += 0.5;
+    if (text.length > 300) score += 0.5;
+    return Math.min(score, 2);
+  }
+
+  const gapQ   = qualityScore(gapVal);
+  const mktQ   = qualityScore(marketVal);
+  const comQ   = qualityScore(commitVal);
+  const total  = gapQ + mktQ + comQ;
+
+  // Convert to 0-3 bonus points
+  if (total >= 5)   return 3;
+  if (total >= 3.5) return 2;
+  if (total >= 2)   return 1;
+  return 0;
+}
+
 // ── REFLECTION HELPERS ─────────────────────────────────────────
 function countChars(el, counterId) {
   const n = el.value.length;
@@ -1627,7 +1695,9 @@ function submitForm() {
   const name = document.getElementById('c-name').value.trim();
 
   // Populate Formspree fields
-  document.getElementById('fs-subject').value  = `Mangle Metric Submission — ${name} — Score: ${s.total}/100`;
+  const reflQ = scoreReflectionQuality();
+  const reflLabel = reflQ >= 3 ? 'HIGH' : reflQ >= 1 ? 'PARTIAL' : (state.reflectionSkipped ? 'SKIPPED' : 'NOT PROVIDED');
+  document.getElementById('fs-subject').value  = `Mangle Metric Submission — ${name} — Score: ${s.total}/100 — Reflection: ${reflLabel}`;
   document.getElementById('fs-name').value     = name;
   document.getElementById('fs-email').value    = document.getElementById('c-email').value.trim();
   document.getElementById('fs-phone').value    = document.getElementById('c-phone').value.trim();
@@ -1662,7 +1732,7 @@ function submitForm() {
 
   const breakdown = DIMS.map((d,i) => {
     const scores = [s.d1,s.d2,s.d3,s.d4,s.d5,s.d6,s.d7];
-    const maxes  = [25,20,18,15,10,7,5];
+    const maxes  = [25,20,18,18,10,7,5];
     return `${d.label}: ${scores[i]}/${maxes[i]}`;
   }).join(' | ');
   document.getElementById('fs-breakdown').value = breakdown;
@@ -1723,6 +1793,5 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 });
 </script>
-
-
-</body><grammarly-desktop-integration data-grammarly-shadow-root="true"></grammarly-desktop-integration></html>
+</body>
+</html>
