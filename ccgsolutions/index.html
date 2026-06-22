@@ -1,1 +1,790 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CCG Solutions — Software for Finance, Energy & Healthcare Operations</title>
+<meta name="description" content="CCG Solutions builds and supports purpose-built software for finance, energy, and healthcare teams. All-U.S. engineering team. Free demos. Fast customization.">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 24 24%22><rect width=%2224%22 height=%2224%22 rx=%224%22 fill=%22%2311151C%22/><path d=%22M4 16 L9 9 L13 13 L20 6%22 stroke=%22%23C99A3E%22 stroke-width=%222.2%22 fill=%22none%22 stroke-linecap=%22round%22 stroke-linejoin=%22round%22/></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700;800&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
 
+  :root{
+    --ink:#11151C;
+    --ink-soft:#1B2330;
+    --ink-line: rgba(247,246,242,0.14);
+    --paper:#F7F6F2;
+    --paper-dim:#EFECE4;
+    --line: rgba(17,21,28,0.12);
+    --text:#1B2330;
+    --text-muted:#5B6472;
+    --on-dark:#F2F0EA;
+    --on-dark-muted:#9AA3B2;
+    --gold:#C99A3E;
+    --gold-deep:#A87C28;
+    --teal:#2F7E68;
+    --teal-deep:#23624F;
+    --blue:#3A6EA5;
+    --blue-deep:#2C557F;
+    --radius:10px;
+    --max:1180px;
+    --display: 'Archivo', sans-serif;
+    --body: 'Inter', sans-serif;
+    --mono: 'IBM Plex Mono', monospace;
+  }
+
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;
+    font-family:var(--body);
+    color:var(--text);
+    background:var(--paper);
+    line-height:1.55;
+    -webkit-font-smoothing:antialiased;
+  }
+  img,svg{display:block;max-width:100%;}
+  a{color:inherit;}
+  .wrap{max-width:var(--max);margin:0 auto;padding:0 28px;}
+  section{position:relative;}
+  h1,h2,h3,h4{font-family:var(--display);margin:0;line-height:1.08;letter-spacing:-0.01em;}
+  p{margin:0;}
+  ul{margin:0;padding:0;list-style:none;}
+  button{font-family:inherit;cursor:pointer;}
+  :focus-visible{outline:2px solid var(--gold);outline-offset:3px;}
+
+  .eyebrow{
+    font-family:var(--mono);
+    font-size:12px;
+    font-weight:500;
+    letter-spacing:0.14em;
+    text-transform:uppercase;
+  }
+
+  /* ---------- NAV ---------- */
+  header{
+    position:sticky;top:0;z-index:50;
+    background:var(--ink);
+    border-bottom:1px solid transparent;
+    transition:border-color .2s ease, box-shadow .2s ease;
+  }
+  header.scrolled{border-color:var(--ink-line);box-shadow:0 8px 24px rgba(0,0,0,.18);}
+  nav.wrap{
+    display:flex;align-items:center;justify-content:space-between;
+    height:68px;
+  }
+  .logo{
+    display:flex;align-items:center;gap:10px;
+    font-family:var(--display);font-weight:700;font-size:17px;
+    color:var(--on-dark);text-decoration:none;letter-spacing:-0.01em;
+  }
+  .logo .mark{
+    width:28px;height:28px;border-radius:6px;background:var(--gold);
+    display:flex;align-items:center;justify-content:center;
+    color:var(--ink);font-weight:800;font-size:13px;font-family:var(--mono);
+    flex-shrink:0;
+  }
+  .nav-links{display:flex;align-items:center;gap:30px;}
+  .nav-links a{
+    color:var(--on-dark-muted);text-decoration:none;font-size:14px;font-weight:500;
+    transition:color .15s ease;
+  }
+  .nav-links a:hover{color:var(--on-dark);}
+  .nav-cta{
+    background:var(--gold);color:var(--ink);
+    padding:10px 18px;border-radius:8px;font-size:14px;font-weight:600;
+    text-decoration:none;white-space:nowrap;border:none;
+    transition:transform .15s ease, background .15s ease;
+  }
+  .nav-cta:hover{background:#dba94a;transform:translateY(-1px);}
+  .nav-right{display:flex;align-items:center;gap:18px;}
+  .nav-toggle{display:none;background:none;border:none;padding:6px;}
+  .nav-toggle span,.nav-toggle span::before,.nav-toggle span::after{
+    display:block;width:22px;height:2px;background:var(--on-dark);position:relative;
+  }
+  .nav-toggle span::before{content:'';position:absolute;top:-7px;width:22px;height:2px;background:var(--on-dark);}
+  .nav-toggle span::after{content:'';position:absolute;top:7px;width:22px;height:2px;background:var(--on-dark);}
+
+  @media (max-width:860px){
+    .nav-links{
+      position:absolute;top:68px;left:0;right:0;
+      flex-direction:column;align-items:flex-start;gap:0;
+      background:var(--ink-soft);
+      max-height:0;overflow:hidden;
+      transition:max-height .25s ease;
+      border-bottom:1px solid var(--ink-line);
+    }
+    .nav-links.open{max-height:340px;}
+    .nav-links a{width:100%;padding:14px 28px;border-bottom:1px solid var(--ink-line);}
+    .nav-right .nav-cta{display:none;}
+    .nav-toggle{display:block;}
+  }
+
+  /* ---------- HERO ---------- */
+  .hero{
+    background:var(--ink);color:var(--on-dark);
+    padding:88px 0 0;
+    overflow:hidden;
+  }
+  .hero-inner{
+    display:grid;gap:22px;max-width:760px;
+    animation:rise .7s ease both;
+  }
+  .hero .eyebrow{color:var(--gold);margin-bottom:4px;}
+  .hero h1{
+    font-size:clamp(34px,5vw,56px);font-weight:700;color:var(--on-dark);
+  }
+  .hero p.lede{
+    font-size:clamp(16px,2vw,19px);color:var(--on-dark-muted);max-width:600px;
+  }
+  .hero-ctas{display:flex;gap:14px;flex-wrap:wrap;margin-top:6px;}
+  .btn{
+    display:inline-flex;align-items:center;gap:8px;
+    padding:13px 22px;border-radius:8px;font-weight:600;font-size:15px;
+    text-decoration:none;border:1px solid transparent;
+    transition:transform .15s ease, background .15s ease, border-color .15s ease;
+  }
+  .btn-primary{background:var(--gold);color:var(--ink);}
+  .btn-primary:hover{background:#dba94a;transform:translateY(-1px);}
+  .btn-ghost{border-color:rgba(242,240,234,0.3);color:var(--on-dark);}
+  .btn-ghost:hover{border-color:rgba(242,240,234,0.7);}
+
+  @keyframes rise{from{opacity:0;transform:translateY(16px);}to{opacity:1;transform:translateY(0);}}
+
+  /* instrument strip */
+  .strip{
+    margin-top:64px;
+    border-top:1px solid var(--ink-line);
+    background:var(--ink-soft);
+  }
+  .strip-grid{
+    display:grid;grid-template-columns:repeat(4,1fr);
+  }
+  .strip-item{
+    padding:22px 26px;border-right:1px solid var(--ink-line);
+  }
+  .strip-item:last-child{border-right:none;}
+  .strip-num{
+    font-family:var(--mono);font-size:clamp(22px,3vw,30px);font-weight:600;color:var(--gold);
+    display:block;
+  }
+  .strip-label{
+    font-family:var(--mono);font-size:11px;letter-spacing:0.08em;text-transform:uppercase;
+    color:var(--on-dark-muted);margin-top:6px;display:block;
+  }
+  @media (max-width:760px){
+    .strip-grid{grid-template-columns:repeat(2,1fr);}
+    .strip-item{border-bottom:1px solid var(--ink-line);}
+  }
+
+  /* ---------- BADGES BAR ---------- */
+  .badges{padding:54px 0;background:var(--paper);}
+  .badges .eyebrow{color:var(--text-muted);}
+  .badges h2{font-size:22px;margin-top:8px;margin-bottom:26px;font-weight:600;}
+  .badge-row{display:flex;flex-wrap:wrap;gap:10px;}
+  .badge{
+    font-family:var(--mono);font-size:13px;color:var(--text);
+    border:1px solid var(--line);border-radius:999px;padding:8px 16px;
+    background:#fff;
+  }
+
+  /* ---------- INDUSTRY SECTIONS ---------- */
+  .industry{padding:70px 0;}
+  .industry-head{
+    display:flex;align-items:flex-end;justify-content:space-between;gap:24px;
+    margin-bottom:36px;flex-wrap:wrap;
+  }
+  .industry-head .eyebrow{display:flex;align-items:center;gap:8px;}
+  .industry-head .eyebrow .dot{width:8px;height:8px;border-radius:50%;display:inline-block;}
+  .industry-head h2{font-size:clamp(26px,3.4vw,36px);margin-top:8px;max-width:560px;}
+  .industry-head p{color:var(--text-muted);max-width:380px;font-size:15px;padding-top:6px;}
+
+  .card-grid{
+    display:grid;grid-template-columns:repeat(2,1fr);gap:18px;
+  }
+  @media (max-width:760px){.card-grid{grid-template-columns:1fr;}}
+
+  .card{
+    background:#fff;border:1px solid var(--line);border-radius:var(--radius);
+    padding:24px 24px 22px;border-top:3px solid var(--accent);
+    display:flex;flex-direction:column;gap:12px;
+    transition:transform .18s ease, box-shadow .18s ease;
+  }
+  .card:hover{transform:translateY(-3px);box-shadow:0 14px 30px rgba(17,21,28,.08);}
+  .card-top{display:flex;align-items:center;justify-content:space-between;gap:10px;}
+  .card-num{font-family:var(--mono);font-size:12px;color:var(--text-muted);}
+  .card h3{font-size:19px;font-weight:700;}
+  .card .desc{font-size:14.5px;color:var(--text);}
+  .card .solves{font-size:13px;color:var(--text-muted);border-left:2px solid var(--line);padding-left:10px;}
+  .card-cta{
+    margin-top:auto;display:inline-flex;align-items:center;gap:6px;
+    font-size:13.5px;font-weight:600;color:var(--accent-deep);background:none;border:none;padding:0;
+    text-align:left;
+  }
+  .card-cta:hover{text-decoration:underline;}
+
+  .engagement{
+    margin-top:30px;background:var(--paper-dim);border-radius:var(--radius);
+    padding:20px 24px;display:flex;gap:14px;align-items:flex-start;
+  }
+  .engagement .tag{
+    font-family:var(--mono);font-size:11px;letter-spacing:.06em;text-transform:uppercase;
+    color:var(--accent-deep);flex-shrink:0;padding-top:3px;
+  }
+  .engagement p{font-size:14.5px;color:var(--text);}
+  .engagement .note{display:block;margin-top:6px;font-size:12px;color:var(--text-muted);}
+
+  /* accent helpers */
+  .industry.finance{--accent:var(--gold);--accent-deep:var(--gold-deep);}
+  .industry.energy{--accent:var(--teal);--accent-deep:var(--teal-deep);}
+  .industry.medical{--accent:var(--blue);--accent-deep:var(--blue-deep);}
+  .industry.finance .dot{background:var(--gold);}
+  .industry.energy .dot{background:var(--teal);}
+  .industry.medical .dot{background:var(--blue);}
+  .industry.finance .eyebrow,.industry.finance .card-num{color:var(--gold-deep);}
+  .industry.energy .eyebrow,.industry.energy .card-num{color:var(--teal-deep);}
+  .industry.medical .eyebrow,.industry.medical .card-num{color:var(--blue-deep);}
+  .industry.energy{background:var(--paper-dim);}
+
+  /* ---------- WHY CCG ---------- */
+  .why{background:var(--ink);color:var(--on-dark);padding:80px 0;}
+  .why .eyebrow{color:var(--gold);}
+  .why h2{font-size:clamp(26px,3.4vw,34px);margin-top:10px;max-width:620px;}
+  .why-grid{
+    margin-top:44px;display:grid;grid-template-columns:repeat(3,1fr);gap:30px;
+  }
+  @media (max-width:860px){.why-grid{grid-template-columns:1fr;}}
+  .why-item{border-top:1px solid var(--ink-line);padding-top:18px;}
+  .why-item .num{font-family:var(--mono);color:var(--gold);font-size:13px;}
+  .why-item h3{font-size:18px;margin-top:10px;color:var(--on-dark);}
+  .why-item p{margin-top:10px;color:var(--on-dark-muted);font-size:14.5px;}
+
+  /* ---------- CUSTOMIZATION BANNER ---------- */
+  .custom-banner{
+    background:var(--paper);padding:64px 0;
+  }
+  .custom-card{
+    background:#fff;border:1px solid var(--line);border-radius:14px;
+    padding:42px;display:flex;align-items:center;justify-content:space-between;gap:30px;
+    flex-wrap:wrap;
+  }
+  .custom-card h2{font-size:clamp(22px,3vw,28px);max-width:520px;}
+  .custom-card p{margin-top:10px;color:var(--text-muted);max-width:520px;font-size:15px;}
+  .custom-card .btn-primary{flex-shrink:0;}
+
+  /* ---------- DEMO FORM ---------- */
+  .demo{background:var(--paper-dim);padding:80px 0;}
+  .demo-grid{display:grid;grid-template-columns:1fr 1.2fr;gap:50px;}
+  @media (max-width:900px){.demo-grid{grid-template-columns:1fr;}}
+  .demo-info .eyebrow{color:var(--gold-deep);}
+  .demo-info h2{font-size:clamp(26px,3.4vw,32px);margin-top:10px;}
+  .demo-info p{margin-top:14px;color:var(--text-muted);font-size:15px;max-width:380px;}
+  .demo-info ul{margin-top:26px;display:grid;gap:12px;}
+  .demo-info li{display:flex;gap:10px;font-size:14.5px;color:var(--text);}
+  .demo-info li svg{flex-shrink:0;margin-top:2px;}
+
+  form.demo-form{
+    background:#fff;border:1px solid var(--line);border-radius:14px;padding:32px;
+    display:grid;gap:16px;
+  }
+  .field{display:grid;gap:6px;}
+  .field label{font-size:13px;font-weight:600;color:var(--text);}
+  .field input,.field select,.field textarea{
+    font-family:var(--body);font-size:14.5px;color:var(--text);
+    padding:11px 13px;border:1px solid var(--line);border-radius:8px;background:var(--paper);
+    width:100%;
+  }
+  .field textarea{resize:vertical;min-height:90px;}
+  .field input:focus,.field select:focus,.field textarea:focus{
+    outline:none;border-color:var(--gold-deep);box-shadow:0 0 0 3px rgba(201,154,62,0.18);
+  }
+  .field-row{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
+  @media (max-width:520px){.field-row{grid-template-columns:1fr;}}
+  .submit-row{display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin-top:4px;}
+  .submit-note{font-size:12.5px;color:var(--text-muted);}
+  .form-status{font-size:13.5px;font-weight:600;}
+  .form-status.ok{color:var(--teal-deep);}
+  .form-status.err{color:#A4453A;}
+
+  /* ---------- FOOTER ---------- */
+  footer{background:var(--ink);color:var(--on-dark-muted);padding:50px 0 30px;}
+  .footer-top{
+    display:flex;justify-content:space-between;align-items:flex-start;gap:30px;flex-wrap:wrap;
+    padding-bottom:30px;border-bottom:1px solid var(--ink-line);
+  }
+  .footer-links{display:flex;gap:26px;flex-wrap:wrap;}
+  .footer-links a{color:var(--on-dark-muted);text-decoration:none;font-size:13.5px;}
+  .footer-links a:hover{color:var(--on-dark);}
+  .footer-bottom{
+    display:flex;justify-content:space-between;gap:14px;flex-wrap:wrap;
+    padding-top:22px;font-size:12.5px;
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    html{scroll-behavior:auto;}
+    *{animation-duration:0.001ms !important;transition-duration:0.001ms !important;}
+  }
+</style>
+</head>
+<body>
+
+<header id="site-header">
+  <nav class="wrap">
+    <a href="#top" class="logo"><span class="mark">CCG</span> CCG Solutions</a>
+    <div class="nav-right">
+      <button class="nav-toggle" id="navToggle" aria-label="Toggle navigation" aria-expanded="false"><span></span></button>
+      <ul class="nav-links" id="navLinks">
+        <li><a href="#finance">Finance</a></li>
+        <li><a href="#energy">Energy</a></li>
+        <li><a href="#medical">Healthcare</a></li>
+        <li><a href="#why">Why CCG</a></li>
+        <li><a href="#demo">Request a demo</a></li>
+      </ul>
+      <a href="#demo" class="nav-cta">Request a demo</a>
+    </div>
+  </nav>
+</header>
+
+<main id="top">
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="wrap hero-inner">
+      <span class="eyebrow">Software for regulated industries</span>
+      <h1>Manual compliance work doesn't scale. Your software should.</h1>
+      <p class="lede">CCG Solutions builds and supports purpose-built software for finance, energy, and healthcare teams who are done running critical workflows out of spreadsheets and email threads.</p>
+      <div class="hero-ctas">
+        <a href="#solutions" class="btn btn-primary">See all 12 solutions</a>
+        <a href="#demo" class="btn btn-ghost">Request a free demo</a>
+      </div>
+    </div>
+
+    <div class="strip">
+      <div class="wrap strip-grid">
+        <div class="strip-item">
+          <span class="strip-num" data-count="12">0</span>
+          <span class="strip-label">Modules in production</span>
+        </div>
+        <div class="strip-item">
+          <span class="strip-num" data-count="3">0</span>
+          <span class="strip-label">Regulated industries</span>
+        </div>
+        <div class="strip-item">
+          <span class="strip-num" data-count="100" data-suffix="%">0%</span>
+          <span class="strip-label">U.S.-based team</span>
+        </div>
+        <div class="strip-item">
+          <span class="strip-num-static">2&ndash;4 wks</span>
+          <span class="strip-label">Typical customization</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- BADGES -->
+  <section class="badges" id="solutions">
+    <div class="wrap">
+      <span class="eyebrow">Built for compliance-first teams</span>
+      <h2>The teams already running on CCG modules</h2>
+      <div class="badge-row">
+        <span class="badge">RIAs &amp; broker-dealers</span>
+        <span class="badge">Community banks &amp; credit unions</span>
+        <span class="badge">Mid-market asset managers</span>
+        <span class="badge">Mid-size finance teams</span>
+        <span class="badge">Commercial property managers</span>
+        <span class="badge">Solar O&amp;M operators</span>
+        <span class="badge">Energy brokers &amp; manufacturers</span>
+        <span class="badge">Specialty clinics</span>
+        <span class="badge">Ambulatory surgical centers</span>
+        <span class="badge">Group medical practices</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- FINANCE -->
+  <section class="industry finance" id="finance">
+    <div class="wrap">
+      <div class="industry-head">
+        <div>
+          <span class="eyebrow"><span class="dot"></span>Finance</span>
+          <h2>Compliance and risk tools for lenders, advisors, and finance teams</h2>
+        </div>
+        <p>Regulated finance teams spend more time documenting decisions than making them. These modules turn manual review into a system your auditors and examiners can trust.</p>
+      </div>
+
+      <div class="card-grid">
+        <article class="card">
+          <div class="card-top"><span class="card-num">MODULE 01</span></div>
+          <h3>AuditLine</h3>
+          <p class="desc">Builds SEC-ready audit trails directly from your email, calendar, and trade data, so documentation stops being a quarterly fire drill.</p>
+          <p class="solves">Solves: manual compliance documentation for RIAs and broker-dealers under $500M AUM.</p>
+          <button class="card-cta" onclick="requestDemo('AuditLine')">Request a demo of AuditLine &rarr;</button>
+        </article>
+
+        <article class="card">
+          <div class="card-top"><span class="card-num">MODULE 02</span></div>
+          <h3>LedgerSight</h3>
+          <p class="desc">Connects to borrower bank feeds and produces rolling 90-day cash flow projections loan officers can act on, not stale tax returns.</p>
+          <p class="solves">Solves: underwriting decisions based on outdated financials at community banks and credit unions.</p>
+          <button class="card-cta" onclick="requestDemo('LedgerSight')">Request a demo of LedgerSight &rarr;</button>
+        </article>
+
+        <article class="card">
+          <div class="card-top"><span class="card-num">MODULE 03</span></div>
+          <h3>ESG Ledger</h3>
+          <p class="desc">Pulls public ESG signals into investor-ready reports, without an enterprise data contract.</p>
+          <p class="solves">Solves: ESG reporting requirements for mid-market asset managers without enterprise budgets.</p>
+          <button class="card-cta" onclick="requestDemo('ESG Ledger')">Request a demo of ESG Ledger &rarr;</button>
+        </article>
+
+        <article class="card">
+          <div class="card-top"><span class="card-num">MODULE 04</span></div>
+          <h3>PayGuard</h3>
+          <p class="desc">Flags anomalous ACH and wire patterns before they clear, layered on top of your existing accounting system.</p>
+          <p class="solves">Solves: business email compromise and vendor payment fraud for mid-size finance teams.</p>
+          <button class="card-cta" onclick="requestDemo('PayGuard')">Request a demo of PayGuard &rarr;</button>
+        </article>
+      </div>
+
+      <div class="engagement">
+        <span class="tag">In the field</span>
+        <div>
+          <p>A four-advisor RIA cut audit prep from roughly three weeks to three days after routing client communications through AuditLine automatically.</p>
+          <span class="note">Representative outcome based on engagements within this industry, not a specific named client.</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ENERGY -->
+  <section class="industry energy" id="energy">
+    <div class="wrap">
+      <div class="industry-head">
+        <div>
+          <span class="eyebrow"><span class="dot"></span>Energy</span>
+          <h2>Operational tools for energy buyers and field teams</h2>
+        </div>
+        <p>Energy costs and maintenance schedules get managed in spreadsheets far longer than they should. These modules catch what spreadsheets miss.</p>
+      </div>
+
+      <div class="card-grid">
+        <article class="card">
+          <div class="card-top"><span class="card-num">MODULE 05</span></div>
+          <h3>BillWatch</h3>
+          <p class="desc">Reads incoming utility bills automatically and flags overbilling, rate misclassification, and meter errors before you pay them.</p>
+          <p class="solves">Solves: overpayment across portfolios of 10 to 50+ commercial properties.</p>
+          <button class="card-cta" onclick="requestDemo('BillWatch')">Request a demo of BillWatch &rarr;</button>
+        </article>
+
+        <article class="card">
+          <div class="card-top"><span class="card-num">MODULE 06</span></div>
+          <h3>ProcureGrid</h3>
+          <p class="desc">Models and compares 12 to 36 month supply contracts across deregulated markets side by side.</p>
+          <p class="solves">Solves: comparing competitive electricity contracts without an in-house trading desk.</p>
+          <button class="card-cta" onclick="requestDemo('ProcureGrid')">Request a demo of ProcureGrid &rarr;</button>
+        </article>
+
+        <article class="card">
+          <div class="card-top"><span class="card-num">MODULE 07</span></div>
+          <h3>RECTrack</h3>
+          <p class="desc">Tracks, verifies, and retires renewable energy certificates in one place, instead of a shared spreadsheet nobody fully trusts.</p>
+          <p class="solves">Solves: voluntary sustainability commitment tracking for mid-size companies.</p>
+          <button class="card-cta" onclick="requestDemo('RECTrack')">Request a demo of RECTrack &rarr;</button>
+        </article>
+
+        <article class="card">
+          <div class="card-top"><span class="card-num">MODULE 08</span></div>
+          <h3>FieldCycle</h3>
+          <p class="desc">Mobile-first scheduling for inverter checks, cleaning rotations, and warranty tracking across distributed solar sites.</p>
+          <p class="solves">Solves: O&amp;M operators running sub-50MW solar portfolios on email and spreadsheets.</p>
+          <button class="card-cta" onclick="requestDemo('FieldCycle')">Request a demo of FieldCycle &rarr;</button>
+        </article>
+      </div>
+
+      <div class="engagement">
+        <span class="tag">In the field</span>
+        <div>
+          <p>A regional O&amp;M operator managing 35 solar sites eliminated missed maintenance windows within the first quarter of switching to FieldCycle.</p>
+          <span class="note">Representative outcome based on engagements within this industry, not a specific named client.</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- MEDICAL -->
+  <section class="industry medical" id="medical">
+    <div class="wrap">
+      <div class="industry-head">
+        <div>
+          <span class="eyebrow"><span class="dot"></span>Healthcare</span>
+          <h2>Administrative tools for clinics and group practices</h2>
+        </div>
+        <p>Clinical staff lose hours a day to administrative work that has nothing to do with patient care. These modules sit on top of your existing EMR, not in place of it.</p>
+      </div>
+
+      <div class="card-grid">
+        <article class="card">
+          <div class="card-top"><span class="card-num">MODULE 09</span></div>
+          <h3>AuthFlow</h3>
+          <p class="desc">Preps authorization documentation, tracks payer status, and alerts your team before a delay turns into a denied claim.</p>
+          <p class="solves">Solves: prior authorization burden at specialty clinics whose EMR wasn't built for it.</p>
+          <button class="card-cta" onclick="requestDemo('AuthFlow')">Request a demo of AuthFlow &rarr;</button>
+        </article>
+
+        <article class="card">
+          <div class="card-top"><span class="card-num">MODULE 10</span></div>
+          <h3>CredWatch</h3>
+          <p class="desc">A compliance calendar that tracks license, DEA, and payer credentialing dates so nothing lapses without warning.</p>
+          <p class="solves">Solves: revenue loss from credentialing gaps at multi-provider group practices.</p>
+          <button class="card-cta" onclick="requestDemo('CredWatch')">Request a demo of CredWatch &rarr;</button>
+        </article>
+
+        <article class="card">
+          <div class="card-top"><span class="card-num">MODULE 11</span></div>
+          <h3>ShowSure</h3>
+          <p class="desc">Flags high-risk no-shows 48 to 72 hours out using appointment history, insurance type, and demographics.</p>
+          <p class="solves">Solves: day-of cancellations that quietly drain ambulatory surgical center revenue.</p>
+          <button class="card-cta" onclick="requestDemo('ShowSure')">Request a demo of ShowSure &rarr;</button>
+        </article>
+
+        <article class="card">
+          <div class="card-top"><span class="card-num">MODULE 12</span></div>
+          <h3>VitalsBrief</h3>
+          <p class="desc">Turns raw glucose, blood pressure, and weight device streams into a one-page daily digest with outliers flagged.</p>
+          <p class="solves">Solves: physician overload from unfiltered remote patient monitoring data.</p>
+          <button class="card-cta" onclick="requestDemo('VitalsBrief')">Request a demo of VitalsBrief &rarr;</button>
+        </article>
+      </div>
+
+      <div class="engagement">
+        <span class="tag">In the field</span>
+        <div>
+          <p>A twelve-provider dermatology group recovered an estimated 14 staff hours a week after automating prior authorization with AuthFlow.</p>
+          <span class="note">Representative outcome based on engagements within this industry, not a specific named client.</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- WHY CCG -->
+  <section class="why" id="why">
+    <div class="wrap">
+      <span class="eyebrow">Why CCG Solutions</span>
+      <h2>Built by people who've shipped software in regulated industries for two decades</h2>
+
+      <div class="why-grid">
+        <div class="why-item">
+          <span class="num">01</span>
+          <h3>An all-U.S. team</h3>
+          <p>Every engineer, analyst, and support contact is based in the United States. No offshore handoffs, no time zone gap on a compliance question that can't wait.</p>
+        </div>
+        <div class="why-item">
+          <span class="num">02</span>
+          <h3>Deep regulated-industry experience</h3>
+          <p>Our team holds active security and project management certifications and has spent close to two decades building and securing software for finance, energy, and healthcare organizations.</p>
+        </div>
+        <div class="why-item">
+          <span class="num">03</span>
+          <h3>Complete solutions, not a starting point</h3>
+          <p>Every module ships ready to use. If your workflow doesn't match exactly, we customize on a fixed, reasonable timeline instead of a multi-quarter enterprise build.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CUSTOMIZATION BANNER -->
+  <section class="custom-banner">
+    <div class="wrap">
+      <div class="custom-card">
+        <div>
+          <h2>Don't see exactly what you need?</h2>
+          <p>Every module on this site started as a focused build for one team's exact workflow. Tell us what your process looks like and we'll scope a fixed-timeline customization, typically 2 to 4 weeks for a well-defined request.</p>
+        </div>
+        <a href="#demo" class="btn btn-primary">Talk to an engineer</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- DEMO FORM -->
+  <section class="demo" id="demo">
+    <div class="wrap demo-grid">
+      <div class="demo-info">
+        <span class="eyebrow">Get started</span>
+        <h2>Get a free, no-pressure demo</h2>
+        <p>Tell us which module fits, or describe what you're dealing with and we'll point you to the right one, or scope something custom.</p>
+        <ul>
+          <li>
+            <svg width="16" height="16" viewBox="0 0 16 16"><path d="M2 8.5 L6 12.5 L14 3.5" stroke="#C99A3E" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            We respond within one business day
+          </li>
+          <li>
+            <svg width="16" height="16" viewBox="0 0 16 16"><path d="M2 8.5 L6 12.5 L14 3.5" stroke="#C99A3E" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            No contracts, no obligation to continue
+          </li>
+          <li>
+            <svg width="16" height="16" viewBox="0 0 16 16"><path d="M2 8.5 L6 12.5 L14 3.5" stroke="#C99A3E" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            Walkthrough with an engineer, not a sales script
+          </li>
+        </ul>
+      </div>
+
+      <form class="demo-form" id="demoForm" action="https://formspree.io/f/xjgqvqyg" method="POST">
+        <div class="field-row">
+          <div class="field">
+            <label for="name">Full name</label>
+            <input type="text" id="name" name="name" required>
+          </div>
+          <div class="field">
+            <label for="company">Company</label>
+            <input type="text" id="company" name="company" required>
+          </div>
+        </div>
+        <div class="field">
+          <label for="email">Work email</label>
+          <input type="email" id="email" name="email" required>
+        </div>
+        <div class="field">
+          <label for="module">Which module are you interested in?</label>
+          <select id="module" name="module">
+            <option value="Not sure / something custom">Not sure / something custom</option>
+            <option value="AuditLine">AuditLine — audit trail automation</option>
+            <option value="LedgerSight">LedgerSight — cash flow forecasting</option>
+            <option value="ESG Ledger">ESG Ledger — ESG data aggregation</option>
+            <option value="PayGuard">PayGuard — payment fraud detection</option>
+            <option value="BillWatch">BillWatch — utility bill audit</option>
+            <option value="ProcureGrid">ProcureGrid — energy procurement comparison</option>
+            <option value="RECTrack">RECTrack — REC tracking</option>
+            <option value="FieldCycle">FieldCycle — maintenance scheduling</option>
+            <option value="AuthFlow">AuthFlow — prior auth automation</option>
+            <option value="CredWatch">CredWatch — credentialing tracking</option>
+            <option value="ShowSure">ShowSure — no-show prediction</option>
+            <option value="VitalsBrief">VitalsBrief — RPM summarization</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="message">What are you trying to solve?</label>
+          <textarea id="message" name="message" placeholder="A sentence or two is plenty."></textarea>
+        </div>
+        <div class="submit-row">
+          <button type="submit" class="btn btn-primary">Request my free demo</button>
+          <span class="submit-note">We respond within one business day.</span>
+        </div>
+        <p class="form-status" id="formStatus" role="status" aria-live="polite"></p>
+      </form>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  <div class="wrap">
+    <div class="footer-top">
+      <a href="#top" class="logo"><span class="mark">CCG</span> CCG Solutions</a>
+      <ul class="footer-links">
+        <li><a href="#finance">Finance</a></li>
+        <li><a href="#energy">Energy</a></li>
+        <li><a href="#medical">Healthcare</a></li>
+        <li><a href="#why">Why CCG</a></li>
+        <li><a href="#demo">Request a demo</a></li>
+      </ul>
+    </div>
+    <div class="footer-bottom">
+      <span>CCG Solutions &mdash; software for finance, energy, and healthcare. Built and supported entirely in the United States.</span>
+      <span>&copy; 2026 CCG Solutions.</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+  // Header shadow on scroll
+  const header = document.getElementById('site-header');
+  window.addEventListener('scroll', () => {
+    header.classList.toggle('scrolled', window.scrollY > 8);
+  });
+
+  // Mobile nav toggle
+  const navToggle = document.getElementById('navToggle');
+  const navLinks = document.getElementById('navLinks');
+  navToggle.addEventListener('click', () => {
+    const isOpen = navLinks.classList.toggle('open');
+    navToggle.setAttribute('aria-expanded', isOpen);
+  });
+  navLinks.querySelectorAll('a').forEach(a => a.addEventListener('click', () => {
+    navLinks.classList.remove('open');
+    navToggle.setAttribute('aria-expanded', 'false');
+  }));
+
+  // Count-up animation for the instrument strip
+  const counters = document.querySelectorAll('[data-count]');
+  let counted = false;
+  function runCounters(){
+    if(counted) return;
+    counted = true;
+    counters.forEach(el => {
+      const target = parseInt(el.getAttribute('data-count'), 10);
+      const suffix = el.getAttribute('data-suffix') || '';
+      const duration = 900;
+      const start = performance.now();
+      function tick(now){
+        const progress = Math.min((now - start) / duration, 1);
+        const value = Math.floor(progress * target);
+        el.textContent = value + suffix;
+        if(progress < 1) requestAnimationFrame(tick);
+      }
+      requestAnimationFrame(tick);
+    });
+  }
+  const strip = document.querySelector('.strip');
+  if('IntersectionObserver' in window && strip){
+    const obs = new IntersectionObserver((entries) => {
+      entries.forEach(entry => { if(entry.isIntersecting) runCounters(); });
+    }, {threshold:0.4});
+    obs.observe(strip);
+  } else {
+    runCounters();
+  }
+
+  // Pre-select a module and jump to the form
+  function requestDemo(moduleName){
+    const select = document.getElementById('module');
+    if(select){
+      for(const opt of select.options){
+        if(opt.value === moduleName){ select.value = moduleName; break; }
+      }
+    }
+    document.getElementById('demo').scrollIntoView({behavior:'smooth'});
+    setTimeout(() => document.getElementById('name').focus(), 500);
+  }
+
+  // AJAX submit to Formspree so visitors stay on the page
+  const form = document.getElementById('demoForm');
+  const statusEl = document.getElementById('formStatus');
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    statusEl.textContent = 'Sending...';
+    statusEl.className = 'form-status';
+    try{
+      const response = await fetch(form.action, {
+        method: 'POST',
+        body: new FormData(form),
+        headers: {'Accept':'application/json'}
+      });
+      if(response.ok){
+        form.reset();
+        statusEl.textContent = "Thanks, that's in. We'll be in touch within one business day.";
+        statusEl.className = 'form-status ok';
+      } else {
+        statusEl.textContent = 'Something went wrong sending that. Please try again or email us directly.';
+        statusEl.className = 'form-status err';
+      }
+    } catch(err){
+      statusEl.textContent = 'Something went wrong sending that. Please try again or email us directly.';
+      statusEl.className = 'form-status err';
+    }
+  });
+</script>
+
+</body>
+</html>
