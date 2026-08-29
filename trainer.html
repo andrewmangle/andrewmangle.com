@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Hi-Lo Count & Strategy Trainer</title>
+<style>
+  :root{
+    --bg:#0f1a14; --panel:#16261d; --panel2:#1d3226; --border:#2c4636;
+    --text:#eaf2ec; --muted:#93a99c; --accent:#4fae7d; --red:#d9534f;
+    --amber:#e0a94b; --blue:#5b9bd9;
+  }
+  *{box-sizing:border-box;}
+  body{background:var(--bg);color:var(--text);font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif;margin:0;padding:24px;}
+  .wrap{max-width:760px;margin:0 auto;}
+  h1{font-size:20px;font-weight:600;margin:0 0 4px;}
+  .sub{color:var(--muted);font-size:13px;margin-bottom:20px;}
+  .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:18px;}
+  .stat{background:var(--panel);border:1px solid var(--border);border-radius:10px;padding:10px 12px;}
+  .stat .label{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.03em;}
+  .stat .val{font-size:20px;font-weight:600;margin-top:2px;}
+  .shoe{font-size:12px;color:var(--muted);margin-bottom:18px;}
+  .card-row{display:flex;gap:8px;flex-wrap:wrap;margin:14px 0;min-height:74px;}
+  .card{width:48px;height:68px;border-radius:6px;background:#fff;color:#111;display:flex;flex-direction:column;align-items:center;justify-content:center;font-weight:700;font-size:17px;border:1px solid #ccc;}
+  .card.red{color:#c0392b;}
+  .card.back{background:repeating-linear-gradient(45deg,var(--panel2),var(--panel2) 6px,#254938 6px,#254938 12px);}
+  .dealer-label,.player-label{font-size:12px;color:var(--muted);margin-top:10px;}
+  .panel{background:var(--panel);border:1px solid var(--border);border-radius:12px;padding:18px 20px;margin-bottom:16px;}
+  input[type=number]{background:#0c1712;border:1px solid var(--border);color:var(--text);border-radius:6px;padding:8px 10px;font-size:15px;width:100px;}
+  button{background:var(--panel2);color:var(--text);border:1px solid var(--border);border-radius:8px;padding:9px 16px;font-size:14px;cursor:pointer;margin:4px 6px 4px 0;}
+  button:hover{border-color:var(--accent);}
+  button.primary{background:var(--accent);border-color:var(--accent);color:#08130d;font-weight:600;}
+  button.primary:hover{opacity:.9;}
+  .row{display:flex;align-items:center;gap:10px;flex-wrap:wrap;}
+  .error{color:var(--red);font-size:13px;margin-top:6px;}
+  .feedback{border-radius:10px;padding:14px 16px;margin-top:14px;font-size:14px;line-height:1.5;}
+  .feedback.correct{background:rgba(79,174,125,.12);border:1px solid var(--accent);}
+  .feedback.wrong{background:rgba(217,83,79,.12);border:1px solid var(--red);}
+  .toggle{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--muted);margin-bottom:10px;}
+  .toggle input{width:auto;}
+  .hidden{display:none;}
+  .badge{display:inline-block;font-size:11px;padding:2px 8px;border-radius:20px;background:var(--panel2);color:var(--amber);margin-left:8px;}
+  .btnrow button{min-width:80px;}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Hi-Lo count & strategy trainer</h1>
+  <div class="sub">8-deck shoe, 75% penetration, dealer hits soft 17, blackjack pays 3:2, double after split, surrender on 15v10 / 16v9 / 16v10 / 16vA only.</div>
+
+  <div class="stats">
+    <div class="stat"><div class="label">Count accuracy</div><div class="val" id="statCount">--</div></div>
+    <div class="stat"><div class="label">Strategy accuracy</div><div class="val" id="statStrat">--</div></div>
+    <div class="stat"><div class="label">Deviation accuracy</div><div class="val" id="statDev">--</div></div>
+    <div class="stat"><div class="label">Hands played</div><div class="val" id="statHands">0</div></div>
+  </div>
+
+  <div class="toggle">
+    <input type="checkbox" id="feedbackToggle" checked>
+    <label for="feedbackToggle">Show detailed feedback (index / true count that triggered a deviation)</label>
+  </div>
+
+  <div class="shoe" id="shoeInfo"></div>
+
+  <div class="panel" id="dealArea">
+    <div class="dealer-label">Dealer</div>
+    <div class="card-row" id="dealerCards"></div>
+    <div class="player-label">You</div>
+    <div class="card-row" id="playerCards"></div>
+  </div>
+
+  <div class="panel" id="countPanel">
+    <div class="row">
+      <label for="rcInput">Running count right now:</label>
+      <input type="number" id="rcInput" step="1">
+      <label for="tcInput">True count right now:</label>
+      <input type="number" id="tcInput" step="0.5">
+      <button class="primary" id="submitCountBtn">Submit count</button>
+    </div>
+    <div class="error hidden" id="countError"></div>
+  </div>
+
+  <div class="panel hidden" id="actionPanel">
+    <div id="handSummary" style="margin-bottom:10px;font-size:14px;color:var(--muted);"></div>
+    <div class="row btnrow" id="actionButtons"></div>
+    <div class="error hidden" id="actionError"></div>
+  </div>
+
+  <div id="feedbackArea"></div>
+
+  <div class="panel hidden" id="nextPanel">
+    <button class="primary" id="nextHandBtn">Deal next hand ↗</button>
+  </div>
+</div>
+
+<script>
+const RANKS = ['2','3','4','5','6','7','8','9','10','J','Q','K','A'];
+const SUITS = ['♠','♥','♦','♣'];
+const DECKS = 8;
+const PEN = 0.75;
+const TOTAL_CARDS = DECKS*52;
+
+let shoe = [];
+let cardsUsed = 0;
+let runningCount = 0;
+
+let stats = {countCorrect:0,countTotal:0,stratCorrect:0,stratTotal:0,devCorrect:0,devTotal:0,hands:0};
+
+function buildShoe(){
+  shoe = [];
+  for(let d=0; d<DECKS; d++){
+    for(const s of SUITS){
+      for(const r of RANKS){
+        shoe.push({r,s});
+      }
+    }
+  }
+  for(let i=shoe.length-1;i>0;i--){
+    const j = Math.floor(Math.random()*(i+1));
+    [shoe[i],shoe[j]] = [shoe[j],shoe[i]];
+  }
+  cardsUsed = 0;
+  runningCount = 0;
+}
+
+function hiLoValue(r){
+  if(['2','3','4','5','6'].includes(r)) return 1;
+  if(['7','8','9'].includes(r)) return 0;
+  return -1;
+}
+
+function drawCard(){
+  if(shoe.length===0) buildShoe();
+  const c = shoe.pop();
+  cardsUsed++;
+  runningCount += hiLoValue(c.r);
+  return c;
+}
+
+function cardValue(r){
+  if(r==='A') return 11;
+  if(['10','J','Q','K'].includes(r)) return 10;
+  return parseInt(r,10);
+}
+
+function handInfo(cards){
+  let total = 0, aces = 0;
+  for(const c of cards){ total += cardValue(c.r); if(c.r==='A') aces++; }
+  let soft = false;
+  while(total>21 && aces>0){ total -= 10; aces--; }
+  if(aces>0 && total<=21) soft = true;
+  const isPair = cards.length===2 && cards[0].r===cards[1].r;
+  return {total, isSoft: soft, isPair, pairRank: isPair?cards[0].r:null};
+}
+
+function decksRemaining(){
+  return Math.max((TOTAL_CARDS - cardsUsed)/52, 0.25);
+}
+function trueCount(){
+  return runningCount/decksRemaining();
+}
+
+// ---- strategy tables ----
+// dealer keys 2-9,'10','A'
+function idx(base,dev,tc,op){ return {base,dev,tc,op}; }
+
+const hard = {
+  17:{2:'S',3:'S',4:'S',5:'S',6:'S',7:'S',8:'S',9:'S',10:'S','A':'S'},
+  16:{2:'S',3:'S',4:'S',5:'S',6:'S',7:'H',8:'H',9:idx('R','S',5,'>='),10:idx('R','S',0,'>='),'A':'R'},
+  15:{2:'S',3:'S',4:'S',5:'S',6:'S',7:'H',8:'H',9:'H',10:idx('R','S',4,'>='),'A':'H'},
+  14:{2:'S',3:'S',4:'S',5:'S',6:'S',7:'H',8:'H',9:'H',10:'H','A':'H'},
+  13:{2:idx('S','H',-1,'<='),3:idx('S','H',-2,'<='),4:'S',5:'S',6:'S',7:'H',8:'H',9:'H',10:'H','A':'H'},
+  12:{2:idx('H','S',3,'>='),3:idx('H','S',2,'>='),4:idx('H','S',0,'>='),5:idx('S','H',-2,'<='),6:idx('S','H',-1,'<='),7:'H',8:'H',9:'H',10:'H','A':'H'},
+  11:{2:'D',3:'D',4:'D',5:'D',6:'D',7:'D',8:'D',9:'D',10:'D','A':idx('H','D',1,'>=')},
+  10:{2:'D',3:'D',4:'D',5:'D',6:'D',7:'D',8:'D',9:'D',10:idx('H','D',4,'>='),'A':idx('H','D',4,'>=')},
+  9:{2:idx('H','D',1,'>='),3:'D',4:'D',5:'D',6:'D',7:idx('H','D',3,'>='),8:'H',9:'H',10:'H','A':'H'},
+};
+for(let t=18;t<=21;t++){ hard[t] = hard[17]; }
+for(let t=3;t<=8;t++){ hard[t] = {2:'H',3:'H',4:'H',5:'H',6:'H',7:'H',8:'H',9:'H',10:'H','A':'H'}; }
+
+const soft = {
+  20:{2:'S',3:'S',4:'S',5:'S',6:'S',7:'S',8:'S',9:'S',10:'S','A':'S'}, // A9
+  19:{2:'S',3:'S',4:'S',5:'S',6:'Ds',7:'S',8:'S',9:'S',10:'S','A':'S'}, // A8
+  18:{2:'Ds',3:'Ds',4:'Ds',5:'Ds',6:'Ds',7:'S',8:'S',9:'H',10:'H','A':'H'}, // A7
+  17:{2:'H',3:'D',4:'D',5:'D',6:'D',7:'H',8:'H',9:'H',10:'H','A':'H'}, // A6
+  16:{2:'H',3:'H',4:'D',5:'D',6:'D',7:'H',8:'H',9:'H',10:'H','A':'H'}, // A5
+  15:{2:'H',3:'H',4:'D',5:'D',6:'D',7:'H',8:'H',9:'H',10:'H','A':'H'}, // A4
+  14:{2:'H',3:'H',4:'H',5:'D',6:'D',7:'H',8:'H',9:'H',10:'H','A':'H'}, // A3
+  13:{2:'H',3:'H',4:'H',5:'D',6:'D',7:'H',8:'H',9:'H',10:'H','A':'H'}, // A2
+};
+
+const pairs = {
+  'A':{2:'P',3:'P',4:'P',5:'P',6:'P',7:'P',8:'P',9:'P',10:'P','A':'P'},
+  '10':{2:'S',3:'S',4:'S',5:idx('S','P',5,'>='),6:idx('S','P',4,'>='),7:'S',8:'S',9:'S',10:'S','A':'S'},
+  '9':{2:'P',3:'P',4:'P',5:'P',6:'P',7:'S',8:'P',9:'P',10:'S','A':'S'},
+  '8':{2:'P',3:'P',4:'P',5:'P',6:'P',7:'P',8:'P',9:'P',10:'P','A':'P'},
+  '7':{2:'P',3:'P',4:'P',5:'P',6:'P',7:'P',8:'H',9:'H',10:'H','A':'H'},
+  '6':{2:'P',3:'P',4:'P',5:'P',6:'P',7:'H',8:'H',9:'H',10:'H','A':'H'},
+  '5':{2:'D',3:'D',4:'D',5:'D',6:'D',7:'D',8:'D',9:'D',10:'H','A':'H'},
+  '4':{2:'H',3:'H',4:'H',5:'P',6:'P',7:'H',8:'H',9:'H',10:'H','A':'H'},
+  '3':{2:'P',3:'P',4:'P',5:'P',6:'P',7:'P',8:'H',9:'H',10:'H','A':'H'},
+  '2':{2:'P',3:'P',4:'P',5:'P',6:'P',7:'P',8:'H',9:'H',10:'H','A':'H'},
+};
+
+function resolveCell(cell, tc){
+  if(typeof cell === 'string') return {action:cell, isDeviation:false};
+  const met = cell.op==='>=' ? tc>=cell.tc : tc<=cell.tc;
+  const action = met ? cell.dev : cell.base;
+  const usedDeviation = met; // whichever branch is the "count-triggered" one
+  return {action, isDeviation:true, base:cell.base, dev:cell.dev, tc:cell.tc, op:cell.op, chosen:action};
+}
+
+function dealerKey(r){
+  if(r==='A') return 'A';
+  if(['10','J','Q','K'].includes(r)) return 10;
+  return parseInt(r,10);
+}
+
+function actionName(a){
+  return {H:'Hit',S:'Stand',D:'Double',Ds:'Double (else stand)',P:'Split',R:'Surrender'}[a] || a;
+}
+
+function getCorrectAction(cards, dealerUp, tc, canSurrender){
+  const info = handInfo(cards);
+  const dKey = dealerKey(dealerUp.r);
+  let cell;
+  if(info.isPair && pairs[info.pairRank]){
+    cell = pairs[info.pairRank][dKey];
+  } else if(info.isSoft && soft[info.total]){
+    cell = soft[info.total][dKey];
+  } else {
+    const t = Math.min(Math.max(info.total,3),21);
+    cell = hard[t][dKey];
+  }
+  const resolved = resolveCell(cell, tc);
+  let action = resolved.action;
+  if(action==='R' && !canSurrender) action = 'H';
+  if(action==='Ds') action = 'D'; // treat Ds as double-else-stand; double always allowed on first decision
+  return {action, resolved, info};
+}
+
+// ---- game state ----
+let dealerHand = [], playerHand2 = [];
+let stage = 'count'; // 'count' -> 'action' -> 'feedback'
+let countAnswerCorrect = false;
+let lastFeedbackHTML = '';
+
+function updateStats(){
+  document.getElementById('statCount').textContent = stats.countTotal ? Math.round(100*stats.countCorrect/stats.countTotal)+'%' : '--';
+  document.getElementById('statStrat').textContent = stats.stratTotal ? Math.round(100*stats.stratCorrect/stats.stratTotal)+'%' : '--';
+  document.getElementById('statDev').textContent = stats.devTotal ? Math.round(100*stats.devCorrect/stats.devTotal)+'%' : '--';
+  document.getElementById('statHands').textContent = stats.hands;
+}
+
+function renderCard(c, faceDown){
+  const div = document.createElement('div');
+  if(faceDown){ div.className='card back'; return div; }
+  const red = (c.s==='♥'||c.s==='♦');
+  div.className = 'card'+(red?' red':'');
+  div.innerHTML = c.r+'<br>'+c.s;
+  return div;
+}
+
+function renderHands(showHole){
+  const dEl = document.getElementById('dealerCards');
+  const pEl = document.getElementById('playerCards');
+  dEl.innerHTML=''; pEl.innerHTML='';
+  dealerHand.forEach((c,i)=>{
+    dEl.appendChild(renderCard(c, i===1 && !showHole));
+  });
+  playerHand2.forEach(c=> pEl.appendChild(renderCard(c,false)));
+}
+
+function updateShoeInfo(){
+  const pct = Math.round((cardsUsed/TOTAL_CARDS)*100);
+  document.getElementById('shoeInfo').textContent =
+    `Shoe: ${cardsUsed}/${TOTAL_CARDS} cards dealt (${pct}% penetration, reshuffles at 75%) — decks remaining: ${decksRemaining().toFixed(1)}`;
+}
+
+function checkPenetrationReshuffle(){
+  if(cardsUsed >= TOTAL_CARDS*PEN){
+    buildShoe();
+  }
+}
+
+function newHand(){
+  checkPenetrationReshuffle();
+  playerHand2 = [drawCard(), drawCard()];
+  dealerHand = [drawCard(), drawCard()];
+  stage = 'count';
+  document.getElementById('feedbackArea').innerHTML='';
+  document.getElementById('nextPanel').classList.add('hidden');
+  document.getElementById('actionPanel').classList.add('hidden');
+  document.getElementById('countPanel').classList.remove('hidden');
+  document.getElementById('countError').classList.add('hidden');
+  document.getElementById('rcInput').value='';
+  document.getElementById('tcInput').value='';
+  renderHands(false);
+  updateShoeInfo();
+}
+
+document.getElementById('submitCountBtn').addEventListener('click', ()=>{
+  const rcStr = document.getElementById('rcInput').value;
+  const tcStr = document.getElementById('tcInput').value;
+  const errEl = document.getElementById('countError');
+  if(rcStr===''||tcStr===''){
+    errEl.textContent = 'Enter both the running count and the true count first.';
+    errEl.classList.remove('hidden');
+    return;
+  }
+  errEl.classList.add('hidden');
+  const rcGuess = parseFloat(rcStr);
+  const tcGuess = parseFloat(tcStr);
+  const rcActual = runningCount;
+  const tcActual = trueCount();
+  const rcOk = rcGuess === rcActual;
+  const tcOk = Math.abs(tcGuess - tcActual) <= 0.5;
+  stats.countTotal++;
+  if(rcOk && tcOk) stats.countCorrect++;
+  countAnswerCorrect = rcOk && tcOk;
+
+  window._countFeedback = {rcOk, tcOk, rcActual, tcActual};
+  updateStats();
+  showActionPanel();
+});
+
+function showActionPanel(){
+  document.getElementById('countPanel').classList.add('hidden');
+  const panel = document.getElementById('actionPanel');
+  panel.classList.remove('hidden');
+  const info = handInfo(playerHand2);
+  let desc = info.isPair ? `Pair of ${info.pairRank}s` : (info.isSoft ? `Soft ${info.total}` : `Hard ${info.total}`);
+  document.getElementById('handSummary').innerHTML =
+    `Your hand: <strong>${desc}</strong> vs dealer ${dealerHand[0].r}`;
+
+  const canSurrender = isSurrenderEligible(info, dealerHand[0]);
+  const btns = document.getElementById('actionButtons');
+  btns.innerHTML='';
+  const actions = [['H','Hit'],['S','Stand'],['D','Double'],['P','Split'],['R','Surrender']];
+  actions.forEach(([code,label])=>{
+    if(code==='P' && !info.isPair) return;
+    if(code==='R' && !canSurrender) return;
+    const b = document.createElement('button');
+    b.textContent = label;
+    b.addEventListener('click', ()=> submitAction(code));
+    btns.appendChild(b);
+  });
+}
+
+function isSurrenderEligible(info, dealerUp){
+  const dKey = dealerKey(dealerUp.r);
+  if(info.isPair || info.isSoft) return false;
+  if(info.total===16 && (dKey===9 || dKey===10 || dKey==='A')) return true;
+  if(info.total===15 && dKey===10) return true;
+  return false;
+}
+
+function submitAction(chosen){
+  const tcActual = trueCount();
+  const canSurrender = isSurrenderEligible(handInfo(playerHand2), dealerHand[0]);
+  const {action, resolved, info} = getCorrectAction(playerHand2, dealerHand[0], tcActual, canSurrender);
+  const isCorrect = chosen === action;
+
+  stats.stratTotal++;
+  if(isCorrect) stats.stratCorrect++;
+  if(resolved.isDeviation){
+    stats.devTotal++;
+    if(isCorrect) stats.devCorrect++;
+  }
+  stats.hands++;
+  updateStats();
+
+  renderFeedback(isCorrect, action, resolved, tcActual);
+  autoResolveHand();
+  document.getElementById('actionPanel').classList.add('hidden');
+  document.getElementById('nextPanel').classList.remove('hidden');
+  renderHands(true);
+}
+
+function renderFeedback(isCorrect, correctAction, resolved, tcActual){
+  const showDetail = document.getElementById('feedbackToggle').checked;
+  const cf = window._countFeedback || {};
+  let html = '';
+
+  html += `<div class="feedback ${cf.rcOk && cf.tcOk ? 'correct':'wrong'}">`;
+  html += `<strong>Count:</strong> `;
+  if(cf.rcOk && cf.tcOk){
+    html += `correct (running ${cf.rcActual}, true ${cf.tcActual.toFixed(1)}).`;
+  } else {
+    html += `off — actual running count was ${cf.rcActual}, actual true count was ${cf.tcActual.toFixed(2)}.`;
+  }
+  html += `</div>`;
+
+  html += `<div class="feedback ${isCorrect?'correct':'wrong'}" style="margin-top:8px;">`;
+  html += `<strong>Play:</strong> ${isCorrect ? 'correct' : 'incorrect'} — correct play was <strong>${actionName(correctAction)}</strong>.`;
+  if(showDetail && resolved.isDeviation){
+    const dirWord = resolved.op==='>=' ? 'at or above' : 'at or below';
+    html += `<div class="badge">index play</div><div style="margin-top:6px;color:var(--muted);font-size:13px;">
+      Base strategy: ${actionName(resolved.base)}. Deviate to ${actionName(resolved.dev)} when true count is ${dirWord} ${resolved.tc}.
+      Current true count: ${tcActual.toFixed(2)}.</div>`;
+  }
+  html += `</div>`;
+  document.getElementById('feedbackArea').innerHTML = html;
+}
+
+function autoResolveHand(){
+  // Silently draw remaining cards so the shoe depletes realistically.
+  // Player: draw up to a reasonable stopping total using basic strategy hit points.
+  let guard = 0;
+  while(handInfo(playerHand2).total < 17 && guard < 6){
+    playerHand2.push(drawCard());
+    guard++;
+  }
+  while(true){
+    const dInfo = handInfo(dealerHand);
+    if(dInfo.total > 17) break;
+    if(dInfo.total === 17 && !dInfo.isSoft) break;
+    dealerHand.push(drawCard());
+  }
+  updateShoeInfo();
+}
+
+document.getElementById('nextHandBtn').addEventListener('click', newHand);
+
+buildShoe();
+newHand();
+</script>
+</body>
+</html>
