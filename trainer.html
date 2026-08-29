@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Hi-Lo Count & Strategy Trainer</title>
+<title>Blackjack Strategy & Count Trainer</title>
 <style>
   :root{
     --bg:#0f1a14; --panel:#16261d; --panel2:#1d3226; --border:#2c4636;
@@ -40,12 +40,33 @@
   .hidden{display:none;}
   .badge{display:inline-block;font-size:11px;padding:2px 8px;border-radius:20px;background:var(--panel2);color:var(--amber);margin-left:8px;}
   .btnrow button{min-width:80px;}
+  .help{font-size:13px;color:var(--muted);line-height:1.6;background:var(--panel2);border-radius:8px;padding:12px 14px;margin-top:10px;}
+  .help code{background:rgba(255,255,255,.08);padding:1px 5px;border-radius:4px;}
+  .modecard{border:1px solid var(--border);border-radius:12px;padding:16px 18px;margin-bottom:10px;cursor:pointer;}
+  .modecard:hover{border-color:var(--accent);}
+  .modecard h3{margin:0 0 6px;font-size:15px;}
+  .modecard p{margin:0;color:var(--muted);font-size:13px;}
+  .switchmode{font-size:12px;color:var(--muted);text-decoration:underline;cursor:pointer;margin-bottom:14px;display:inline-block;}
 </style>
 </head>
 <body>
 <div class="wrap">
-  <h1>Hi-Lo count & strategy trainer</h1>
+  <h1>Blackjack strategy & count trainer</h1>
   <div class="sub">8-deck shoe, 75% penetration, dealer hits soft 17, blackjack pays 3:2, double after split, surrender on 15v10 / 16v9 / 16v10 / 16vA only.</div>
+
+  <div id="modeSelect">
+    <div class="modecard" id="pickBasic">
+      <h3>Basic strategy trainer</h3>
+      <p>Just the correct play for every hand — no counting involved. Good place to start.</p>
+    </div>
+    <div class="modecard" id="pickCount">
+      <h3>Count-integrated trainer</h3>
+      <p>You track the running/true count yourself and the correct play shifts with it, including surrender index plays.</p>
+    </div>
+  </div>
+
+  <div id="game" class="hidden">
+  <span class="switchmode" id="switchModeBtn">Switch mode</span>
 
   <div class="stats">
     <div class="stat"><div class="label">Count accuracy</div><div class="val" id="statCount">--</div></div>
@@ -68,15 +89,26 @@
     <div class="card-row" id="playerCards"></div>
   </div>
 
-  <div class="panel" id="countPanel">
+  <div class="panel hidden" id="countPanel">
     <div class="row">
       <label for="rcInput">Running count right now:</label>
       <input type="number" id="rcInput" step="1">
-      <label for="tcInput">True count right now:</label>
-      <input type="number" id="tcInput" step="0.5">
+      <label for="tcInput">True count right now (whole number):</label>
+      <input type="number" id="tcInput" step="1">
       <button class="primary" id="submitCountBtn">Submit count</button>
     </div>
     <div class="error hidden" id="countError"></div>
+    <div class="help">
+      <strong>Running count</strong> is not reset each hand — it is the total of every card dealt since the shoe was last shuffled, cards from earlier hands included.
+      Add up the Hi-Lo value of every card you can see on the table right now (both your cards and the dealer's <em>visible</em> upcard — the hole card doesn't count yet):
+      <code>2–6 = +1</code>, <code>7–9 = 0</code>, <code>10/J/Q/K/A = &minus;1</code>.
+      <br><br>
+      <strong>True count</strong> = running count ÷ decks remaining. Decks remaining is shown just below this box in the shoe line (e.g. "decks remaining: 5.3") — divide your running count by that number and round to the nearest <strong>whole number</strong> (the app shows the exact decimal in feedback for reference, but only grades the rounded value).
+      <br><br>
+      If this is the first hand after a shuffle, the running count starts at 0, so it's just the total of the cards you see now.
+      <br><br>
+      <strong>Does the count change after the hand plays out?</strong> Yes. The count you enter here is only for the cards on the table at this moment (before any decision). Once you act, any extra cards dealt to finish the hand — your hits, the dealer's hits — are new cards too, and they're shown on the table after the hand resolves. Fold their values into your running count before the next hand's prompt, the same way you'd track a real shoe watching every card that hits the felt, not just the first two.
+    </div>
   </div>
 
   <div class="panel hidden" id="actionPanel">
@@ -90,6 +122,7 @@
   <div class="panel hidden" id="nextPanel">
     <button class="primary" id="nextHandBtn">Deal next hand ↗</button>
   </div>
+  </div>
 </div>
 
 <script>
@@ -102,6 +135,7 @@ const TOTAL_CARDS = DECKS*52;
 let shoe = [];
 let cardsUsed = 0;
 let runningCount = 0;
+let pureBasicMode = true;
 
 let stats = {countCorrect:0,countTotal:0,stratCorrect:0,stratTotal:0,devCorrect:0,devTotal:0,hands:0};
 
@@ -160,7 +194,6 @@ function trueCount(){
 }
 
 // ---- strategy tables ----
-// dealer keys 2-9,'10','A'
 function idx(base,dev,tc,op){ return {base,dev,tc,op}; }
 
 const hard = {
@@ -178,14 +211,14 @@ for(let t=18;t<=21;t++){ hard[t] = hard[17]; }
 for(let t=3;t<=8;t++){ hard[t] = {2:'H',3:'H',4:'H',5:'H',6:'H',7:'H',8:'H',9:'H',10:'H','A':'H'}; }
 
 const soft = {
-  20:{2:'S',3:'S',4:'S',5:'S',6:'S',7:'S',8:'S',9:'S',10:'S','A':'S'}, // A9
-  19:{2:'S',3:'S',4:'S',5:'S',6:'Ds',7:'S',8:'S',9:'S',10:'S','A':'S'}, // A8
-  18:{2:'Ds',3:'Ds',4:'Ds',5:'Ds',6:'Ds',7:'S',8:'S',9:'H',10:'H','A':'H'}, // A7
-  17:{2:'H',3:'D',4:'D',5:'D',6:'D',7:'H',8:'H',9:'H',10:'H','A':'H'}, // A6
-  16:{2:'H',3:'H',4:'D',5:'D',6:'D',7:'H',8:'H',9:'H',10:'H','A':'H'}, // A5
-  15:{2:'H',3:'H',4:'D',5:'D',6:'D',7:'H',8:'H',9:'H',10:'H','A':'H'}, // A4
-  14:{2:'H',3:'H',4:'H',5:'D',6:'D',7:'H',8:'H',9:'H',10:'H','A':'H'}, // A3
-  13:{2:'H',3:'H',4:'H',5:'D',6:'D',7:'H',8:'H',9:'H',10:'H','A':'H'}, // A2
+  20:{2:'S',3:'S',4:'S',5:'S',6:'S',7:'S',8:'S',9:'S',10:'S','A':'S'},
+  19:{2:'S',3:'S',4:'S',5:'S',6:'Ds',7:'S',8:'S',9:'S',10:'S','A':'S'},
+  18:{2:'Ds',3:'Ds',4:'Ds',5:'Ds',6:'Ds',7:'S',8:'S',9:'H',10:'H','A':'H'},
+  17:{2:'H',3:'D',4:'D',5:'D',6:'D',7:'H',8:'H',9:'H',10:'H','A':'H'},
+  16:{2:'H',3:'H',4:'D',5:'D',6:'D',7:'H',8:'H',9:'H',10:'H','A':'H'},
+  15:{2:'H',3:'H',4:'D',5:'D',6:'D',7:'H',8:'H',9:'H',10:'H','A':'H'},
+  14:{2:'H',3:'H',4:'H',5:'D',6:'D',7:'H',8:'H',9:'H',10:'H','A':'H'},
+  13:{2:'H',3:'H',4:'H',5:'D',6:'D',7:'H',8:'H',9:'H',10:'H','A':'H'},
 };
 
 const pairs = {
@@ -203,9 +236,11 @@ const pairs = {
 
 function resolveCell(cell, tc){
   if(typeof cell === 'string') return {action:cell, isDeviation:false};
+  if(pureBasicMode){
+    return {action:cell.base, isDeviation:false};
+  }
   const met = cell.op==='>=' ? tc>=cell.tc : tc<=cell.tc;
   const action = met ? cell.dev : cell.base;
-  const usedDeviation = met; // whichever branch is the "count-triggered" one
   return {action, isDeviation:true, base:cell.base, dev:cell.dev, tc:cell.tc, op:cell.op, chosen:action};
 }
 
@@ -234,15 +269,12 @@ function getCorrectAction(cards, dealerUp, tc, canSurrender){
   const resolved = resolveCell(cell, tc);
   let action = resolved.action;
   if(action==='R' && !canSurrender) action = 'H';
-  if(action==='Ds') action = 'D'; // treat Ds as double-else-stand; double always allowed on first decision
+  if(action==='Ds') action = 'D';
   return {action, resolved, info};
 }
 
 // ---- game state ----
 let dealerHand = [], playerHand2 = [];
-let stage = 'count'; // 'count' -> 'action' -> 'feedback'
-let countAnswerCorrect = false;
-let lastFeedbackHTML = '';
 
 function updateStats(){
   document.getElementById('statCount').textContent = stats.countTotal ? Math.round(100*stats.countCorrect/stats.countTotal)+'%' : '--';
@@ -286,16 +318,22 @@ function newHand(){
   checkPenetrationReshuffle();
   playerHand2 = [drawCard(), drawCard()];
   dealerHand = [drawCard(), drawCard()];
-  stage = 'count';
   document.getElementById('feedbackArea').innerHTML='';
   document.getElementById('nextPanel').classList.add('hidden');
   document.getElementById('actionPanel').classList.add('hidden');
-  document.getElementById('countPanel').classList.remove('hidden');
-  document.getElementById('countError').classList.add('hidden');
-  document.getElementById('rcInput').value='';
-  document.getElementById('tcInput').value='';
-  renderHands(false);
-  updateShoeInfo();
+  if(pureBasicMode){
+    document.getElementById('countPanel').classList.add('hidden');
+    renderHands(false);
+    updateShoeInfo();
+    showActionPanel();
+  } else {
+    document.getElementById('countPanel').classList.remove('hidden');
+    document.getElementById('countError').classList.add('hidden');
+    document.getElementById('rcInput').value='';
+    document.getElementById('tcInput').value='';
+    renderHands(false);
+    updateShoeInfo();
+  }
 }
 
 document.getElementById('submitCountBtn').addEventListener('click', ()=>{
@@ -309,16 +347,16 @@ document.getElementById('submitCountBtn').addEventListener('click', ()=>{
   }
   errEl.classList.add('hidden');
   const rcGuess = parseFloat(rcStr);
-  const tcGuess = parseFloat(tcStr);
+  const tcGuess = Math.round(parseFloat(tcStr));
   const rcActual = runningCount;
   const tcActual = trueCount();
+  const tcActualRounded = Math.round(tcActual);
   const rcOk = rcGuess === rcActual;
-  const tcOk = Math.abs(tcGuess - tcActual) <= 0.5;
+  const tcOk = tcGuess === tcActualRounded;
   stats.countTotal++;
   if(rcOk && tcOk) stats.countCorrect++;
-  countAnswerCorrect = rcOk && tcOk;
 
-  window._countFeedback = {rcOk, tcOk, rcActual, tcActual};
+  window._countFeedback = {rcOk, tcOk, rcActual, tcActual, tcActualRounded};
   updateStats();
   showActionPanel();
 });
@@ -347,6 +385,7 @@ function showActionPanel(){
 }
 
 function isSurrenderEligible(info, dealerUp){
+  if(pureBasicMode) return false;
   const dKey = dealerKey(dealerUp.r);
   if(info.isPair || info.isSoft) return false;
   if(info.total===16 && (dKey===9 || dKey===10 || dKey==='A')) return true;
@@ -355,7 +394,7 @@ function isSurrenderEligible(info, dealerUp){
 }
 
 function submitAction(chosen){
-  const tcActual = trueCount();
+  const tcActual = pureBasicMode ? 0 : Math.round(trueCount());
   const canSurrender = isSurrenderEligible(handInfo(playerHand2), dealerHand[0]);
   const {action, resolved, info} = getCorrectAction(playerHand2, dealerHand[0], tcActual, canSurrender);
   const isCorrect = chosen === action;
@@ -378,17 +417,19 @@ function submitAction(chosen){
 
 function renderFeedback(isCorrect, correctAction, resolved, tcActual){
   const showDetail = document.getElementById('feedbackToggle').checked;
-  const cf = window._countFeedback || {};
   let html = '';
 
-  html += `<div class="feedback ${cf.rcOk && cf.tcOk ? 'correct':'wrong'}">`;
-  html += `<strong>Count:</strong> `;
-  if(cf.rcOk && cf.tcOk){
-    html += `correct (running ${cf.rcActual}, true ${cf.tcActual.toFixed(1)}).`;
-  } else {
-    html += `off — actual running count was ${cf.rcActual}, actual true count was ${cf.tcActual.toFixed(2)}.`;
+  if(!pureBasicMode){
+    const cf = window._countFeedback || {};
+    html += `<div class="feedback ${cf.rcOk && cf.tcOk ? 'correct':'wrong'}">`;
+    html += `<strong>Count:</strong> `;
+    if(cf.rcOk && cf.tcOk){
+      html += `correct (running ${cf.rcActual}, true ${cf.tcActualRounded} — exact decimal was ${cf.tcActual.toFixed(2)}).`;
+    } else {
+      html += `off — actual running count was ${cf.rcActual}, actual true count was ${cf.tcActualRounded} (exact decimal ${cf.tcActual.toFixed(2)}).`;
+    }
+    html += `</div>`;
   }
-  html += `</div>`;
 
   html += `<div class="feedback ${isCorrect?'correct':'wrong'}" style="margin-top:8px;">`;
   html += `<strong>Play:</strong> ${isCorrect ? 'correct' : 'incorrect'} — correct play was <strong>${actionName(correctAction)}</strong>.`;
@@ -396,15 +437,13 @@ function renderFeedback(isCorrect, correctAction, resolved, tcActual){
     const dirWord = resolved.op==='>=' ? 'at or above' : 'at or below';
     html += `<div class="badge">index play</div><div style="margin-top:6px;color:var(--muted);font-size:13px;">
       Base strategy: ${actionName(resolved.base)}. Deviate to ${actionName(resolved.dev)} when true count is ${dirWord} ${resolved.tc}.
-      Current true count: ${tcActual.toFixed(2)}.</div>`;
+      Current true count: ${tcActual}.</div>`;
   }
   html += `</div>`;
   document.getElementById('feedbackArea').innerHTML = html;
 }
 
 function autoResolveHand(){
-  // Silently draw remaining cards so the shoe depletes realistically.
-  // Player: draw up to a reasonable stopping total using basic strategy hit points.
   let guard = 0;
   while(handInfo(playerHand2).total < 17 && guard < 6){
     playerHand2.push(drawCard());
@@ -421,8 +460,22 @@ function autoResolveHand(){
 
 document.getElementById('nextHandBtn').addEventListener('click', newHand);
 
-buildShoe();
-newHand();
+function startGame(basic){
+  pureBasicMode = basic;
+  stats = {countCorrect:0,countTotal:0,stratCorrect:0,stratTotal:0,devCorrect:0,devTotal:0,hands:0};
+  updateStats();
+  document.getElementById('modeSelect').classList.add('hidden');
+  document.getElementById('game').classList.remove('hidden');
+  buildShoe();
+  newHand();
+}
+
+document.getElementById('pickBasic').addEventListener('click', ()=> startGame(true));
+document.getElementById('pickCount').addEventListener('click', ()=> startGame(false));
+document.getElementById('switchModeBtn').addEventListener('click', ()=>{
+  document.getElementById('game').classList.add('hidden');
+  document.getElementById('modeSelect').classList.remove('hidden');
+});
 </script>
 </body>
 </html>
