@@ -11,7 +11,7 @@
   }
   *{box-sizing:border-box;}
   body{background:var(--bg);color:var(--text);font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif;margin:0;padding:24px;}
-  .wrap{max-width:760px;margin:0 auto;}
+  .wrap{max-width:780px;margin:0 auto;}
   h1{font-size:20px;font-weight:600;margin:0 0 4px;}
   .sub{color:var(--muted);font-size:13px;margin-bottom:20px;}
   .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:18px;}
@@ -30,6 +30,7 @@
   button:hover{border-color:var(--accent);}
   button.primary{background:var(--accent);border-color:var(--accent);color:#08130d;font-weight:600;}
   button.primary:hover{opacity:.9;}
+  button.danger{border-color:var(--red);color:var(--red);background:transparent;}
   .row{display:flex;align-items:center;gap:10px;flex-wrap:wrap;}
   .error{color:var(--red);font-size:13px;margin-top:6px;}
   .feedback{border-radius:10px;padding:14px 16px;margin-top:14px;font-size:14px;line-height:1.5;}
@@ -46,7 +47,10 @@
   .modecard:hover{border-color:var(--accent);}
   .modecard h3{margin:0 0 6px;font-size:15px;}
   .modecard p{margin:0;color:var(--muted);font-size:13px;}
-  .switchmode{font-size:12px;color:var(--muted);text-decoration:underline;cursor:pointer;margin-bottom:14px;display:inline-block;}
+  .modecard.disabled{opacity:.5;cursor:not-allowed;}
+  .switchmode{font-size:12px;color:var(--muted);text-decoration:underline;cursor:pointer;margin-right:16px;}
+  .topbar{margin-bottom:14px;}
+  .modelabel{display:inline-block;background:var(--panel2);color:var(--amber);font-size:11px;padding:3px 10px;border-radius:20px;margin-bottom:14px;}
 </style>
 </head>
 <body>
@@ -63,10 +67,22 @@
       <h3>Count-integrated trainer</h3>
       <p>You track the running/true count yourself and the correct play shifts with it, including surrender index plays.</p>
     </div>
+    <div class="modecard" id="pickWeak">
+      <h3>Weak-range drill</h3>
+      <p>Cycles only through hands totalling 9&ndash;16 (hard and soft), plus all pairs 2s&ndash;8s &mdash; the totals and split decisions people usually get wrong. Skips 17+ and 8-and-under non-pair hands.</p>
+    </div>
+    <div class="modecard" id="pickReview">
+      <h3 id="reviewTitle">Review missed hands</h3>
+      <p id="reviewDesc">No missed hands logged yet &mdash; play a session first and this fills in automatically.</p>
+    </div>
   </div>
 
   <div id="game" class="hidden">
-  <span class="switchmode" id="switchModeBtn">Switch mode</span>
+  <div class="topbar">
+    <span class="switchmode" id="switchModeBtn">Switch mode</span>
+    <span class="switchmode" id="clearMissedBtn">Clear missed-hand list</span>
+  </div>
+  <div class="modelabel" id="modeLabel"></div>
 
   <div class="stats">
     <div class="stat"><div class="label">Count accuracy</div><div class="val" id="statCount">--</div></div>
@@ -103,11 +119,11 @@
       Add up the Hi-Lo value of every card you can see on the table right now (both your cards and the dealer's <em>visible</em> upcard — the hole card doesn't count yet):
       <code>2–6 = +1</code>, <code>7–9 = 0</code>, <code>10/J/Q/K/A = &minus;1</code>.
       <br><br>
-      <strong>True count</strong> = running count ÷ decks remaining. Decks remaining is shown just below this box in the shoe line (e.g. "decks remaining: 5.3") — divide your running count by that number and round to the nearest <strong>whole number</strong> (the app shows the exact decimal in feedback for reference, but only grades the rounded value).
+      <strong>True count</strong> = running count ÷ decks remaining. Decks remaining is shown just below this box in the shoe line — divide your running count by that number and round to the nearest <strong>whole number</strong> (the app shows the exact decimal in feedback for reference, but only grades the rounded value).
       <br><br>
       If this is the first hand after a shuffle, the running count starts at 0, so it's just the total of the cards you see now.
       <br><br>
-      <strong>Does the count change after the hand plays out?</strong> Yes. The count you enter here is only for the cards on the table at this moment (before any decision). Once you act, any extra cards dealt to finish the hand — your hits, the dealer's hits — are new cards too, and they're shown on the table after the hand resolves. Fold their values into your running count before the next hand's prompt, the same way you'd track a real shoe watching every card that hits the felt, not just the first two.
+      <strong>Does the count change after the hand plays out?</strong> Yes. The count you enter here is only for the cards on the table at this moment (before any decision). Once you act, any extra cards dealt to finish the hand — your hits, the dealer's hits — are new cards too, and they're shown on the table after the hand resolves. Fold their values into your running count before the next hand's prompt.
     </div>
   </div>
 
@@ -131,13 +147,24 @@ const SUITS = ['♠','♥','♦','♣'];
 const DECKS = 8;
 const PEN = 0.75;
 const TOTAL_CARDS = DECKS*52;
+const MISSED_KEY = 'bjTrainerMissedHands_v1';
 
 let shoe = [];
 let cardsUsed = 0;
 let runningCount = 0;
-let pureBasicMode = true;
+let mode = 'basic'; // 'basic' | 'count' | 'weak' | 'review'
+let missedHands = {}; // key -> count
 
-let stats = {countCorrect:0,countTotal:0,stratCorrect:0,stratTotal:0,devCorrect:0,devTotal:0,hands:0};
+function loadMissed(){
+  try{
+    const raw = localStorage.getItem(MISSED_KEY);
+    missedHands = raw ? JSON.parse(raw) : {};
+  }catch(e){ missedHands = {}; }
+}
+function saveMissed(){
+  try{ localStorage.setItem(MISSED_KEY, JSON.stringify(missedHands)); }catch(e){}
+}
+function missedCount(){ return Object.keys(missedHands).length; }
 
 function buildShoe(){
   shoe = [];
@@ -170,10 +197,23 @@ function drawCard(){
   return c;
 }
 
+function randomCardNoCount(excludeRanks){
+  // for weak/review modes: no shoe, no count tracking
+  let r;
+  do{ r = RANKS[Math.floor(Math.random()*RANKS.length)]; }
+  while(excludeRanks && excludeRanks.includes(r));
+  const s = SUITS[Math.floor(Math.random()*SUITS.length)];
+  return {r,s};
+}
+
 function cardValue(r){
   if(r==='A') return 11;
   if(['10','J','Q','K'].includes(r)) return 10;
   return parseInt(r,10);
+}
+function rankValueForBuild(v){
+  if(v===10){ const tens=['10','J','Q','K']; return tens[Math.floor(Math.random()*4)]; }
+  return String(v);
 }
 
 function handInfo(cards){
@@ -234,14 +274,14 @@ const pairs = {
   '2':{2:'P',3:'P',4:'P',5:'P',6:'P',7:'P',8:'H',9:'H',10:'H','A':'H'},
 };
 
-function resolveCell(cell, tc){
+function resolveCell(cell, tc, pureBasic){
   if(typeof cell === 'string') return {action:cell, isDeviation:false};
-  if(pureBasicMode){
+  if(pureBasic){
     return {action:cell.base, isDeviation:false};
   }
   const met = cell.op==='>=' ? tc>=cell.tc : tc<=cell.tc;
   const action = met ? cell.dev : cell.base;
-  return {action, isDeviation:true, base:cell.base, dev:cell.dev, tc:cell.tc, op:cell.op, chosen:action};
+  return {action, isDeviation:true, base:cell.base, dev:cell.dev, tc:cell.tc, op:cell.op};
 }
 
 function dealerKey(r){
@@ -254,7 +294,7 @@ function actionName(a){
   return {H:'Hit',S:'Stand',D:'Double',Ds:'Double (else stand)',P:'Split',R:'Surrender'}[a] || a;
 }
 
-function getCorrectAction(cards, dealerUp, tc, canSurrender){
+function getCorrectAction(cards, dealerUp, tc, canSurrender, pureBasic){
   const info = handInfo(cards);
   const dKey = dealerKey(dealerUp.r);
   let cell;
@@ -266,15 +306,75 @@ function getCorrectAction(cards, dealerUp, tc, canSurrender){
     const t = Math.min(Math.max(info.total,3),21);
     cell = hard[t][dKey];
   }
-  const resolved = resolveCell(cell, tc);
+  const resolved = resolveCell(cell, tc, pureBasic);
   let action = resolved.action;
   if(action==='R' && !canSurrender) action = 'H';
   if(action==='Ds') action = 'D';
   return {action, resolved, info};
 }
 
+function handKey(info, dealerUp){
+  const dKey = dealerKey(dealerUp.r);
+  if(info.isPair) return `P${info.pairRank}-${dKey}`;
+  if(info.isSoft) return `S${info.total}-${dKey}`;
+  return `H${info.total}-${dKey}`;
+}
+
+// ---- weak-range pool (totals 9-16, excluding pairs of 2s/3s/4s) ----
+function buildWeakPool(){
+  const pool = [];
+  const dealerKeys = [2,3,4,5,6,7,8,9,10,'A'];
+  for(let t=9;t<=16;t++){
+    for(const dk of dealerKeys) pool.push({type:'H', val:t, dk});
+  }
+  for(let t=13;t<=16;t++){ // soft A2-A5
+    for(const dk of dealerKeys) pool.push({type:'S', val:t, dk});
+  }
+  for(const pr of [2,3,4,5,6,7,8]){ // pairs 22-88
+    for(const dk of dealerKeys) pool.push({type:'P', val:pr, dk});
+  }
+  return pool;
+}
+const weakPool = buildWeakPool();
+
+function synthesizeFromSpec(spec){
+  let cards;
+  if(spec.type==='H'){
+    let low = Math.max(2, spec.val-10), high = Math.min(10, spec.val-2);
+    let c1, c2, tries=0;
+    do{
+      c1 = low + Math.floor(Math.random()*(high-low+1));
+      c2 = spec.val - c1;
+      tries++;
+    } while(c1===c2 && tries<20 && c2>=2 && c2<=10);
+    cards = [{r:rankValueForBuild(c1),s:SUITS[Math.floor(Math.random()*4)]},
+             {r:rankValueForBuild(c2),s:SUITS[Math.floor(Math.random()*4)]}];
+  } else if(spec.type==='S'){
+    const other = spec.val - 11;
+    cards = [{r:'A',s:SUITS[Math.floor(Math.random()*4)]},
+             {r:rankValueForBuild(other),s:SUITS[Math.floor(Math.random()*4)]}];
+  } else { // pair
+    const rr = spec.val===10 ? rankValueForBuild(10) : String(spec.val);
+    cards = [{r:rr,s:SUITS[Math.floor(Math.random()*4)]},{r:rr,s:SUITS[Math.floor(Math.random()*4)]}];
+  }
+  const dealerR = spec.dk==='A' ? 'A' : (spec.dk===10 ? rankValueForBuild(10) : String(spec.dk));
+  const dealer = {r:dealerR, s:SUITS[Math.floor(Math.random()*4)]};
+  return {cards, dealer};
+}
+
+function specFromKey(key){
+  const type = key[0];
+  const rest = key.slice(1);
+  const [valPart, dkPart] = rest.split('-');
+  const dk = dkPart==='A' ? 'A' : parseInt(dkPart,10);
+  if(type==='P') return {type:'P', val: valPart==='10'?10:(valPart==='A'?'A':parseInt(valPart,10)), dk};
+  return {type, val: parseInt(valPart,10), dk};
+}
+
 // ---- game state ----
 let dealerHand = [], playerHand2 = [];
+let stats = {countCorrect:0,countTotal:0,stratCorrect:0,stratTotal:0,devCorrect:0,devTotal:0,hands:0};
+let currentReviewKey = null;
 
 function updateStats(){
   document.getElementById('statCount').textContent = stats.countTotal ? Math.round(100*stats.countCorrect/stats.countTotal)+'%' : '--';
@@ -303,6 +403,10 @@ function renderHands(showHole){
 }
 
 function updateShoeInfo(){
+  if(mode==='weak' || mode==='review'){
+    document.getElementById('shoeInfo').textContent = 'Drill mode — hands are picked directly, no shoe or count tracking.';
+    return;
+  }
   const pct = Math.round((cardsUsed/TOTAL_CARDS)*100);
   document.getElementById('shoeInfo').textContent =
     `Shoe: ${cardsUsed}/${TOTAL_CARDS} cards dealt (${pct}% penetration, reshuffles at 75%) — decks remaining: ${decksRemaining().toFixed(1)}`;
@@ -315,24 +419,42 @@ function checkPenetrationReshuffle(){
 }
 
 function newHand(){
-  checkPenetrationReshuffle();
-  playerHand2 = [drawCard(), drawCard()];
-  dealerHand = [drawCard(), drawCard()];
   document.getElementById('feedbackArea').innerHTML='';
   document.getElementById('nextPanel').classList.add('hidden');
   document.getElementById('actionPanel').classList.add('hidden');
-  if(pureBasicMode){
-    document.getElementById('countPanel').classList.add('hidden');
-    renderHands(false);
-    updateShoeInfo();
-    showActionPanel();
-  } else {
+  currentReviewKey = null;
+
+  if(mode==='basic' || mode==='count'){
+    checkPenetrationReshuffle();
+    playerHand2 = [drawCard(), drawCard()];
+    dealerHand = [drawCard(), drawCard()];
+  } else if(mode==='weak'){
+    const spec = weakPool[Math.floor(Math.random()*weakPool.length)];
+    const built = synthesizeFromSpec(spec);
+    playerHand2 = built.cards;
+    dealerHand = [built.dealer, randomCardNoCount()];
+  } else if(mode==='review'){
+    const keys = Object.keys(missedHands);
+    const key = keys[Math.floor(Math.random()*keys.length)];
+    currentReviewKey = key;
+    const spec = specFromKey(key);
+    const built = synthesizeFromSpec(spec);
+    playerHand2 = built.cards;
+    dealerHand = [built.dealer, randomCardNoCount()];
+  }
+
+  if(mode==='count'){
     document.getElementById('countPanel').classList.remove('hidden');
     document.getElementById('countError').classList.add('hidden');
     document.getElementById('rcInput').value='';
     document.getElementById('tcInput').value='';
     renderHands(false);
     updateShoeInfo();
+  } else {
+    document.getElementById('countPanel').classList.add('hidden');
+    renderHands(false);
+    updateShoeInfo();
+    showActionPanel();
   }
 }
 
@@ -385,7 +507,7 @@ function showActionPanel(){
 }
 
 function isSurrenderEligible(info, dealerUp){
-  if(pureBasicMode) return false;
+  if(mode==='basic' || mode==='weak' || mode==='review') return false;
   const dKey = dealerKey(dealerUp.r);
   if(info.isPair || info.isSoft) return false;
   if(info.total===16 && (dKey===9 || dKey===10 || dKey==='A')) return true;
@@ -394,9 +516,11 @@ function isSurrenderEligible(info, dealerUp){
 }
 
 function submitAction(chosen){
-  const tcActual = pureBasicMode ? 0 : Math.round(trueCount());
-  const canSurrender = isSurrenderEligible(handInfo(playerHand2), dealerHand[0]);
-  const {action, resolved, info} = getCorrectAction(playerHand2, dealerHand[0], tcActual, canSurrender);
+  const pureBasic = (mode==='basic' || mode==='weak' || mode==='review');
+  const tcActual = pureBasic ? 0 : Math.round(trueCount());
+  const info0 = handInfo(playerHand2);
+  const canSurrender = isSurrenderEligible(info0, dealerHand[0]);
+  const {action, resolved, info} = getCorrectAction(playerHand2, dealerHand[0], tcActual, canSurrender, pureBasic);
   const isCorrect = chosen === action;
 
   stats.stratTotal++;
@@ -408,8 +532,19 @@ function submitAction(chosen){
   stats.hands++;
   updateStats();
 
+  const key = handKey(info, dealerHand[0]);
+  if(!isCorrect){
+    missedHands[key] = (missedHands[key]||0)+1;
+    saveMissed();
+  } else if(mode==='review' && currentReviewKey && missedHands[currentReviewKey]){
+    delete missedHands[currentReviewKey];
+    saveMissed();
+  }
+  refreshReviewCard();
+
   renderFeedback(isCorrect, action, resolved, tcActual);
-  autoResolveHand();
+  if(mode==='basic' || mode==='count') autoResolveHandShoe();
+  else autoResolveHandSimple();
   document.getElementById('actionPanel').classList.add('hidden');
   document.getElementById('nextPanel').classList.remove('hidden');
   renderHands(true);
@@ -419,7 +554,7 @@ function renderFeedback(isCorrect, correctAction, resolved, tcActual){
   const showDetail = document.getElementById('feedbackToggle').checked;
   let html = '';
 
-  if(!pureBasicMode){
+  if(mode==='count'){
     const cf = window._countFeedback || {};
     html += `<div class="feedback ${cf.rcOk && cf.tcOk ? 'correct':'wrong'}">`;
     html += `<strong>Count:</strong> `;
@@ -439,11 +574,14 @@ function renderFeedback(isCorrect, correctAction, resolved, tcActual){
       Base strategy: ${actionName(resolved.base)}. Deviate to ${actionName(resolved.dev)} when true count is ${dirWord} ${resolved.tc}.
       Current true count: ${tcActual}.</div>`;
   }
+  if(!isCorrect){
+    html += `<div style="margin-top:6px;color:var(--muted);font-size:13px;">Logged to your missed-hand list for the review drill.</div>`;
+  }
   html += `</div>`;
   document.getElementById('feedbackArea').innerHTML = html;
 }
 
-function autoResolveHand(){
+function autoResolveHandShoe(){
   let guard = 0;
   while(handInfo(playerHand2).total < 17 && guard < 6){
     playerHand2.push(drawCard());
@@ -457,25 +595,73 @@ function autoResolveHand(){
   }
   updateShoeInfo();
 }
+function autoResolveHandSimple(){
+  let guard = 0;
+  while(handInfo(playerHand2).total < 17 && guard < 6){
+    playerHand2.push(randomCardNoCount());
+    guard++;
+  }
+  while(true){
+    const dInfo = handInfo(dealerHand);
+    if(dInfo.total > 17) break;
+    if(dInfo.total === 17 && !dInfo.isSoft) break;
+    dealerHand.push(randomCardNoCount());
+  }
+}
 
 document.getElementById('nextHandBtn').addEventListener('click', newHand);
 
-function startGame(basic){
-  pureBasicMode = basic;
+function modeLabelText(){
+  return {basic:'Mode: Basic strategy', count:'Mode: Count-integrated', weak:'Mode: Weak-range drill (9–16)', review:'Mode: Review missed hands'}[mode];
+}
+
+function startGame(m){
+  mode = m;
   stats = {countCorrect:0,countTotal:0,stratCorrect:0,stratTotal:0,devCorrect:0,devTotal:0,hands:0};
   updateStats();
   document.getElementById('modeSelect').classList.add('hidden');
   document.getElementById('game').classList.remove('hidden');
-  buildShoe();
+  document.getElementById('modeLabel').textContent = modeLabelText();
+  if(m==='basic' || m==='count') buildShoe();
   newHand();
 }
 
-document.getElementById('pickBasic').addEventListener('click', ()=> startGame(true));
-document.getElementById('pickCount').addEventListener('click', ()=> startGame(false));
+function refreshReviewCard(){
+  const n = missedCount();
+  const card = document.getElementById('pickReview');
+  const title = document.getElementById('reviewTitle');
+  const desc = document.getElementById('reviewDesc');
+  if(n===0){
+    card.classList.add('disabled');
+    title.textContent = 'Review missed hands';
+    desc.textContent = 'No missed hands logged yet — play a session first and this fills in automatically.';
+  } else {
+    card.classList.remove('disabled');
+    title.textContent = `Review missed hands (${n})`;
+    desc.textContent = 'Drills only the exact hand-vs-dealer situations you\'ve gotten wrong before. A hand drops off the list once you get it right here.';
+  }
+}
+
+document.getElementById('pickBasic').addEventListener('click', ()=> startGame('basic'));
+document.getElementById('pickCount').addEventListener('click', ()=> startGame('count'));
+document.getElementById('pickWeak').addEventListener('click', ()=> startGame('weak'));
+document.getElementById('pickReview').addEventListener('click', ()=>{
+  if(missedCount()===0) return;
+  startGame('review');
+});
 document.getElementById('switchModeBtn').addEventListener('click', ()=>{
   document.getElementById('game').classList.add('hidden');
   document.getElementById('modeSelect').classList.remove('hidden');
+  refreshReviewCard();
 });
+document.getElementById('clearMissedBtn').addEventListener('click', ()=>{
+  missedHands = {};
+  saveMissed();
+  refreshReviewCard();
+});
+
+loadMissed();
+refreshReviewCard();
 </script>
 </body>
 </html>
