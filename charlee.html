@@ -1,0 +1,604 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sound Traps — Spelling Practice</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;700&family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#FFFDF6;
+    --rule:#C7D3E8;
+    --margin-line:#E7B2AE;
+    --sticky:#FFE79A;
+    --sticky-edge:#F4D06E;
+    --sticky-2:#BFE3C6;
+    --sticky-2-edge:#9CCFA8;
+    --ink:#2B2B31;
+    --ink-soft:#5B5B66;
+    --pencil:#5A6B8C;
+    --good:#3F7D4C;
+    --good-bg:#E4F3E6;
+    --bad:#C1503A;
+    --bad-bg:#FBE7E1;
+    --shadow: 0 6px 14px rgba(43,43,49,0.14), 0 1px 2px rgba(43,43,49,0.10);
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:
+      repeating-linear-gradient(
+        var(--paper),
+        var(--paper) 35px,
+        var(--rule) 36px,
+        var(--paper) 37px
+      );
+    background-color:var(--paper);
+    font-family:'Inter',sans-serif;
+    color:var(--ink);
+    min-height:100vh;
+    position:relative;
+    padding-bottom:60px;
+  }
+  body::before{
+    content:"";
+    position:fixed;
+    top:0; bottom:0; left:56px;
+    width:2px;
+    background:var(--margin-line);
+    opacity:0.55;
+    z-index:0;
+  }
+  .wrap{
+    max-width:900px;
+    margin:0 auto;
+    padding:34px 28px 40px 76px;
+    position:relative;
+    z-index:1;
+  }
+  @media (max-width:640px){
+    .wrap{padding:24px 16px 32px 44px;}
+    body::before{left:26px;}
+  }
+
+  header{margin-bottom:26px;}
+  .eyebrow{
+    font-family:'JetBrains Mono',monospace;
+    font-size:12px;
+    letter-spacing:0.14em;
+    text-transform:uppercase;
+    color:var(--pencil);
+    font-weight:700;
+    margin:0 0 6px 0;
+  }
+  h1{
+    font-family:'Caveat',cursive;
+    font-size:56px;
+    line-height:0.95;
+    margin:0 0 8px 0;
+    color:var(--ink);
+    font-weight:700;
+  }
+  h1 .underline{
+    text-decoration: underline;
+    text-decoration-style: wavy;
+    text-decoration-color: var(--bad);
+    text-decoration-thickness: 2px;
+  }
+  .sub{
+    font-size:15.5px;
+    color:var(--ink-soft);
+    max-width:58ch;
+    line-height:1.5;
+    margin:0;
+  }
+
+  /* Stat strip */
+  .stats{
+    display:flex; gap:10px; flex-wrap:wrap;
+    margin:22px 0 26px 0;
+  }
+  .stat{
+    background:#fff;
+    border:1px solid var(--rule);
+    border-radius:9px;
+    padding:9px 14px;
+    font-family:'JetBrains Mono',monospace;
+    font-size:13px;
+    color:var(--ink-soft);
+    box-shadow: 0 1px 0 rgba(43,43,49,0.05);
+  }
+  .stat b{color:var(--ink); font-size:15px;}
+
+  /* Practice card */
+  .stage{
+    display:none;
+  }
+  .stage.active{display:block;}
+
+  .card{
+    position:relative;
+    background:var(--sticky);
+    border:1px solid var(--sticky-edge);
+    border-radius:3px;
+    box-shadow:var(--shadow);
+    padding:34px 30px 28px 30px;
+    transform:rotate(-0.6deg);
+    max-width:560px;
+  }
+  .card::after{
+    content:"";
+    position:absolute;
+    top:-9px; left:38px;
+    width:64px; height:20px;
+    background:rgba(255,255,255,0.55);
+    border:1px solid rgba(255,255,255,0.7);
+    transform:rotate(-3deg);
+    border-radius:2px;
+  }
+  .progress-dots{
+    display:flex; gap:6px; margin-bottom:18px;
+  }
+  .dot{
+    width:9px;height:9px;border-radius:50%;
+    background:rgba(43,43,49,0.15);
+  }
+  .dot.done{background:var(--good);}
+  .dot.current{background:var(--ink); transform:scale(1.25);}
+
+  .listen-row{
+    display:flex; align-items:center; gap:14px; margin-bottom:6px;
+  }
+  .play-btn{
+    width:56px;height:56px;
+    border-radius:50%;
+    border:2px solid var(--ink);
+    background:#fff;
+    display:flex; align-items:center; justify-content:center;
+    cursor:pointer;
+    flex-shrink:0;
+    transition:transform 0.12s ease, background 0.12s ease;
+  }
+  .play-btn:hover{background:#fff8e6; transform:scale(1.05);}
+  .play-btn svg{width:22px;height:22px;}
+  .listen-text{
+    font-size:14px;
+    color:var(--ink-soft);
+  }
+  .listen-text .word-slot{
+    font-family:'JetBrains Mono',monospace;
+    font-weight:700;
+    color:var(--ink);
+  }
+  .hint-btn{
+    background:none;
+    border:none;
+    text-decoration:underline;
+    text-decoration-style:dotted;
+    color:var(--pencil);
+    cursor:pointer;
+    font-size:13px;
+    padding:0;
+    font-family:'Inter',sans-serif;
+  }
+  .sentence{
+    font-style:italic;
+    color:var(--ink-soft);
+    font-size:14.5px;
+    margin:10px 0 20px 0;
+    line-height:1.4;
+  }
+
+  .answer-row{
+    display:flex; gap:10px; margin-bottom:14px;
+  }
+  input[type=text]{
+    flex:1;
+    font-family:'JetBrains Mono',monospace;
+    font-size:20px;
+    padding:11px 14px;
+    border:2px solid var(--ink);
+    border-radius:6px;
+    background:#fffef9;
+    letter-spacing:0.03em;
+    color:var(--ink);
+  }
+  input[type=text]:focus{outline:3px solid #7ba0d9; outline-offset:1px;}
+  .check-btn, .next-btn{
+    font-family:'Inter',sans-serif;
+    font-weight:700;
+    font-size:15px;
+    padding:0 20px;
+    border-radius:6px;
+    border:2px solid var(--ink);
+    background:var(--ink);
+    color:var(--sticky);
+    cursor:pointer;
+    transition:opacity 0.12s ease;
+  }
+  .check-btn:hover, .next-btn:hover{opacity:0.85;}
+  .check-btn:disabled{opacity:0.4; cursor:not-allowed;}
+
+  .feedback{
+    display:none;
+    border-radius:8px;
+    padding:14px 16px;
+    margin-top:6px;
+    font-size:15px;
+    line-height:1.5;
+  }
+  .feedback.show{display:block;}
+  .feedback.correct{background:var(--good-bg); border:1px solid var(--good); color:#284d31;}
+  .feedback.incorrect{background:var(--bad-bg); border:1px solid var(--bad); color:#7c331f;}
+  .feedback .word-big{
+    font-family:'JetBrains Mono',monospace;
+    font-size:22px;
+    font-weight:700;
+    letter-spacing:0.02em;
+    margin:2px 0 8px 0;
+  }
+  .feedback .trap-note{
+    font-size:14px;
+    opacity:0.92;
+  }
+  .letter{
+    display:inline-block;
+    padding:0 1px;
+  }
+  .letter.trap{
+    text-decoration:underline;
+    text-decoration-style:wavy;
+    text-decoration-thickness:2px;
+    text-decoration-color:currentColor;
+    font-weight:800;
+  }
+
+  .next-btn{
+    margin-top:14px;
+    display:none;
+    background:var(--pencil);
+    border-color:var(--pencil);
+    color:#fff;
+  }
+  .next-btn.show{display:inline-block;}
+
+  /* Done screen */
+  .done-card{
+    background:var(--sticky-2);
+    border:1px solid var(--sticky-2-edge);
+    box-shadow:var(--shadow);
+    border-radius:3px;
+    padding:34px 30px;
+    max-width:560px;
+    transform:rotate(0.5deg);
+  }
+  .done-card h2{
+    font-family:'Caveat',cursive;
+    font-size:38px;
+    margin:0 0 6px 0;
+  }
+  .missed-list{
+    margin:16px 0 0 0;
+    padding:0;
+    list-style:none;
+  }
+  .missed-list li{
+    font-family:'JetBrains Mono',monospace;
+    font-size:14px;
+    padding:6px 0;
+    border-bottom:1px dashed rgba(43,43,49,0.2);
+  }
+  .restart-btn{
+    margin-top:20px;
+    font-family:'Inter',sans-serif;
+    font-weight:700;
+    font-size:15px;
+    padding:10px 22px;
+    border-radius:6px;
+    border:2px solid var(--ink);
+    background:#fff;
+    cursor:pointer;
+  }
+  .restart-btn:hover{background:var(--paper);}
+
+  /* Word reference board */
+  .board-title{
+    font-family:'Caveat',cursive;
+    font-size:30px;
+    margin:44px 0 14px 0;
+  }
+  .board{
+    display:grid;
+    grid-template-columns:repeat(auto-fill,minmax(150px,1fr));
+    gap:14px;
+  }
+  .note{
+    background:var(--sticky);
+    border:1px solid var(--sticky-edge);
+    border-radius:2px;
+    padding:14px 12px 12px 12px;
+    box-shadow:0 3px 8px rgba(43,43,49,0.12);
+    font-family:'JetBrains Mono',monospace;
+    font-size:16px;
+    font-weight:700;
+    text-align:center;
+    cursor:default;
+  }
+  .note:nth-child(3n+1){transform:rotate(-1.4deg);}
+  .note:nth-child(3n+2){transform:rotate(0.8deg); background:var(--sticky-2); border-color:var(--sticky-2-edge);}
+  .note:nth-child(3n){transform:rotate(-0.4deg);}
+  .note .trap{
+    text-decoration:underline;
+    text-decoration-style:wavy;
+    text-decoration-color:var(--bad);
+    text-decoration-thickness:2px;
+  }
+  .note .why{
+    display:block;
+    font-family:'Inter',sans-serif;
+    font-weight:400;
+    font-size:11.5px;
+    color:var(--ink-soft);
+    margin-top:6px;
+    line-height:1.35;
+  }
+
+  footer{
+    margin-top:40px;
+    font-size:12.5px;
+    color:var(--ink-soft);
+    max-width:60ch;
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <p class="eyebrow">Handwritten word list, turned into practice</p>
+    <h1>Sound <span class="underline">Traps</span></h1>
+    <p class="sub">Some words just don't sound the way they're spelled. This drills the exact part of each word that trips you up when you sound it out &mdash; not the whole word.</p>
+  </header>
+
+  <div class="stats">
+    <div class="stat">Round <b id="statRound">1</b> / <b id="statTotal">12</b></div>
+    <div class="stat">Correct <b id="statCorrect">0</b></div>
+    <div class="stat">Needs another look <b id="statMissed">0</b></div>
+  </div>
+
+  <section class="stage active" id="stagePlay">
+    <div class="card">
+      <div class="progress-dots" id="dots"></div>
+
+      <div class="listen-row">
+        <button class="play-btn" id="playBtn" aria-label="Hear the word again" title="Hear the word">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#2B2B31" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
+        </button>
+        <div class="listen-text">Tap to hear it, then type what you hear.<br><span class="word-slot" id="wordSlotLabel">Word <span id="wordNumLabel">1</span> of 12</span></div>
+      </div>
+      <p class="sentence" id="sentenceLine"></p>
+
+      <div class="answer-row">
+        <input type="text" id="answerInput" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="type the word here" aria-label="Type your spelling">
+        <button class="check-btn" id="checkBtn">Check</button>
+      </div>
+
+      <button class="hint-btn" id="hintBtn">Show a hint about the tricky part</button>
+
+      <div class="feedback" id="feedback">
+        <div class="word-big" id="feedbackWord"></div>
+        <div class="trap-note" id="feedbackNote"></div>
+      </div>
+
+      <div>
+        <button class="next-btn" id="nextBtn">Next word →</button>
+      </div>
+    </div>
+  </section>
+
+  <section class="stage" id="stageDone">
+    <div class="done-card">
+      <h2>That's the set!</h2>
+      <p id="doneSummary"></p>
+      <ul class="missed-list" id="missedList"></ul>
+      <button class="restart-btn" id="restartBtn">Practice again</button>
+    </div>
+  </section>
+
+  <h2 class="board-title">Reference board — every tricky part underlined</h2>
+  <div class="board" id="board"></div>
+
+  <footer>
+    Words pulled straight from her own study cards. The wavy underline marks the part that doesn't match how it sounds &mdash; that's the part worth double-checking, not the whole word.
+  </footer>
+</div>
+
+<script>
+const WORDS = [
+  { word:"negative", trapStart:2, trapEnd:5, why:"The middle sounds like 'negitive' — but it's spelled with an a: neg-A-tive.", sentence:"His comment had a negative tone." },
+  { word:"grief", trapStart:2, trapEnd:4, why:"Sounds like it could be 'greif' — but i comes before e here: gr-IE-f.", sentence:"She felt grief after the loss." },
+  { word:"success", trapStart:1, trapEnd:3, why:"Double c, then double s: suc-cess, not 'sucsess' or one c.", sentence:"Her hard work led to success." },
+  { word:"volunteer", trapStart:6, trapEnd:9, why:"The ending sounds like 'ear' or 'ere' but it's spelled -eer: volunt-EER.", sentence:"He signed up to volunteer at the shelter." },
+  { word:"explicitly", trapStart:5, trapEnd:7, why:"That middle sound is really /s/, but it's spelled with ci: expli-CI-tly.", sentence:"She explicitly said not to wait." },
+  { word:"grieving", trapStart:2, trapEnd:4, why:"Same trap as grief — i before e: gr-IE-ving.", sentence:"He was grieving the loss of his dog." },
+  { word:"christmas", trapStart:5, trapEnd:6, why:"The t is silent — you don't hear it, but it's still there: Chris-T-mas.", sentence:"We put up the tree before Christmas." },
+  { word:"beliefs", trapStart:3, trapEnd:5, why:"Another i-before-e word: bel-IE-fs, not 'beleifs'.", sentence:"They shared similar beliefs." },
+  { word:"candidate", trapStart:3, trapEnd:4, why:"Most people don't pronounce the second syllable's i clearly, so it gets dropped — but it's there: can-DI-date.", sentence:"She is a strong candidate for the job." },
+  { word:"depends", trapStart:0, trapEnd:2, why:"The first syllable sounds like 'dih' or 'duh', but it's spelled de-: DE-pends.", sentence:"It depends on the weather." },
+  { word:"lightning", trapStart:5, trapEnd:5, why:"No e before the n — it's light + ning fused together, not 'lightening'.", sentence:"The lightning lit up the whole sky." },
+  { word:"attachment", trapStart:1, trapEnd:3, why:"Double t: at-TA-chment, easy to write with just one.", sentence:"She sent the file as an attachment." }
+];
+
+let order = [];
+let idx = 0;
+let correctCount = 0;
+let missed = [];
+let checked = false;
+
+function shuffledOrder(){
+  const a = WORDS.map((_,i)=>i);
+  for(let i=a.length-1;i>0;i--){
+    const j = Math.floor(Math.random()*(i+1));
+    [a[i],a[j]]=[a[j],a[i]];
+  }
+  return a;
+}
+
+function speak(word){
+  if(!('speechSynthesis' in window)) return;
+  window.speechSynthesis.cancel();
+  const u = new SpeechSynthesisUtterance(word);
+  u.rate = 0.82;
+  u.pitch = 1.0;
+  window.speechSynthesis.speak(u);
+}
+
+function renderDots(){
+  const dots = document.getElementById('dots');
+  dots.innerHTML = '';
+  order.forEach((_,i)=>{
+    const d = document.createElement('div');
+    d.className = 'dot' + (i < idx ? ' done' : (i === idx ? ' current' : ''));
+    dots.appendChild(d);
+  });
+}
+
+function currentEntry(){ return WORDS[order[idx]]; }
+
+function loadWord(){
+  checked = false;
+  const entry = currentEntry();
+  document.getElementById('wordNumLabel').textContent = (idx+1);
+  document.getElementById('statTotal').textContent = order.length;
+  document.getElementById('statRound').textContent = idx+1;
+  document.getElementById('sentenceLine').textContent = '"' + entry.sentence + '"';
+  document.getElementById('answerInput').value = '';
+  document.getElementById('answerInput').disabled = false;
+  document.getElementById('checkBtn').disabled = false;
+  document.getElementById('feedback').classList.remove('show','correct','incorrect');
+  document.getElementById('nextBtn').classList.remove('show');
+  document.getElementById('hintBtn').style.display = 'inline';
+  renderDots();
+  document.getElementById('answerInput').focus();
+  speak(entry.word);
+}
+
+function markedWord(word, trapStart, trapEnd, correctFlag){
+  let out = '';
+  for(let i=0;i<word.length;i++){
+    const inTrap = i >= trapStart && i <= trapEnd;
+    out += '<span class="letter' + (inTrap?' trap':'') + '">' + word[i] + '</span>';
+  }
+  return out;
+}
+
+function checkAnswer(){
+  if(checked) return;
+  const entry = currentEntry();
+  const val = document.getElementById('answerInput').value.trim().toLowerCase();
+  const isCorrect = val === entry.word.toLowerCase();
+  checked = true;
+  document.getElementById('answerInput').disabled = true;
+  document.getElementById('checkBtn').disabled = true;
+  document.getElementById('hintBtn').style.display = 'none';
+
+  const fb = document.getElementById('feedback');
+  fb.classList.add('show');
+  fb.classList.remove('correct','incorrect');
+  fb.classList.add(isCorrect ? 'correct' : 'incorrect');
+
+  document.getElementById('feedbackWord').innerHTML = markedWord(entry.word, entry.trapStart, entry.trapEnd);
+  document.getElementById('feedbackNote').textContent = (isCorrect ? "Nice — " : "Close. ") + entry.why;
+
+  if(isCorrect){
+    correctCount++;
+  } else {
+    missed.push(entry.word);
+  }
+  document.getElementById('statCorrect').textContent = correctCount;
+  document.getElementById('statMissed').textContent = missed.length;
+
+  document.getElementById('nextBtn').classList.add('show');
+  document.getElementById('nextBtn').textContent = (idx === order.length-1) ? "See results →" : "Next word →";
+}
+
+function nextWord(){
+  idx++;
+  if(idx >= order.length){
+    showDone();
+  } else {
+    loadWord();
+  }
+}
+
+function showDone(){
+  document.getElementById('stagePlay').classList.remove('active');
+  document.getElementById('stageDone').classList.add('active');
+  const total = order.length;
+  document.getElementById('doneSummary').textContent =
+    correctCount + " out of " + total + " right on the first try.";
+  const list = document.getElementById('missedList');
+  list.innerHTML = '';
+  if(missed.length === 0){
+    const li = document.createElement('li');
+    li.textContent = "Every word, first try. Nothing to flag.";
+    list.appendChild(li);
+  } else {
+    missed.forEach(w=>{
+      const li = document.createElement('li');
+      li.textContent = w + " — worth another pass";
+      list.appendChild(li);
+    });
+  }
+}
+
+function restart(){
+  order = shuffledOrder();
+  idx = 0;
+  correctCount = 0;
+  missed = [];
+  document.getElementById('statCorrect').textContent = 0;
+  document.getElementById('statMissed').textContent = 0;
+  document.getElementById('stageDone').classList.remove('active');
+  document.getElementById('stagePlay').classList.add('active');
+  loadWord();
+}
+
+function buildBoard(){
+  const board = document.getElementById('board');
+  board.innerHTML = '';
+  WORDS.forEach(entry=>{
+    const note = document.createElement('div');
+    note.className = 'note';
+    let html = '';
+    for(let i=0;i<entry.word.length;i++){
+      const inTrap = i >= entry.trapStart && i <= entry.trapEnd;
+      html += inTrap ? ('<span class="trap">'+entry.word[i]+'</span>') : entry.word[i];
+    }
+    html += '<span class="why">' + entry.why.split(' — ')[0].split(' but ')[0] + '</span>';
+    note.innerHTML = html;
+    board.appendChild(note);
+  });
+}
+
+document.getElementById('playBtn').addEventListener('click', ()=> speak(currentEntry().word));
+document.getElementById('checkBtn').addEventListener('click', checkAnswer);
+document.getElementById('nextBtn').addEventListener('click', nextWord);
+document.getElementById('restartBtn').addEventListener('click', restart);
+document.getElementById('hintBtn').addEventListener('click', ()=>{
+  const entry = currentEntry();
+  document.getElementById('sentenceLine').textContent =
+    '"' + entry.sentence + '"  —  hint: ' + entry.word.length + ' letters, tricky part is in the middle-to-end.';
+});
+document.getElementById('answerInput').addEventListener('keydown', (e)=>{
+  if(e.key === 'Enter'){
+    if(!checked) checkAnswer(); else nextWord();
+  }
+});
+
+order = shuffledOrder();
+loadWord();
+buildBoard();
+</script>
+</body>
+</html>
