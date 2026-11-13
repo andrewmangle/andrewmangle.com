@@ -227,6 +227,11 @@ main{padding-top:80px;min-height:100vh;}
   transform:translate(-50%,-50%);width:5px;height:5px;background:#fff;border-radius:50%;}
 .branch-label{font-size:14px;color:var(--cream-dim);line-height:1.5;}
 .branch-card.selected .branch-label{color:var(--cream);}
+/* Year cards: a clear selected state. Inverted colors and a solid circle. */
+.branch-card[data-wtype="year"].selected{background:var(--gold);border-color:var(--gold);}
+.branch-card[data-wtype="year"].selected .branch-label{color:var(--ink);font-weight:600;}
+.branch-card[data-wtype="year"].selected .branch-radio{border-color:var(--ink);background:var(--ink);}
+.branch-card[data-wtype="year"].selected .branch-radio::after{display:none;}
 .branch-tag{display:inline-block;font-size:10px;font-weight:700;letter-spacing:.1em;
   text-transform:uppercase;background:var(--gold);color:var(--ink);
   padding:2px 8px;border-radius:3px;margin-right:6px;}
@@ -955,6 +960,7 @@ main{padding-top:80px;min-height:100vh;}
     <div id="context-note" style="display:none;"></div>
 
         <div id="ha-reveal-wrap" style="margin-top:40px;"></div>
+        <div id="route-cta-wrap" style="margin-top:20px;"></div>
 
     <div class="prelim-note">
       <p>
@@ -1236,6 +1242,7 @@ main{padding-top:80px;min-height:100vh;}
   <input type="hidden" name="acquisition_source" id="fs-source">
   <input type="hidden" name="all_answers" id="fs-answers">
   <input type="hidden" name="submitted_at" id="fs-time">
+  <input type="hidden" name="target_job" id="fs-target">
 </form>
 
 <script>
@@ -1248,7 +1255,12 @@ const state = {
   enrollmentContext: '',
   welcomeYear: '',
   reflectionSkipped: false,
+  route: { job: '', jobTitle: '', program: '', programName: '', place: '', plan: '' },
 };
+
+// Career Route 90-day plan page. Set this once Career Route is on GitHub Pages, e.g.
+// 'https://YOURNAME.github.io/career-route/plan.html'. Links from Major to Paycheck also pass it in the URL.
+const CAREER_ROUTE_PLAN_URL = 'https://andrewmangle.github.io/major-to-paycheck/site/plan.html';
 
 const DIMS = [
   { id:'d1', label:'Work Experience & Applied Proof',    qs:['q1','q2','q3'], max:25 },
@@ -1400,7 +1412,7 @@ function buildScoreReveal() {
     const brows = document.getElementById('breakdown-rows');
     brows.innerHTML = '';
     const scores = [s.d1,s.d2,s.d3,s.d4,s.d5,s.d6,s.d7];
-    const maxScores = [25,20,18,15,10,7,5];
+    const maxScores = [25,20,18,18,10,7,5];
 
     // Reflection bonus note
     const reflBonusEarned = scoreReflectionQuality();
@@ -1463,6 +1475,23 @@ function buildScoreReveal() {
     }
   }
 
+    const rw = document.getElementById('route-cta-wrap');
+    if (rw) {
+      const planBase = state.route.plan || CAREER_ROUTE_PLAN_URL;
+      if (planBase) {
+        const q = new URLSearchParams({ d: [s.d1, s.d2, s.d3, s.d4, s.d5, s.d6, s.d7].join(',') });
+        if (state.route.job) { q.set('job', state.route.job); q.set('program', state.route.program); q.set('place', state.route.place); }
+        const label = state.route.jobTitle ? 'Build your 90-day route to ' + state.route.jobTitle.split(' / ')[0] : 'Build your 90-day route';
+        // Built with DOM properties, not innerHTML: the job title comes from the link and must not run as HTML
+        const a = document.createElement('a');
+        a.href = planBase + '?' + q.toString();
+        a.target = '_blank';
+        a.rel = 'noopener';
+        a.style.cssText = 'display:inline-block;background:var(--gold);color:var(--ink);font-weight:700;padding:14px 18px;border-radius:6px;text-decoration:none;';
+        a.textContent = label + ' →';
+        rw.replaceChildren(a);
+      }
+    }
     const hw = document.getElementById('ha-reveal-wrap');
     const isHire = s.total >= 90;
     hw.innerHTML = `<div class="ha-reveal ${isHire ? 'hire' : 'aspire'}">
@@ -1658,7 +1687,8 @@ function handleYearChange(val) {
   // Reset both
   seniorBranch.classList.remove('visible');
   gradBranch.classList.remove('visible');
-  document.querySelectorAll('.branch-card').forEach(c => c.classList.remove('selected'));
+  // Clear only the follow-up options; the year card just clicked must stay selected
+  document.querySelectorAll('.branch-card[data-branch]').forEach(c => c.classList.remove('selected'));
   state.enrollmentContext = '';
 
   if (val === 'Senior' || val === 'Recent Graduate (within 1 year)') {
@@ -1746,6 +1776,7 @@ function submitForm() {
     : (state.reflectionSkipped ? 'Skipped' : 'Not provided');
   document.getElementById('fs-ha').value       = s.total >= 90 ? 'HIRE' : 'ASPIRE';
   document.getElementById('fs-time').value     = new Date().toLocaleString();
+  document.getElementById('fs-target').value   = state.route.jobTitle ? state.route.jobTitle + (state.route.place ? ' (' + state.route.place + ')' : '') : 'Not specified';
 
   const breakdown = DIMS.map((d,i) => {
     const scores = [s.d1,s.d2,s.d3,s.d4,s.d5,s.d6,s.d7];
@@ -1791,6 +1822,17 @@ function submitForm() {
 
 // ── INIT ───────────────────────────────────────────────────────
 document.addEventListener('DOMContentLoaded', () => {
+  try {
+    const p = new URLSearchParams(location.search);
+    state.route = { job: p.get('job') || '', jobTitle: p.get('jobtitle') || '', program: p.get('program') || '',
+                    programName: p.get('programname') || '', place: p.get('place') || '',
+                    // Only accept a plan page on Andrew's GitHub Pages site, so a link cannot point the button elsewhere
+                    plan: /^https:\/\/andrewmangle\.github\.io\/[\w\/.-]*$/.test(p.get('plan') || '') ? p.get('plan') : '' };
+    const ind = document.getElementById('c-industry');
+    if (ind && state.route.jobTitle && !ind.value) ind.value = state.route.jobTitle;
+    const maj = document.getElementById('c-major');
+    if (maj && state.route.programName && !maj.value) maj.value = state.route.programName;
+  } catch (e) { /* no target job in the link */ }
   // Pre-fill year select if already chosen on welcome screen
   const yearSelect = document.getElementById('c-year');
   if (yearSelect && state.welcomeYear) {
