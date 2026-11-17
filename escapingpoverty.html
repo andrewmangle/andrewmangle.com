@@ -1,0 +1,614 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Escaping Poverty</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@600;800;900&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+/* Layout idea: a storefront-signage board (condensed caps, hazard colors) beside a thermal-receipt ledger. Red = money leaving, green = a door opening. */
+:root{
+  --paper:#e7ebe3; --panel:#f6f8f3; --ink:#15211c; --muted:#56645d; --line:#c3cbc1;
+  --hard:#b62f1b; --on-hard:#fff; --sign:#f0bf2c; --on-sign:#15211c; --door:#0c6b50; --on-door:#fff;
+  --felt:#15211c; --on-felt:#f3f5ee;
+  --display:"Big Shoulders Display","Arial Narrow",Impact,sans-serif;
+  --body:"IBM Plex Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,Menlo,Consolas,monospace;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --paper:#0e1613; --panel:#17221e; --ink:#e6ece4; --muted:#93a39a; --line:#2d3c35;
+    --hard:#e4573f; --on-hard:#1a0c08; --sign:#f0bf2c; --on-sign:#15211c; --door:#43b891; --on-door:#06231a;
+    --felt:#070c0a; --on-felt:#e6ece4; color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --paper:#0e1613; --panel:#17221e; --ink:#e6ece4; --muted:#93a39a; --line:#2d3c35;
+  --hard:#e4573f; --on-hard:#1a0c08; --sign:#f0bf2c; --on-sign:#15211c; --door:#43b891; --on-door:#06231a;
+  --felt:#070c0a; --on-felt:#e6ece4; color-scheme:dark;
+}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:var(--paper);color:var(--ink);font-family:var(--body);font-size:16px;line-height:1.5;-webkit-text-size-adjust:100%}
+.wrap{max-width:1180px;margin:0 auto;padding:20px 16px 56px}
+h1,h2,h3{font-family:var(--display);text-transform:uppercase;letter-spacing:.01em;line-height:.95;margin:0;text-wrap:balance}
+a{color:var(--door)}
+button{font:inherit;color:inherit}
+:focus-visible{outline:3px solid var(--sign);outline-offset:2px}
+
+.mast{display:flex;flex-wrap:wrap;align-items:flex-end;gap:10px 28px;margin-bottom:18px;border-bottom:3px solid var(--ink);padding-bottom:14px}
+.mast h1{font-size:clamp(44px,8vw,84px);font-weight:900}
+.mast h1 span{background:var(--sign);color:var(--on-sign);padding:0 .12em}
+.mast p{margin:0;max-width:44ch;color:var(--muted);font-size:15px}
+.mast p b{color:var(--ink)}
+
+.table{display:grid;grid-template-columns:minmax(0,620px) minmax(0,1fr);gap:20px;align-items:start}
+.side{display:flex;flex-direction:column;gap:14px;min-width:0}
+
+/* board */
+.board{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));grid-template-rows:repeat(7,minmax(0,1fr));aspect-ratio:1;gap:3px;background:var(--felt);padding:3px;border-radius:6px}
+.cell{position:relative;background:var(--panel);border-radius:2px;display:flex;flex-direction:column;justify-content:space-between;padding:4px 5px;min-width:0;overflow:hidden;border-top:6px solid var(--hard)}
+.cell .code{font-family:var(--display);font-weight:800;font-size:clamp(11px,2.5vw,20px);line-height:1;letter-spacing:.02em}
+.cell .nm{font-size:10px;line-height:1.15;color:var(--muted)}
+.cell.tax{border-top-color:var(--sign)}
+.cell.door{background:var(--door);color:var(--on-door);border-top-color:var(--door)}
+.cell.door .nm{color:inherit;opacity:.85}
+.cell.door.met::after{content:"";position:absolute;right:5px;top:1px;width:9px;height:9px;border-radius:50%;background:var(--sign)}
+.cell.corner{background:var(--sign);color:var(--on-sign);border-top-color:var(--sign)}
+.cell.corner .nm{color:inherit}
+.cell.here{box-shadow:inset 0 0 0 3px var(--ink)}
+.cell.door.here,.cell.corner.here{box-shadow:inset 0 0 0 3px var(--on-felt)}
+.cell.flash{animation:flash .5s}
+@keyframes flash{50%{filter:brightness(1.5)}}
+.tok{position:absolute;right:4px;bottom:4px;width:26%;aspect-ratio:1;border-radius:50%;background:var(--ink);border:3px solid var(--sign);box-shadow:0 1px 4px rgba(0,0,0,.5)}
+.cell.door .tok,.cell.corner .tok{background:var(--felt)}
+.mid{grid-area:2/2/7/7;color:var(--on-felt);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:clamp(6px,2vw,16px);text-align:center;padding:8px}
+.mid .rule{font-family:var(--display);font-weight:900;font-size:clamp(26px,6.4vw,60px);line-height:.9;text-transform:uppercase}
+.mid .rule em{font-style:normal;color:var(--sign)}
+.mid .month{font-family:var(--mono);font-size:clamp(11px,2vw,13px);letter-spacing:.08em;text-transform:uppercase;opacity:.8}
+.dice{display:flex;gap:10px}
+.die{width:clamp(38px,8vw,56px);aspect-ratio:1;background:var(--on-felt);border-radius:8px;display:grid;grid-template:repeat(3,1fr)/repeat(3,1fr);padding:14%}
+.die i{border-radius:50%;margin:12%}
+.die i.on{background:var(--felt)}
+.legend{display:flex;flex-wrap:wrap;gap:6px 16px;font-size:12.5px;color:var(--muted);margin-top:8px}
+.legend span::before{content:"";display:inline-block;width:11px;height:11px;margin-right:6px;vertical-align:-1px;border-radius:2px;background:var(--c)}
+
+/* status */
+.status{background:var(--panel);border:1px solid var(--line);border-radius:6px;padding:12px 14px;display:grid;gap:10px}
+.nums{display:flex;gap:22px;align-items:flex-end;flex-wrap:wrap}
+.num small{display:block;font-family:var(--mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.num b{font-family:var(--display);font-weight:800;font-size:38px;line-height:1;font-variant-numeric:tabular-nums}
+.num.debt b{color:var(--hard)}
+.who{margin-left:auto;text-align:right;font-size:13px;color:var(--muted)}
+.who b{display:block;color:var(--ink);font-size:15px}
+.bar{height:10px;background:var(--line);border-radius:5px;overflow:hidden}
+.bar i{display:block;height:100%;background:var(--door);width:0;transition:width .4s}
+.barcap{display:flex;justify-content:space-between;font-size:12.5px;color:var(--muted);margin-top:4px;gap:8px}
+.tools{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px}
+.tool{border:1.5px dashed var(--line);border-radius:4px;padding:5px 6px;font-size:11.5px;line-height:1.2;color:var(--muted)}
+.tool b{display:block;font-family:var(--display);font-size:15px;letter-spacing:.03em}
+.tool.on{border:1.5px solid var(--door);background:var(--door);color:var(--on-door)}
+.flags{display:flex;flex-wrap:wrap;gap:6px;font-size:12px}
+.flag{border:1px solid var(--line);border-radius:99px;padding:1px 9px;color:var(--muted)}
+.flag.bad{border-color:var(--hard);color:var(--hard)}
+
+/* card */
+.card{background:var(--panel);border:1px solid var(--line);border-left:8px solid var(--ink);border-radius:6px;padding:14px 16px 16px;min-height:230px;display:flex;flex-direction:column;gap:10px}
+.card.hard{border-left-color:var(--hard)} .card.door{border-left-color:var(--door)} .card.tax,.card.corner{border-left-color:var(--sign)}
+.kick{font-family:var(--mono);font-size:11.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.card h2{font-size:34px;font-weight:800}
+.card p{margin:0;max-width:62ch}
+.fact{font-size:13.5px;color:var(--muted);border-top:1px dashed var(--line);padding-top:8px}
+.change{font-size:14px;background:var(--door);color:var(--on-door);padding:8px 10px;border-radius:4px}
+.onway{font-family:var(--mono);font-size:12.5px;border:1px dashed var(--line);border-radius:4px;padding:6px 10px}
+.onway div{display:flex;justify-content:space-between;gap:12px}
+.acts{display:flex;flex-wrap:wrap;gap:8px;margin-top:auto;padding-top:4px}
+.btn{font-family:var(--display);font-weight:800;font-size:20px;letter-spacing:.03em;text-transform:uppercase;background:var(--ink);color:var(--paper);border:0;border-radius:4px;padding:10px 18px;cursor:pointer}
+.btn:hover{filter:brightness(1.15)}
+.btn.alt{background:transparent;color:var(--ink);box-shadow:inset 0 0 0 2px var(--ink)}
+.btn.roll{background:var(--sign);color:var(--on-sign)}
+.btn:disabled{opacity:.4;cursor:not-allowed}
+.sub{font-size:12.5px;color:var(--hard);flex-basis:100%}
+.note{font-size:14.5px;padding:8px 10px;border-left:4px solid var(--hard);background:color-mix(in srgb,var(--hard) 9%,transparent)}
+.note.door{border-left-color:var(--door);background:color-mix(in srgb,var(--door) 10%,transparent)}
+.picks{display:grid;gap:8px}
+.pick{text-align:left;background:transparent;border:1.5px solid var(--line);border-radius:5px;padding:9px 12px;cursor:pointer;display:grid;gap:2px}
+.pick:hover{border-color:var(--ink)}
+.pick b{font-family:var(--display);font-size:22px;text-transform:uppercase;letter-spacing:.02em;line-height:1}
+.pick small{font-family:var(--mono);font-size:11.5px;color:var(--muted);text-transform:uppercase;letter-spacing:.06em}
+.pick span{font-size:13.5px;color:var(--muted)}
+.tally{display:grid;grid-template-columns:1fr auto;gap:2px 16px;font-family:var(--mono);font-size:13px;font-variant-numeric:tabular-nums}
+.tally .tot{border-top:1px solid var(--ink);padding-top:3px;font-weight:500}
+
+/* receipt */
+.rcpt{background:var(--panel);border:1px solid var(--line);border-radius:6px;padding:10px 14px;font-family:var(--mono);font-size:12.5px}
+.rcpt h3{font-family:var(--mono);font-size:11.5px;font-weight:500;letter-spacing:.08em;color:var(--muted);margin-bottom:6px}
+.rows{max-height:230px;overflow-y:auto;display:grid;gap:1px}
+.row{display:grid;grid-template-columns:2.6em 1fr auto;gap:8px;align-items:baseline;font-variant-numeric:tabular-nums}
+.row .m{color:var(--muted)} .row .a.neg{color:var(--hard)} .row .a.pos{color:var(--door)}
+.empty{color:var(--muted)}
+
+/* guide */
+.guide{margin-top:44px;display:grid;gap:28px}
+.guide h2{font-size:clamp(32px,5vw,48px);font-weight:900}
+.guide .lede{max-width:65ch;margin:8px 0 0;color:var(--muted)}
+.rules{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:12px;margin-top:14px}
+.rules div{border-top:6px solid var(--hard);background:var(--panel);padding:10px 12px;font-size:14.5px}
+.rules div b{display:block;font-family:var(--display);font-size:21px;text-transform:uppercase;line-height:1.05;margin-bottom:4px}
+.pgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:12px;margin-top:14px}
+.p{background:var(--panel);border:1px solid var(--line);border-top:6px solid var(--door);padding:12px 14px;display:flex;flex-direction:column;gap:6px;font-size:14.5px}
+.p h3{font-size:24px;font-weight:800}
+.p .kick{font-size:11px}
+.p p{margin:0}
+.p .tg{display:flex;gap:6px;flex-wrap:wrap;margin-top:auto;padding-top:4px}
+.p .tg span{font-family:var(--display);font-size:13px;letter-spacing:.04em;text-transform:uppercase;background:var(--door);color:var(--on-door);padding:1px 7px;border-radius:3px}
+.p.off{border-top-color:var(--sign)}
+.src{font-size:13.5px;color:var(--muted);max-width:75ch}
+.src li{margin-bottom:3px}
+
+@media (max-width:900px){
+  .table{grid-template-columns:minmax(0,1fr)}
+  .side{display:contents}
+  .status{order:1} .boardwrap{order:2} .card{order:3} .rcpt{order:4}
+  .cell{padding:3px}
+  .cell .nm{display:none}
+  .cell{justify-content:center;align-items:center;border-top-width:4px}
+  .tok{width:34%;right:2px;bottom:2px;border-width:2px}
+  .num b{font-size:32px}
+  .tools{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media (prefers-reduced-motion: reduce){.cell.flash{animation:none}.bar i{transition:none}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="mast">
+    <h1>Escaping <span>Poverty</span></h1>
+    <p><b>The property game, run backwards.</b> Pass the first corner and you pay $200. Fees, taxes, and lenders take a cut of every move. Green spaces are real Interledger partners opening a door.</p>
+  </header>
+
+  <main class="table">
+    <div class="boardwrap">
+      <div class="board" id="board" aria-label="Game board">
+        <div class="mid">
+          <div class="rule">Do not<br>collect <em>$200</em></div>
+          <div class="dice" aria-hidden="true"><div class="die" id="d1"></div><div class="die" id="d2"></div></div>
+          <div class="month" id="month">12 months to get out</div>
+        </div>
+      </div>
+      <div class="legend">
+        <span style="--c:var(--hard)">Hardship</span>
+        <span style="--c:var(--sign)">Tax or corner</span>
+        <span style="--c:var(--door)">Open door, a real partner</span>
+      </div>
+    </div>
+
+    <div class="side">
+      <section class="status" aria-label="Your money">
+        <div class="nums">
+          <div class="num"><small>Cash</small><b id="cash">$250</b></div>
+          <div class="num debt"><small>Debt</small><b id="debt">$0</b></div>
+          <div class="who" id="who"><b>Choose a player</b>to begin</div>
+        </div>
+        <div>
+          <div class="bar"><i id="bar"></i></div>
+          <div class="barcap"><span>Escape: $1,000 saved and no debt</span><span id="debtkind"></span></div>
+        </div>
+        <div class="tools" id="tools"></div>
+        <div class="flags" id="flags"></div>
+      </section>
+      <section class="card" id="card" aria-live="polite"></section>
+      <section class="rcpt" aria-label="Receipt">
+        <h3>RECEIPT · EVERY DOLLAR IN AND OUT</h3>
+        <div class="rows" id="rows"><div class="empty">Nothing yet.</div></div>
+      </section>
+    </div>
+  </main>
+
+  <section class="guide" id="guide">
+    <div>
+      <h2>How the board is rigged</h2>
+      <p class="lede">Nothing on this board is invented for effect. Each hardship is a cost that people without access to digital financial services pay and that people with access do not.</p>
+      <div class="rules">
+        <div><b>Every lap costs $200</b>Rent comes due each time you pass the first corner. Payday is halfway round, and it is smaller than the rent plus everything in between.</div>
+        <div><b>You are taxed every time</b>Payroll tax on the way in, sales tax on the way out, and a 3% cut to cash your own paycheck.</div>
+        <div><b>Poor people buy twice</b>Cheap boots wear out and get bought again. A car you cannot repair docks your pay every month.</div>
+        <div><b>Your lender is a predator</b>Fall short and a storefront loan covers it with a 15% fee and 20% interest a month, then takes half of each paycheck.</div>
+        <div><b>Borders cost extra</b>Play as Mateo. Money sent home passes through middlemen who are paid before your family is.</div>
+        <div><b>Doors change the math</b>Each green space connects you to a tool: an account, fair transfers, fair credit, or market access. The receipt shows what each one saves.</div>
+      </div>
+    </div>
+    <div>
+      <h2>Who is opening the doors</h2>
+      <p class="lede">The Interledger Foundation funds organizations that connect excluded people to an open payment network. These are the eight on the board, followed by others in the same ecosystem.</p>
+      <div class="pgrid" id="pgrid"></div>
+    </div>
+    <div>
+      <h2>Sources</h2>
+      <ul class="src">
+        <li>Interledger Foundation, <a href="https://interledger.org/news/announcing-twelve-recipients-our-financial-services-awards">twelve Financial Services award recipients</a> and <a href="https://interledger.org/grant/grantee-directory/all/financial-services/3">grantee directory</a></li>
+        <li>The Paypers, <a href="https://thepaypers.com/payments-general/peoples-clearinghouse-partners-with-interledger-foundation--1269455">People's Clearinghouse partners with Interledger Foundation</a></li>
+        <li>Interledger Foundation, <a href="https://interledger.org/news/grantee-spotlight-kanzu-microloans-bridges-financial-divide-uganda">Kanzu Microloans grantee spotlight</a> and <a href="https://interledger.org/news/transforming-financial-access">Transforming Financial Access</a></li>
+        <li>Interledger Foundation, <a href="https://interledger.org/news/interledger-foundation-partners-waag-and-here-support">partnership with Waag and Here to Support</a>; Waag Futurelab, <a href="https://waag.org/en/project/trust-based-banking/">Trust-based Banking</a></li>
+        <li>Tech Economy, <a href="https://techeconomy.ng/interledger-foundation-funds-eight-initiatives/">Interledger Foundation funds eight initiatives</a> (Paysys Labs, BessPay, Kanzu Finance)</li>
+        <li>PaymentsJournal, <a href="https://www.paymentsjournal.com/interledger-steps-up-to-foster-cross-border-payments-in-130-countries/amp/">Interledger and Chimoney in 130 countries</a></li>
+        <li>Business Wire, <a href="https://www.businesswire.com/news/home/20210414005467/en">Interledger Foundation launch</a> (Coil, Ripple, Grant for the Web, Mojaloop)</li>
+        <li>South African Reserve Bank conference paper citing World Bank Remittance Prices Worldwide, <a href="https://www.resbank.co.za/content/dam/sarb/what-we-do/payments-and-settlements/cross-border-payments-conference/documents/paper-cost-patterns-remittance.pdf">Q1 2025 remittance costs</a></li>
+      </ul>
+      <p class="src">Dollar amounts in the game are scaled for play. The mechanisms and the partner descriptions are real. Some partner projects are research or pilots and are described as such.</p>
+    </div>
+  </section>
+</div>
+
+<script>
+const CFG = { GOAL: 1000, MAXM: 12, CAP: 1500, RENT: 200 };
+
+const CHARS = {
+  renee: { name: 'Renee', role: 'Warehouse picker', wage: 295, side: 0, sideMkt: 70, remit: 0, cash: 250,
+    blurb: 'Paid by paper check. No bank account, no savings cushion, one car that has to keep running.' },
+  asha: { name: 'Asha', role: 'Part-time cleaner and seamstress', wage: 215, side: 50, sideMkt: 150, remit: 0, cash: 250,
+    blurb: 'She sews clothing people want to buy. Without a way to take digital payments, she sells only to neighbors with cash.' },
+  mateo: { name: 'Mateo', role: 'Immigrant construction laborer', wage: 450, side: 0, sideMkt: 70, remit: 150, cash: 250,
+    blurb: 'Earns more per hour, but sends $150 home every payday through a transfer counter that takes its cut first. Hardest start.' }
+};
+
+const TOOLS = {
+  acct: { name: 'Account', does: 'No check-cashing fees. Bills build a payment history.' },
+  send: { name: 'Fair transfers', does: 'Money reaches family at cost, not at a markup.' },
+  cred: { name: 'Fair credit', does: 'Emergencies cost 2% a month, not 20%.' },
+  mkt: { name: 'Market access', does: 'You can accept digital payments for what you make.' }
+};
+
+const SP = [
+  { t: 'corner', k: 'rent', code: 'RENT', name: 'Rent Due' },
+  { t: 'hard', k: 'store', code: 'FOOD', name: 'Corner Store Prices' },
+  { t: 'door', k: 'pch', code: 'ACCT', name: "People's Clearinghouse" },
+  { t: 'hard', k: 'lotto', code: 'LOTTO', name: 'Lottery Counter' },
+  { t: 'door', k: 'kanzu', code: 'CRED', name: 'Kanzu Finance' },
+  { t: 'tax', k: 'tax', code: 'TAX', name: 'Sales Tax' },
+  { t: 'corner', k: 'line', code: 'LINE', name: 'Unemployment Line' },
+  { t: 'hard', k: 'boots', code: 'BOOTS', name: 'Work Boots' },
+  { t: 'door', k: 'chimoney', code: 'SEND', name: 'Chimoney' },
+  { t: 'hard', k: 'car', code: 'CAR', name: 'Car Breaks Down' },
+  { t: 'hard', k: 'sick', code: 'SICK', name: 'Missed Shift' },
+  { t: 'door', k: 'miplata', code: 'ACCT', name: 'miPlata' },
+  { t: 'corner', k: 'pay', code: 'PAY', name: 'Payday' },
+  { t: 'hard', k: 'check', code: 'FEES', name: 'Check Casher' },
+  { t: 'door', k: 'besspay', code: 'MKT', name: 'BessPay' },
+  { t: 'hard', k: 'market', code: 'STALL', name: 'Market Day' },
+  { t: 'hard', k: 'collector', code: 'DEBT', name: 'Storefront Lender' },
+  { t: 'door', k: 'hts', code: 'ACCT', name: 'Here to Support + Waag' },
+  { t: 'corner', k: 'fired', code: 'FIRED', name: "You're Fired" },
+  { t: 'hard', k: 'wire', code: 'WIRE', name: 'Money Transfer Counter' },
+  { t: 'door', k: 'gftw', code: 'MKT', name: 'Grant for the Web' },
+  { t: 'hard', k: 'boots', code: 'BOOTS', name: 'Boots Wore Out' },
+  { t: 'door', k: 'coollion', code: 'CRED', name: 'Cool Lion Finance' },
+  { t: 'tax', k: 'deposit', code: 'FINE', name: 'Deposits and Fines' }
+];
+
+const PARTNERS = {
+  pch: { name: "The People's Clearinghouse", place: 'Rural Mexico', tools: ['acct', 'send'],
+    story: "In rural and Indigenous Mexico the nearest bank can be a long trip away, and money sent from the United States arrives through transfer shops with high fees, high minimums, and long waits. The People's Clearinghouse links the 140 community banks and savings cooperatives of the AMUCSS network, so a remittance lands directly in a local account and can be lent back out to neighbors.",
+    link: 'https://thepaypers.com/payments-general/peoples-clearinghouse-partners-with-interledger-foundation--1269455' },
+  kanzu: { name: 'Kanzu Finance', place: 'Uganda', tools: ['cred'],
+    story: 'Uganda has about 48 million people and roughly 20 million bank accounts. Most families save and borrow through village groups and cooperatives called SACCOs, often on paper and with days of waiting. Kanzu Finance is building instant microloans inside those cooperatives: automated scoring, then a payout to a phone in seconds.',
+    link: 'https://interledger.org/news/grantee-spotlight-kanzu-microloans-bridges-financial-divide-uganda' },
+  chimoney: { name: 'Chimoney', place: 'Toronto, reaching 130+ countries', tools: ['send'],
+    story: 'Founder Uchi Uchibeke built Chimoney to pay people wherever they are, including people with no bank account. Connected to Interledger, its multi-currency wallets let businesses and workers send and receive money across more than 130 countries.',
+    link: 'https://thepaypers.com/payments-general/chimoney-and-interledger-to-enable-global-cross-border-payments--1270103' },
+  miplata: { name: 'miPlata', place: 'United States', tools: ['acct', 'send'],
+    story: 'Many Latino workers in the United States are handed a paper paycheck, pay to turn it into cash, then pay again to send that cash home. miPlata is building one platform for unbanked Latinos that joins payroll, a digital account, and cross-border remittances for employers, workers, and their families.',
+    link: 'https://interledger-org-v5.netlify.app/es/blog/2025-digital-financial-services-grant-recipient-miplata' },
+  besspay: { name: 'BessPay', place: 'Jamaica and the Caribbean', tools: ['mkt'],
+    story: 'The big payment processors skip many Caribbean sellers or charge them heavily. BessPay built a plug-in that lets a small business open its own online marketplace and take cross-border payments in local currency, with lower fees and no code to write.',
+    link: 'https://techeconomy.ng/interledger-foundation-funds-eight-initiatives/' },
+  hts: { name: 'Here to Support and Waag Futurelab', place: 'Amsterdam, Netherlands', tools: ['acct'],
+    story: "Without a citizen service number, an undocumented resident of the Netherlands cannot open a bank account, while more shops take cards only. Here to Support and Waag Futurelab prototyped a wallet in which trusted community organizations vouch for a person's identity, and the person decides who sees their data.",
+    link: 'https://interledger.org/news/interledger-foundation-partners-waag-and-here-support' },
+  gftw: { name: 'Grant for the Web', place: 'Worldwide', tools: ['mkt'],
+    story: 'Grant for the Web began in 2019 as a $100 million fund from Coil, governed with Mozilla and Creative Commons, and now lives at the Interledger Foundation. It backs Web Monetization, an open standard that lets writers, musicians, and developers receive tiny payments straight from their audience, with no ad network in the middle.',
+    link: 'https://interledger.org/blog/2021/04/14/introducing-the-interledger-foundation/' },
+  coollion: { name: 'Cool Lion Finance', place: "Côte d'Ivoire", tools: ['cred'],
+    story: 'A sewing machine, a freezer, or a proper pair of boots pays for itself, but only if you can afford it up front. Cool Lion Finance set out to use Interledger to route equipment loans from lenders abroad to small businesses across Francophone Africa.',
+    link: 'https://interledger.org/news/announcing-twelve-recipients-our-financial-services-awards' }
+};
+
+function newGame(charId) {
+  const c = CHARS[charId];
+  return { v: 1, char: charId, pos: 0, month: 1, cash: c.cash, pred: 0, fair: 0, tools: {}, employed: true,
+    boots: 'none', car: false, met: [], log: [], tot: {}, saved: 0, phase: 'roll', last: null, over: null, dice: [0, 0], turns: 0 };
+}
+const debt = s => s.pred + s.fair;
+function log(s, t, a, cat) {
+  s.log.push({ m: s.month, t, a });
+  if (cat) s.tot[cat] = (s.tot[cat] || 0) + Math.abs(a);
+}
+function cover(s) {
+  if (s.cash >= 0) return;
+  const need = -s.cash; s.cash = 0;
+  if (s.tools.cred) { s.fair += need; log(s, 'Cooperative loan covers the gap', need, null); }
+  else {
+    const fee = Math.round(need * 0.15);
+    s.pred += need + fee;
+    log(s, 'Storefront loan covers the gap', need, null);
+    log(s, 'Loan origination fee, added to debt', -fee, 'interest');
+  }
+}
+function pay(s, amt, cat, t) { if (amt <= 0) return; s.cash -= amt; log(s, t, -amt, cat); cover(s); }
+function gain(s, amt, cat, t) { if (amt <= 0) return; s.cash += amt; log(s, t, amt, cat); }
+function save(s, amt) { s.saved += amt; }
+
+function passRent(s) {
+  if (s.pred > 0) { const i = Math.round(s.pred * 0.2); s.pred += i; log(s, 'Storefront interest, 20% a month', -i, 'interest'); }
+  if (s.fair > 0) { const i = Math.max(1, Math.round(s.fair * 0.02)); s.fair += i; log(s, 'Cooperative interest, 2% a month', -i, 'interest'); save(s, Math.round(s.fair * 0.18)); }
+  pay(s, CFG.RENT, 'rent', 'Rent');
+  s.month += 1;
+  if (s.month > CFG.MAXM) { s.month = CFG.MAXM; checkEnd(s); if (!s.over) s.over = { type: 'time' }; }
+}
+function passPay(s) {
+  const c = CHARS[s.char];
+  let gross = c.wage;
+  if (!s.employed) { gross = 0; s.employed = true; log(s, 'No paycheck this month. New job starts next month', 0, null); s.tot.lost = (s.tot.lost || 0) + c.wage; }
+  if (gross > 0) {
+    s.cash += gross; log(s, 'Paycheck', gross, 'wages');
+    if (s.car) pay(s, 60, 'lost', 'Pay docked for shifts missed riding the bus');
+    const tax = Math.round(gross * 0.08); pay(s, tax, 'tax', 'Payroll tax');
+    const fee = Math.round(gross * 0.03);
+    if (s.tools.acct) save(s, fee); else pay(s, fee, 'fees', 'Check-cashing fee, 3%');
+  }
+  const side = s.tools.mkt ? c.sideMkt : c.side;
+  if (side > 0) gain(s, side, 'side', s.tools.mkt ? 'Online sales, paid digitally' : 'Cash sales to neighbors');
+  if (s.tools.mkt) save(s, c.sideMkt - c.side);
+  if (c.remit > 0) {
+    pay(s, c.remit, 'family', 'Sent home to family');
+    if (s.tools.send) { pay(s, 2, 'fees', 'Transfer cost'); save(s, 12); } else pay(s, 14, 'fees', 'Transfer counter fee and exchange markup');
+  }
+  if (s.pred > 0 && s.cash > 0) { const g = Math.min(s.pred, Math.floor(s.cash * 0.5)); s.cash -= g; s.pred -= g; log(s, 'Storefront lender takes its payment', -g, null); }
+  if (s.fair > 0 && s.cash > 0) { const g = Math.min(s.fair, Math.floor(s.cash * 0.3)); s.cash -= g; s.fair -= g; log(s, 'Cooperative loan payment', -g, null); }
+}
+function advance(s, n) {
+  const path = [];
+  for (let i = 0; i < n; i++) {
+    s.pos = (s.pos + 1) % SP.length; path.push(s.pos);
+    if (s.pos === 0) passRent(s);
+    if (s.pos === 12) passPay(s);
+    if (s.over) break;
+  }
+  s.turns += 1;
+  checkEnd(s);
+  if (!s.over) s.phase = 'card';
+  return path;
+}
+function checkEnd(s) {
+  if (s.over) return;
+  if (debt(s) >= CFG.CAP) s.over = { type: 'debt' };
+  else if (s.cash >= CFG.GOAL && debt(s) === 0) s.over = { type: 'win' };
+}
+const usd = n => '$' + Math.abs(Math.round(n)).toLocaleString('en-US');
+
+function card(s) {
+  const sp = SP[s.pos], c = CHARS[s.char], T = s.tools;
+  const one = (label) => [{ id: 'ok', label }];
+  switch (sp.k) {
+    case 'rent': return { tone: 'corner', kicker: 'Corner', title: 'Rent Due', body: 'In the other game you collect $200 every time you pass this corner. Here you pay it. Rent and loan interest were just taken.', choices: one('Keep going') };
+    case 'pay': return { tone: 'corner', kicker: 'Corner', title: 'Payday', body: 'Your pay was just counted out, minus payroll tax' + (T.acct ? '.' : ', minus the 3% the check casher keeps because you have no account.'), choices: one('Keep going') };
+    case 'line': return { tone: 'corner', kicker: 'Corner', title: 'Unemployment Line', body: 'Just passing by this time. The people waiting here are one missed shift behind you.', choices: one('Keep going') };
+    case 'fired': return { tone: 'corner', kicker: 'Corner', title: "You're Fired", body: 'The schedule changed by text message last night. You missed it. Go straight to the Unemployment Line. You will get no paycheck at the next Payday.', fact: 'Hourly workers with unstable schedules and no savings are one bad week from losing a month of income.', choices: one('Go to the Unemployment Line') };
+    case 'store': return { tone: 'hard', kicker: 'Hardship', title: 'Corner Store Prices', body: 'The big grocery store is two bus transfers away and buying in bulk takes cash you do not have. You buy small, close, and expensive.', choices: one('Pay $35 extra for groceries') };
+    case 'tax': return { tone: 'tax', kicker: 'Tax', title: 'Sales Tax', body: 'Every dollar you earn gets spent right away on things that are taxed at the register. You are taxed on the way in and on the way out.', choices: one('Pay $25') };
+    case 'deposit': return T.acct
+      ? { tone: 'tax', kicker: 'Tax', title: 'Deposits and Fines', body: 'The utility company checks your record. Your account shows months of on-time payments, so the security deposit is waived. You owe only the connection fee.', choices: one('Pay $15') }
+      : { tone: 'tax', kicker: 'Tax', title: 'Deposits and Fines', body: 'The utility company finds no payment history for you, because cash leaves no record. People with no history pay a security deposit.', choices: one('Pay $60') };
+    case 'sick': return { tone: 'hard', kicker: 'Hardship', title: 'Missed Shift', body: 'Your child is sick and there is no paid leave. Staying home costs you the shift.', choices: one('Lose $90 in wages') };
+    case 'check': return T.acct
+      ? { tone: 'hard', kicker: 'Hardship avoided', title: 'Check Casher', body: 'You walk past the line. Your bills are paid from your account, and nobody takes a cut to hand you your own money.', choices: one('Keep your $25') }
+      : { tone: 'hard', kicker: 'Hardship', title: 'Check Casher', body: 'Rent and utilities will not take cash, so you buy money orders and pay a bill-payment fee at the counter.', fact: 'The Interledger Foundation counts 1.4 billion people worldwide who are shut out of the banking system.', choices: one('Pay $25 in fees') };
+    case 'lotto': return { tone: 'hard', kicker: 'Temptation', title: 'Lottery Counter', body: 'No bank will hold your savings and no broker wants your $20. The lottery is the one investment sold on every corner. One ticket in twelve pays $100.', choices: [{ id: 'buy', label: 'Buy tickets for $20' }, { id: 'skip', label: 'Walk away' }] };
+    case 'boots':
+      if (s.boots === 'good') return { tone: 'hard', kicker: 'Hardship avoided', title: sp.name, body: 'Your good boots are still dry and still whole. You spend nothing.', choices: one('Keep going') };
+      return { tone: 'hard', kicker: 'Hardship', title: sp.name, body: (s.boots === 'cheap' ? 'The cheap pair has split at the sole already. ' : 'The job requires boots. ') + 'A $45 pair will last until the next time you land on a boots space. A $170 pair will last the whole year.' + (T.cred ? ' Your cooperative will finance the good pair.' : ''),
+        fact: 'Novelist Terry Pratchett called this the Boots theory: the rich buy one good pair that lasts ten years, the poor buy cheap pairs again and again, spend more, and still have wet feet.',
+        choices: [{ id: 'cheap', label: 'Buy the $45 pair' }, { id: 'good', label: 'Buy the $170 pair', disabled: !(s.cash >= 170 || T.cred), sub: (s.cash >= 170 || T.cred) ? '' : 'You have ' + usd(s.cash) + '. No lender you can afford will cover the rest.' }] };
+    case 'car':
+      return { tone: 'hard', kicker: 'Hardship', title: s.car ? 'Car Still Broken' : 'Car Breaks Down', body: (s.car ? 'The car is still sitting dead on the street. ' : 'The transmission is slipping. ') + 'The repair is $220. Without the car you ride the bus, arrive late, and lose $60 of pay every month until it is fixed.' + (T.cred ? '' : ' If you cannot cover it, the only lender who says yes is the storefront.'),
+        choices: [{ id: 'fix', label: 'Pay $220 for the repair' }, { id: 'bus', label: s.car ? 'Keep riding the bus' : 'Ride the bus instead' }] };
+    case 'collector':
+      if (s.pred > 0) return { tone: 'hard', kicker: 'Hardship', title: 'Storefront Lender', body: 'You owe the storefront ' + usd(s.pred) + '. They roll the loan over and add a late fee.', fact: 'A typical two-week payday loan in the United States carries fees that work out to an annual rate near 400%.', choices: one('Add $35 to your debt') };
+      if (s.fair > 0) return { tone: 'hard', kicker: 'Hardship avoided', title: 'Storefront Lender', body: 'You owe your cooperative ' + usd(s.fair) + ' at 2% a month. The storefront has nothing to sell you.', choices: one('Walk past') };
+      return { tone: 'hard', kicker: 'Hardship avoided', title: 'Storefront Lender', body: 'Fast cash, no questions, says the sign. You owe nobody today, so you keep walking.', choices: one('Walk past') };
+    case 'market':
+      return T.mkt
+        ? { tone: 'hard', kicker: 'Hardship avoided', title: 'Market Day', body: 'A customer taps a phone and the payment lands in your wallet. An order comes in from another country.', choices: one('Collect $' + (s.char === 'asha' ? 180 : 140) + ' in sales') }
+        : { tone: 'hard', kicker: 'Hardship', title: 'Market Day', body: 'You have something people want to buy. Three customers ask to pay by card or phone. You cannot accept either, so they leave. You still owe the stall fee.', choices: one('Pay the $15 stall fee') };
+    case 'wire':
+      return T.send
+        ? { tone: 'hard', kicker: 'Hardship avoided', title: 'Money Transfer Counter', body: 'A relative needs $100 for a medical bill. You send it from your phone and it arrives in seconds, wallet to wallet.', choices: one('Send $100, pay $1') }
+        : { tone: 'hard', kicker: 'Hardship', title: 'Money Transfer Counter', body: 'A relative needs $100 for a medical bill. The counter charges a fee, then gives a worse exchange rate than the one on the sign.', fact: 'The World Bank put the average cost of sending $200 across a border at 6.49% in early 2025, and 8.78% to Sub-Saharan Africa. The United Nations target is 3%.', choices: one('Send $100, pay $12 to the middlemen') };
+  }
+  const p = PARTNERS[sp.k];
+  const fresh = p.tools.filter(t => !T[t]);
+  return { tone: 'door', kicker: 'Open door · ' + p.place, title: p.name, body: p.story, partner: sp.k, gives: p.tools,
+    change: fresh.length ? fresh.map(t => TOOLS[t].name + ': ' + TOOLS[t].does).join(' ') : 'You are already connected. On an open network your wallet works here without a second sign-up.',
+    choices: one(fresh.length ? 'Connect' : 'Keep going') };
+}
+
+function choose(s, id, rnd) {
+  const sp = SP[s.pos], T = s.tools; let last = null;
+  switch (sp.k) {
+    case 'fired': s.pos = 6; s.employed = false; log(s, 'Fired. Next paycheck is lost', 0, null); last = { tone: 'hard', t: 'You are standing in the Unemployment Line. Rent is still due.' }; break;
+    case 'store': pay(s, 35, 'premium', 'Corner store markup'); break;
+    case 'tax': pay(s, 25, 'tax', 'Sales tax'); break;
+    case 'deposit': if (T.acct) { pay(s, 15, 'tax', 'Connection fee'); save(s, 45); } else pay(s, 60, 'fees', 'Deposit for having no payment history'); break;
+    case 'sick': pay(s, 90, 'lost', 'Lost wages, no paid leave'); break;
+    case 'check': if (T.acct) save(s, 25); else pay(s, 25, 'fees', 'Money orders and bill-pay fees'); break;
+    case 'lotto':
+      if (id === 'buy') { pay(s, 20, 'lotto', 'Lottery tickets'); if (rnd() < 1 / 12) { gain(s, 100, 'lottowin', 'Lottery win'); last = { tone: 'door', t: 'A winner. You collect $100, and the counter clerk suggests you buy more.' }; } else last = { tone: 'hard', t: 'Nothing. The $20 is gone.' }; }
+      break;
+    case 'boots':
+      if (s.boots === 'good') break;
+      if (id === 'good') { pay(s, 170, 'boots', 'Good boots, built to last'); s.boots = 'good'; last = { tone: 'door', t: 'You will not pay for boots again this year.' }; }
+      else { pay(s, 45, 'boots', 'Cheap boots'); s.boots = 'cheap'; last = { tone: 'hard', t: 'They will last until the next boots space.' }; }
+      break;
+    case 'car':
+      if (id === 'fix') { pay(s, 220, 'emergency', 'Car repair'); s.car = false; }
+      else { s.car = true; last = { tone: 'hard', t: 'You will lose $60 of every paycheck until the car is fixed.' }; }
+      break;
+    case 'collector': if (s.pred > 0) { s.pred += 35; log(s, 'Rollover late fee, added to debt', -35, 'interest'); } break;
+    case 'market': if (T.mkt) { const a = s.char === 'asha' ? 180 : 140; gain(s, a, 'side', 'Market day sales, paid digitally'); save(s, a + 15); } else pay(s, 15, 'fees', 'Stall fee, no sales'); break;
+    case 'wire': pay(s, 100, 'family', 'Sent to a relative'); if (T.send) { pay(s, 1, 'fees', 'Transfer cost'); save(s, 11); } else pay(s, 12, 'fees', 'Transfer counter fee and exchange markup'); break;
+    default:
+      if (sp.t === 'door') {
+        const p = PARTNERS[sp.k];
+        if (!s.met.includes(sp.k)) s.met.push(sp.k);
+        const fresh = p.tools.filter(t => !T[t]);
+        fresh.forEach(t => { T[t] = true; });
+        if (fresh.length) log(s, 'Connected: ' + p.name, 0, null);
+        if (fresh.includes('cred') && s.pred > 0) { s.fair += s.pred; log(s, 'Storefront debt refinanced at 2%', 0, null); s.pred = 0; last = { tone: 'door', t: 'Your storefront debt has been refinanced by the cooperative at 2% a month.' }; }
+      }
+  }
+  s.last = last; s.phase = 'roll'; checkEnd(s);
+}
+
+
+</script>
+<script>
+const EXTRA = [
+  { name: 'Paysys Labs', place: 'Pakistan', text: 'Turns ordinary accounts at Allied Bank into wallets on the Interledger network, to cut the cost and delay of money sent home to Pakistan.', tags: ['Fair transfers'] },
+  { name: 'ThitsaWorks', place: 'Myanmar and Mexico', text: "Builds connectors so microfinance lenders, mobile money operators, and rural banks can join one real-time payment network. Also the engineering partner for the People's Clearinghouse.", tags: ['Account'] },
+  { name: 'ENEZA', place: 'Kenya', text: 'Links microfinance institutions and cooperatives to lenders worldwide, with a focus on women in rural households, unemployed youth, and people with disabilities.', tags: ['Fair credit'] },
+  { name: 'Mojaloop', place: 'Open source', text: 'Payment-switch software released by the Gates Foundation in 2017 so a country can connect every bank, mobile wallet, and merchant in one loop. It uses Interledger for interoperability.', tags: ['Infrastructure'] },
+  { name: 'Coil and Ripple', place: 'Founding funders', text: 'Interledger was designed in 2015 by Stefan Thomas and Evan Schwartz at Ripple. Coil and Ripple set up the Foundation in 2019 as a vendor-neutral home for the protocol and funded its launch.', tags: ['Funders'] },
+  { name: 'NextGen Higher Education Grants', place: 'Universities', text: 'Funds courses, research, and student projects on open payments and financial inclusion, including The Hague University of Applied Sciences.', tags: ['Education'] }
+];
+const $ = id => document.getElementById(id);
+const esc = t => String(t).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+let S = null, busy = false, cells = [], tok;
+const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+function buildBoard() {
+  const b = $('board');
+  SP.forEach((sp, i) => {
+    let r, c;
+    if (i <= 6) { r = 7; c = 7 - i; } else if (i <= 12) { r = 7 - (i - 6); c = 1; } else if (i <= 18) { r = 1; c = 1 + (i - 12); } else { r = 1 + (i - 18); c = 7; }
+    const el = document.createElement('div');
+    el.className = 'cell ' + sp.t; el.style.gridArea = r + '/' + c;
+    el.title = sp.name;
+    el.innerHTML = '<span class="code">' + sp.code + '</span><span class="nm">' + esc(sp.name) + '</span>';
+    b.appendChild(el); cells.push(el);
+  });
+  tok = document.createElement('div'); tok.className = 'tok'; cells[0].appendChild(tok);
+}
+const PIPS = { 0: [], 1: [4], 2: [0, 8], 3: [0, 4, 8], 4: [0, 2, 6, 8], 5: [0, 2, 4, 6, 8], 6: [0, 2, 3, 5, 6, 8] };
+function die(el, n) { el.innerHTML = Array.from({ length: 9 }, (_, i) => '<i class="' + (PIPS[n].includes(i) ? 'on' : '') + '"></i>').join(''); }
+function place(i) { cells.forEach(c => c.classList.remove('here')); cells[i].classList.add('here'); cells[i].appendChild(tok); }
+function amt(a) { return a === 0 ? '' : (a > 0 ? '+' : '−') + usd(a); }
+
+function renderStatus() {
+  const s = S;
+  $('cash').textContent = usd(s ? s.cash : 250);
+  $('debt').textContent = usd(s ? debt(s) : 0);
+  $('bar').style.width = Math.min(100, (s ? s.cash : 250) / CFG.GOAL * 100) + '%';
+  $('debtkind').textContent = s && debt(s) ? (s.pred ? 'Storefront ' + usd(s.pred) : '') + (s.pred && s.fair ? ' · ' : '') + (s.fair ? 'Cooperative ' + usd(s.fair) : '') : '';
+  $('who').innerHTML = s ? '<b>' + CHARS[s.char].name + '</b>' + CHARS[s.char].role : '<b>Choose a player</b>to begin';
+  $('month').textContent = s ? 'Month ' + s.month + ' of ' + CFG.MAXM : '12 months to get out';
+  $('tools').innerHTML = Object.keys(TOOLS).map(k => '<div class="tool' + (s && s.tools[k] ? ' on' : '') + '" title="' + esc(TOOLS[k].does) + '"><b>' + TOOLS[k].name + '</b>' + (s && s.tools[k] ? 'Connected' : 'Locked out') + '</div>').join('');
+  const f = [];
+  if (s) {
+    f.push(s.employed ? '<span class="flag">Employed</span>' : '<span class="flag bad">Fired: next paycheck lost</span>');
+    f.push(s.boots === 'good' ? '<span class="flag">Good boots</span>' : s.boots === 'cheap' ? '<span class="flag bad">Cheap boots</span>' : '<span class="flag bad">No boots</span>');
+    if (s.car) f.push('<span class="flag bad">Car broken: pay docked $60</span>');
+  }
+  $('flags').innerHTML = f.join('');
+  cells.forEach((c, i) => c.classList.toggle('met', !!(s && s.met.includes(SP[i].k))));
+  die($('d1'), s ? s.dice[0] : 0); die($('d2'), s ? s.dice[1] : 0);
+  const rows = s ? s.log.slice(-80).reverse() : [];
+  $('rows').innerHTML = rows.length ? rows.map(e => '<div class="row"><span class="m">M' + e.m + '</span><span>' + esc(e.t) + '</span><span class="a ' + (e.a < 0 ? 'neg' : 'pos') + '">' + amt(e.a) + '</span></div>').join('') : '<div class="empty">Nothing yet.</div>';
+}
+function onway(s) {
+  const n = s.log.slice(s.mark || 0).filter(e => e.a !== 0 || /paycheck|Fired/i.test(e.t));
+  return n.length ? '<div class="onway"><div><span>On the way here</span><span></span></div>' + n.map(e => '<div><span>' + esc(e.t) + '</span><span>' + amt(e.a) + '</span></div>').join('') + '</div>' : '';
+}
+function renderCard() {
+  const el = $('card');
+  if (!S) {
+    el.className = 'card';
+    el.innerHTML = '<div class="kick">Start here</div><h2>Who are you this year?</h2><p>You have $250 and twelve months. Reach $1,000 in savings with no debt and you are out.</p><div class="picks">' +
+      Object.keys(CHARS).map(k => { const c = CHARS[k]; return '<button class="pick" data-char="' + k + '"><small>' + c.role + ' · $' + c.wage + ' a month before tax</small><b>' + c.name + '</b><span>' + c.blurb + '</span></button>'; }).join('') + '</div>';
+    return;
+  }
+  const s = S;
+  if (s.over) { el.className = 'card ' + (s.over.type === 'win' ? 'door' : 'hard'); el.innerHTML = endHtml(s); return; }
+  if (s.phase === 'roll') {
+    el.className = 'card';
+    el.innerHTML = '<div class="kick">Month ' + s.month + ' of ' + CFG.MAXM + ' · ' + SP[s.pos].name + '</div><h2>Your move</h2>' +
+      (s.last ? '<p class="note ' + s.last.tone + '">' + esc(s.last.t) + '</p>' : '') +
+      '<p>' + (s.turns === 0 ? 'Rent is ' + usd(CFG.RENT) + ' each time you pass the first corner. Payday is on the far corner. Everything in between is trying to take a little.' : 'Roll to keep moving. Standing still is not an option when rent is due.') + '</p>' +
+      '<div class="acts"><button class="btn roll" id="roll"' + (busy ? ' disabled' : '') + '>Roll the dice</button></div>';
+    return;
+  }
+  const c = card(s);
+  el.className = 'card ' + c.tone;
+  el.innerHTML = '<div class="kick">' + esc(c.kicker) + '</div><h2>' + esc(c.title) + '</h2>' + onway(s) + '<p>' + esc(c.body) + '</p>' +
+    (c.change ? '<p class="change">' + esc(c.change) + '</p>' : '') +
+    (c.partner ? '<p class="fact"><a href="' + PARTNERS[c.partner].link + '" target="_blank" rel="noopener">Read about this partner</a></p>' : '') +
+    (c.fact ? '<p class="fact">' + esc(c.fact) + '</p>' : '') +
+    '<div class="acts">' + c.choices.map((ch, i) => '<button class="btn' + (i ? ' alt' : '') + '" data-choice="' + ch.id + '"' + (ch.disabled ? ' disabled' : '') + '>' + esc(ch.label) + '</button>' + (ch.sub ? '<span class="sub">' + esc(ch.sub) + '</span>' : '')).join('') + '</div>';
+}
+function endHtml(s) {
+  const t = s.tot, g = k => t[k] || 0, c = CHARS[s.char];
+  const head = s.over.type === 'win' ? ['Escaped', c.name + ' got out in month ' + s.month + ', with ' + usd(s.cash) + ' saved and no debt.']
+    : s.over.type === 'debt' ? ['Buried', c.name + ' owes ' + usd(debt(s)) + '. The debt has gone to collections and the year is over.']
+    : ['Still here', 'Twelve months of work later, ' + c.name + ' has ' + usd(s.cash) + ' in cash and ' + usd(debt(s)) + ' in debt.'];
+  const drained = g('fees') + g('interest') + g('premium') + g('lotto');
+  const doors = s.met.map(k => PARTNERS[k].name);
+  const row = (l, v, cls) => '<span class="' + (cls || '') + '">' + l + '</span><span class="' + (cls || '') + '">' + v + '</span>';
+  return '<div class="kick">Year end · ' + s.turns + ' moves</div><h2>' + head[0] + '</h2><p>' + esc(head[1]) + '</p>' +
+    '<div class="tally">' + row('Earned from work and sales', usd(g('wages') + g('side'))) + row('Rent', usd(g('rent'))) + row('Taxes', usd(g('tax'))) +
+    row('Fees to middlemen', usd(g('fees'))) + row('Loan fees and interest', usd(g('interest'))) + row('Wages lost', usd(g('lost'))) + row('Boots', usd(g('boots'))) +
+    row('The cost of being poor', usd(drained), 'tot') + row('Kept by open doors', usd(s.saved), 'tot') + '</div>' +
+    '<p class="fact">' + (doors.length ? 'Doors opened: ' + esc(doors.join(', ')) + '. ' : 'No door opened for you this year. ') +
+    (s.over.type === 'win' ? 'Work alone did not do this. Count what the doors kept in your pocket.' : 'Notice that the wage never changed. What changed, or did not, was access.') + '</p>' +
+    '<div class="acts"><button class="btn roll" data-again="' + s.char + '">Play ' + c.name + ' again</button><button class="btn alt" data-again="">Choose another player</button></div>';
+}
+function render() { renderStatus(); renderCard(); if (S) place(S.pos); else place(0); }
+
+function roll() {
+  if (busy || !S || S.over || S.phase !== 'roll') return;
+  const a = 1 + Math.floor(Math.random() * 6), b = 1 + Math.floor(Math.random() * 6);
+  S.dice = [a, b]; S.last = null; S.mark = S.log.length;
+  const path = advance(S, a + b);
+  die($('d1'), a); die($('d2'), b);
+  if (reduce) { render(); return; }
+  busy = true; $('roll').disabled = true;
+  let i = 0;
+  const step = () => {
+    const p = path[i++]; place(p);
+    if (p === 0 || p === 12) { cells[p].classList.remove('flash'); void cells[p].offsetWidth; cells[p].classList.add('flash'); }
+    if (i < path.length) setTimeout(step, 150); else setTimeout(() => { busy = false; render(); }, 220);
+  };
+  step();
+}
+document.addEventListener('click', e => {
+  const t = e.target.closest('button'); if (!t) return;
+  if (t.id === 'roll') return roll();
+  if (t.dataset.char) { S = newGame(t.dataset.char); return render(); }
+  if (t.dataset.choice && S && S.phase === 'card' && !busy) { choose(S, t.dataset.choice, Math.random); return render(); }
+  if ('again' in t.dataset) { S = t.dataset.again ? newGame(t.dataset.again) : null; return render(); }
+});
+
+function buildGuide() {
+  const on = Object.keys(PARTNERS).map(k => { const p = PARTNERS[k]; return '<article class="p"><div class="kick">' + esc(p.place) + '</div><h3>' + esc(p.name) + '</h3><p>' + esc(p.story) + '</p><div class="tg">' + p.tools.map(t => '<span>' + TOOLS[t].name + '</span>').join('') + '</div><a href="' + p.link + '" target="_blank" rel="noopener">Source</a></article>'; });
+  const off = EXTRA.map(p => '<article class="p off"><div class="kick">' + esc(p.place) + '</div><h3>' + esc(p.name) + '</h3><p>' + esc(p.text) + '</p><div class="tg">' + p.tags.map(t => '<span>' + t + '</span>').join('') + '</div></article>');
+  $('pgrid').innerHTML = on.concat(off).join('');
+}
+function start(data) {
+  buildBoard(); buildGuide();
+  if (data && data.v === 1 && CHARS[data.char]) S = data;
+  render();
+}
+window.claude?.hot?.snapshot?.(() => S || {});
+if (window.claude?.hot?.ready) window.claude.hot.ready(start); else start(window.claude?.hot?.data ?? {});
+</script>
+</body>
+</html>
