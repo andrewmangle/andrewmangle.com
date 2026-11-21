@@ -147,6 +147,34 @@ button{font:inherit;color:inherit}
 .src{font-size:13.5px;color:var(--muted);max-width:75ch}
 .src li{margin-bottom:3px}
 
+.bsu{display:flex;flex-wrap:wrap;gap:4px 14px;align-items:baseline;text-decoration:none;color:var(--on-felt);background:var(--felt);border-left:8px solid var(--sign);border-radius:4px;padding:8px 14px;margin:-4px 0 18px;font-size:14px}
+.bsu b{font-family:var(--display);font-size:20px;letter-spacing:.03em;text-transform:uppercase;color:var(--sign)}
+.bsu:hover span{text-decoration:underline}
+.lead{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr);background:var(--felt);color:var(--on-felt);border-radius:6px;overflow:hidden}
+.lead > div{padding:18px 20px;display:flex;flex-direction:column;gap:10px}
+.lead h3{font-size:clamp(30px,4.6vw,46px);font-weight:900;color:var(--sign)}
+.lead p{margin:0;max-width:62ch}
+.lead .kick{color:var(--on-felt);opacity:.75}
+.lead a{color:var(--sign)}
+.miles{background:color-mix(in srgb,var(--on-felt) 7%,transparent);justify-content:center}
+.mile{display:grid;grid-template-columns:5.2em 1fr;gap:12px;padding:8px 0;border-bottom:1px dashed color-mix(in srgb,var(--on-felt) 25%,transparent);font-size:14.5px}
+.mile:last-child{border-bottom:0}
+.mile b{font-family:var(--display);font-size:24px;color:var(--sign);line-height:1}
+.how{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px;margin-top:14px}
+.how div{background:var(--panel);border:1px solid var(--line);border-radius:6px;padding:12px 14px;font-size:14.5px}
+.how b{display:block;font-family:var(--display);font-size:22px;text-transform:uppercase;line-height:1;margin-bottom:6px}
+.sub-h{font-family:var(--mono);font-size:12px;font-weight:500;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin:24px 0 0;border-top:1px solid var(--line);padding-top:10px;line-height:1.4}
+.strip{background:var(--sign);color:var(--on-sign);border-radius:6px;padding:18px 20px;display:grid;gap:12px}
+.strip .lede{color:var(--on-sign);opacity:.85;margin:0}
+.ways{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px}
+.way{background:var(--panel);color:var(--ink);border-radius:5px;padding:10px 12px;font-size:14px;display:flex;flex-direction:column;gap:4px;text-decoration:none;border:2px solid transparent}
+.way:hover{border-color:var(--ink)}
+.way small{font-family:var(--mono);font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.way b{font-family:var(--display);font-size:22px;text-transform:uppercase;line-height:1}
+.way span{color:var(--muted)}
+.way em{font-style:normal;font-weight:600;color:var(--door);margin-top:auto;padding-top:4px}
+.credit{font-size:13.5px;color:var(--muted);border-top:3px solid var(--ink);padding-top:12px;margin:0}
+@media (max-width:700px){.lead{grid-template-columns:1fr}}
 @media (max-width:900px){
   .table{grid-template-columns:minmax(0,1fr)}
   .side{display:contents}
@@ -167,6 +195,7 @@ button{font:inherit;color:inherit}
     <h1>Escaping <span>Poverty</span></h1>
     <p><b>The property game, run backwards.</b> Pass the first corner and you pay $200. Fees, taxes, and lenders take a cut of every move. Green spaces are real Interledger partners opening a door.</p>
   </header>
+  <a class="bsu" href="#bsu"><b>Built at Bowie State University</b><span>Maryland's oldest HBCU and the Interledger Foundation's first HBCU higher-education partner</span></a>
 
   <main class="table">
     <div class="boardwrap">
@@ -214,30 +243,82 @@ button{font:inherit;color:inherit}
         <div><b>Every lap costs $200</b>Rent comes due each time you pass the first corner. Payday is halfway round, and it is smaller than the rent plus everything in between.</div>
         <div><b>You are taxed every time</b>Payroll tax on the way in, sales tax on the way out, and a 3% cut to cash your own paycheck.</div>
         <div><b>Poor people buy twice</b>Cheap boots wear out and get bought again. A car you cannot repair docks your pay every month.</div>
-        <div><b>Your lender is a predator</b>Fall short and a storefront loan covers it with a 15% fee and 20% interest a month, then takes half of each paycheck.</div>
+        <div><b>Your lender is a predator</b>Fall short and a storefront loan covers it with a 15% fee and 20% interest a month, then takes half of each paycheck. Fairer lenders exist, but their money moves too slowly.</div>
         <div><b>Borders cost extra</b>Play as Mateo. Money sent home passes through middlemen who are paid before your family is.</div>
         <div><b>Doors change the math</b>Each green space connects you to a tool: an account, fair transfers, fair credit, or market access. The receipt shows what each one saves.</div>
       </div>
     </div>
+
+    <div id="bsu">
+      <div class="lead">
+        <div>
+          <div class="kick">Where this game comes from</div>
+          <h3>Bowie State University</h3>
+          <p>Maryland's oldest HBCU was the Interledger Foundation's first HBCU partner in higher education. Its 2022 pilot course, alongside a pilot at the University of Cape Town, became the model for the NextGen Higher Education Grant that now funds universities on several continents.</p>
+          <p>Under Dr. Andrew Mangle, Bowie State students have studied open payments in the classroom, served as Interledger Student Scholars, and represented the university at Interledger Summits. Escaping Poverty grew out of that work.</p>
+          <p><a href="https://bowiestate.edu/about/news/2025/empowering-the-future-of-finance-fintech-innovation-at-bowie-state.php" target="_blank" rel="noopener">FinTech innovation at Bowie State</a></p>
+        </div>
+        <div class="miles">
+          <div class="mile"><b>2022</b><span>$25,000 Interledger grant for an undergraduate course on open payments, eCommerce, and personal finance</span></div>
+          <div class="mile"><b>2024</b><span>$150,000 award launches the Interledger Student Scholars Program</span></div>
+          <div class="mile"><b>$180K+</b><span>In Interledger support for Bowie State student innovation and digital financial inclusion</span></div>
+          <div class="mile"><b>Now</b><span>A model other HBCUs are following through NextGen</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div>
+      <h2>How the doors work</h2>
+      <p class="lede">The Interledger Foundation is an independent nonprofit, founded in 2020, working to make financial access open and fair. Since then it has granted $21 million across 271 projects in 42 countries. Its partners build on a small set of open tools.</p>
+      <div class="how">
+        <div><b>Interledger</b>A shared language that lets different money systems, such as banks, mobile money, and digital wallets, pass payments to each other, the way the internet passes email between providers.</div>
+        <div><b>Open Payments</b>An open standard for requesting, approving, and sending a payment between any wallet, bank, or mobile money account that supports it.</div>
+        <div><b>Rafiki and Rhyza</b>Free, open-source software that lets a licensed bank, credit union, or wallet join the network without building it from scratch. Rhyza, the next generation of Rafiki, arrived in October 2026.</div>
+        <div><b>Web Monetization</b>An open standard that lets a website receive small payments straight from its visitors, so creators can earn without an ad network in the middle.</div>
+      </div>
+    </div>
+
     <div>
       <h2>Who is opening the doors</h2>
-      <p class="lede">The Interledger Foundation funds organizations that connect excluded people to an open payment network. These are the eight on the board, followed by others in the same ecosystem.</p>
+      <p class="lede">The eight partners on the board, then others working on the same problems.</p>
       <div class="pgrid" id="pgrid"></div>
+      <h3 class="sub-h">Interledger's first United States program: community lenders on instant payments</h3>
+      <div class="pgrid" id="cdfi"></div>
+      <h3 class="sub-h">Around the world</h3>
+      <div class="pgrid" id="world"></div>
+      <h3 class="sub-h">Training the next builders: NextGen Higher Education</h3>
+      <div class="pgrid" id="edu"></div>
     </div>
+
+    <div class="strip" id="get-involved">
+      <h2>Get involved</h2>
+      <p class="lede">The people who design payment systems decide who those systems serve. Here is how students, faculty, and organizations can take part.</p>
+      <div class="ways">
+        <a class="way" href="https://interledger.org/blog/" target="_blank" rel="noopener"><small>Students</small><b>Interledger on Campus</b><span>Mini-grants for student-led projects in open payments on your own campus.</span><em>Read the blog</em></a>
+        <a class="way" href="https://interledger.org/blog/" target="_blank" rel="noopener"><small>Researchers and advocates</small><b>Interledger Fellows</b><span>Fellows do research, advocacy, or technical work on the barriers people face to digital financial services.</span><em>Meet the 2026 Fellows</em></a>
+        <a class="way" href="https://interledger.org/grant/education/nextgen" target="_blank" rel="noopener"><small>Faculty</small><b>NextGen Higher Education</b><span>Up to $50,000 for a 12-month program of courses, research, and hands-on projects in open payments.</span><em>See the grant</em></a>
+        <a class="way" href="https://interledger.org/blog/" target="_blank" rel="noopener"><small>Organizations</small><b>Digital Financial Services 2027</b><span>Up to $350,000 over 18 months for providers piloting open payments. Phase 1 runs November 2 to December 11, 2026.</span><em>Read the call</em></a>
+        <a class="way" href="https://interledger.org/blog/" target="_blank" rel="noopener"><small>Developers</small><b>Open Payments Hackathons</b><span>Two-day builds with the Interledger community. About 150 developers took part in Medellín in October 2026.</span><em>Find the next one</em></a>
+      </div>
+    </div>
+
     <div>
       <h2>Sources</h2>
       <ul class="src">
-        <li>Interledger Foundation, <a href="https://interledger.org/news/announcing-twelve-recipients-our-financial-services-awards">twelve Financial Services award recipients</a> and <a href="https://interledger.org/grant/grantee-directory/all/financial-services/3">grantee directory</a></li>
+        <li>Interledger Foundation, <a href="https://interledger.org/about-us">About us</a>, <a href="https://interledger.org/blog/">Foundation blog</a>, and <a href="https://interledger.org/grant/grantee-directory">Grantee Directory</a></li>
+        <li>The Fintech Times, <a href="https://thefintechtimes.com/interledger-foundation-maps-instant-payment-path-for-us-cdfis/">Interledger Foundation maps instant payment path for US CDFIs</a> (October 2026)</li>
+        <li>Bowie State University, <a href="https://bowiestate.edu/about/news/2022/the-interledger-foundation-and-bowie-state-create-new-partnership.php">Interledger and Bowie State create new partnership</a> (2022) and <a href="https://bowiestate.edu/about/news/2025/empowering-the-future-of-finance-fintech-innovation-at-bowie-state.php">FinTech innovation at Bowie State</a> (2025); The Daily Record, <a href="https://thedailyrecord.com/2024/02/29/interledger-foundation-awards-150k-to-bowie-st-for-scholarship-program/">$150K to Bowie State for scholarship program</a></li>
+        <li>Interledger Foundation, <a href="https://interledger.org/grant/education/nextgen">NextGen Higher Education Grant</a></li>
         <li>The Paypers, <a href="https://thepaypers.com/payments-general/peoples-clearinghouse-partners-with-interledger-foundation--1269455">People's Clearinghouse partners with Interledger Foundation</a></li>
-        <li>Interledger Foundation, <a href="https://interledger.org/news/grantee-spotlight-kanzu-microloans-bridges-financial-divide-uganda">Kanzu Microloans grantee spotlight</a> and <a href="https://interledger.org/news/transforming-financial-access">Transforming Financial Access</a></li>
-        <li>Interledger Foundation, <a href="https://interledger.org/news/interledger-foundation-partners-waag-and-here-support">partnership with Waag and Here to Support</a>; Waag Futurelab, <a href="https://waag.org/en/project/trust-based-banking/">Trust-based Banking</a></li>
+        <li>Interledger Foundation, <a href="https://interledger.org/news/grantee-spotlight-kanzu-microloans-bridges-financial-divide-uganda">Kanzu Microloans grantee spotlight</a>, <a href="https://interledger.org/news/2025-digital-financial-services-grant-recipient-miplata">miPlata grant announcement</a>, and <a href="https://interledger.org/news/interledger-foundation-partners-waag-and-here-support">partnership with Waag and Here to Support</a></li>
         <li>Tech Economy, <a href="https://techeconomy.ng/interledger-foundation-funds-eight-initiatives/">Interledger Foundation funds eight initiatives</a> (Paysys Labs, BessPay, Kanzu Finance)</li>
         <li>PaymentsJournal, <a href="https://www.paymentsjournal.com/interledger-steps-up-to-foster-cross-border-payments-in-130-countries/amp/">Interledger and Chimoney in 130 countries</a></li>
-        <li>Business Wire, <a href="https://www.businesswire.com/news/home/20210414005467/en">Interledger Foundation launch</a> (Coil, Ripple, Grant for the Web, Mojaloop)</li>
         <li>South African Reserve Bank conference paper citing World Bank Remittance Prices Worldwide, <a href="https://www.resbank.co.za/content/dam/sarb/what-we-do/payments-and-settlements/cross-border-payments-conference/documents/paper-cost-patterns-remittance.pdf">Q1 2025 remittance costs</a></li>
       </ul>
       <p class="src">Dollar amounts in the game are scaled for play. The mechanisms and the partner descriptions are real. Some partner projects are research or pilots and are described as such.</p>
     </div>
+
+    <p class="credit">Escaping Poverty was created by Dr. Andrew H. Mangle, Bowie State University, for the Interledger community.</p>
   </section>
 </div>
 
@@ -281,9 +362,9 @@ const SP = [
   { t: 'door', k: 'hts', code: 'ACCT', name: 'Here to Support + Waag' },
   { t: 'corner', k: 'fired', code: 'FIRED', name: "You're Fired" },
   { t: 'hard', k: 'wire', code: 'WIRE', name: 'Money Transfer Counter' },
-  { t: 'door', k: 'gftw', code: 'MKT', name: 'Grant for the Web' },
+  { t: 'door', k: 'gftw', code: 'MKT', name: 'Grant for the Web 2.0' },
   { t: 'hard', k: 'boots', code: 'BOOTS', name: 'Boots Wore Out' },
-  { t: 'door', k: 'coollion', code: 'CRED', name: 'Cool Lion Finance' },
+  { t: 'door', k: 'wacif', code: 'CRED', name: 'WACIF' },
   { t: 'tax', k: 'deposit', code: 'FINE', name: 'Deposits and Fines' }
 ];
 
@@ -299,19 +380,19 @@ const PARTNERS = {
     link: 'https://thepaypers.com/payments-general/chimoney-and-interledger-to-enable-global-cross-border-payments--1270103' },
   miplata: { name: 'miPlata', place: 'United States', tools: ['acct', 'send'],
     story: 'Many Latino workers in the United States are handed a paper paycheck, pay to turn it into cash, then pay again to send that cash home. miPlata is building one platform for unbanked Latinos that joins payroll, a digital account, and cross-border remittances for employers, workers, and their families.',
-    link: 'https://interledger-org-v5.netlify.app/es/blog/2025-digital-financial-services-grant-recipient-miplata' },
+    link: 'https://interledger.org/news/2025-digital-financial-services-grant-recipient-miplata' },
   besspay: { name: 'BessPay', place: 'Jamaica and the Caribbean', tools: ['mkt'],
     story: 'The big payment processors skip many Caribbean sellers or charge them heavily. BessPay built a plug-in that lets a small business open its own online marketplace and take cross-border payments in local currency, with lower fees and no code to write.',
     link: 'https://techeconomy.ng/interledger-foundation-funds-eight-initiatives/' },
   hts: { name: 'Here to Support and Waag Futurelab', place: 'Amsterdam, Netherlands', tools: ['acct'],
     story: "Without a citizen service number, an undocumented resident of the Netherlands cannot open a bank account, while more shops take cards only. Here to Support and Waag Futurelab prototyped a wallet in which trusted community organizations vouch for a person's identity, and the person decides who sees their data.",
     link: 'https://interledger.org/news/interledger-foundation-partners-waag-and-here-support' },
-  gftw: { name: 'Grant for the Web', place: 'Worldwide', tools: ['mkt'],
-    story: 'Grant for the Web began in 2019 as a $100 million fund from Coil, governed with Mozilla and Creative Commons, and now lives at the Interledger Foundation. It backs Web Monetization, an open standard that lets writers, musicians, and developers receive tiny payments straight from their audience, with no ad network in the middle.',
-    link: 'https://interledger.org/blog/2021/04/14/introducing-the-interledger-foundation/' },
-  coollion: { name: 'Cool Lion Finance', place: "Côte d'Ivoire", tools: ['cred'],
-    story: 'A sewing machine, a freezer, or a proper pair of boots pays for itself, but only if you can afford it up front. Cool Lion Finance set out to use Interledger to route equipment loans from lenders abroad to small businesses across Francophone Africa.',
-    link: 'https://interledger.org/news/announcing-twelve-recipients-our-financial-services-awards' }
+  gftw: { name: 'Grant for the Web 2.0', place: 'Worldwide', tools: ['mkt'],
+    story: "Grant for the Web is Interledger's fund for people who make things online and want to be paid directly by the people who use them. Its current round backs the Social Web Foundation, which is researching how independent creators, publishers, community-run social servers, and cooperatives can earn a sustainable living. The tool behind it is Web Monetization, an open standard that sends small payments straight from an audience to a creator's wallet.",
+    link: 'https://interledger.org/grant/grantee-directory' },
+  wacif: { name: 'Washington Area Community Investment Fund', place: 'Washington, DC area', tools: ['cred'],
+    story: "WACIF is a community development financial institution (CDFI) that lends to small business owners the big banks pass over. Many of its borrowers are paid unevenly, so a fixed monthly due date can sink a business that is otherwise doing fine. Through Interledger's first United States program, WACIF is studying how borrowers experience repayment and whether flexible payment timing and instant payment rails could prevent defaults.",
+    link: 'https://thefintechtimes.com/interledger-foundation-maps-instant-payment-path-for-us-cdfis/' }
 };
 
 function newGame(charId) {
@@ -411,10 +492,10 @@ function card(s) {
         fact: 'Novelist Terry Pratchett called this the Boots theory: the rich buy one good pair that lasts ten years, the poor buy cheap pairs again and again, spend more, and still have wet feet.',
         choices: [{ id: 'cheap', label: 'Buy the $45 pair' }, { id: 'good', label: 'Buy the $170 pair', disabled: !(s.cash >= 170 || T.cred), sub: (s.cash >= 170 || T.cred) ? '' : 'You have ' + usd(s.cash) + '. No lender you can afford will cover the rest.' }] };
     case 'car':
-      return { tone: 'hard', kicker: 'Hardship', title: s.car ? 'Car Still Broken' : 'Car Breaks Down', body: (s.car ? 'The car is still sitting dead on the street. ' : 'The transmission is slipping. ') + 'The repair is $220. Without the car you ride the bus, arrive late, and lose $60 of pay every month until it is fixed.' + (T.cred ? '' : ' If you cannot cover it, the only lender who says yes is the storefront.'),
+      return { tone: 'hard', kicker: 'Hardship', title: s.car ? 'Car Still Broken' : 'Car Breaks Down', body: (s.car ? 'The car is still sitting dead on the street. ' : 'The transmission is slipping. ') + 'The repair is $220. Without the car you ride the bus, arrive late, and lose $60 of pay every month until it is fixed.' + (T.cred ? '' : ' A community lender might approve you, but the money would take days to arrive. The storefront pays out tonight.'),
         choices: [{ id: 'fix', label: 'Pay $220 for the repair' }, { id: 'bus', label: s.car ? 'Keep riding the bus' : 'Ride the bus instead' }] };
     case 'collector':
-      if (s.pred > 0) return { tone: 'hard', kicker: 'Hardship', title: 'Storefront Lender', body: 'You owe the storefront ' + usd(s.pred) + '. They roll the loan over and add a late fee.', fact: 'A typical two-week payday loan in the United States carries fees that work out to an annual rate near 400%.', choices: one('Add $35 to your debt') };
+      if (s.pred > 0) return { tone: 'hard', kicker: 'Hardship', title: 'Storefront Lender', body: 'You owe the storefront ' + usd(s.pred) + '. They roll the loan over and add a late fee.', fact: 'Community lenders called CDFIs offer fairer loans, but most still run on payment rails that take days to clear. When cash is needed tonight, the storefront wins. Interledger began working with five CDFIs in October 2026 to bring them onto instant payments.', choices: one('Add $35 to your debt') };
       if (s.fair > 0) return { tone: 'hard', kicker: 'Hardship avoided', title: 'Storefront Lender', body: 'You owe your cooperative ' + usd(s.fair) + ' at 2% a month. The storefront has nothing to sell you.', choices: one('Walk past') };
       return { tone: 'hard', kicker: 'Hardship avoided', title: 'Storefront Lender', body: 'Fast cash, no questions, says the sign. You owe nobody today, so you keep walking.', choices: one('Walk past') };
     case 'market':
@@ -424,7 +505,7 @@ function card(s) {
     case 'wire':
       return T.send
         ? { tone: 'hard', kicker: 'Hardship avoided', title: 'Money Transfer Counter', body: 'A relative needs $100 for a medical bill. You send it from your phone and it arrives in seconds, wallet to wallet.', choices: one('Send $100, pay $1') }
-        : { tone: 'hard', kicker: 'Hardship', title: 'Money Transfer Counter', body: 'A relative needs $100 for a medical bill. The counter charges a fee, then gives a worse exchange rate than the one on the sign.', fact: 'The World Bank put the average cost of sending $200 across a border at 6.49% in early 2025, and 8.78% to Sub-Saharan Africa. The United Nations target is 3%.', choices: one('Send $100, pay $12 to the middlemen') };
+        : { tone: 'hard', kicker: 'Hardship', title: 'Money Transfer Counter', body: 'A relative needs $100 for a medical bill. The counter charges a fee, then gives a worse exchange rate than the one on the sign.', fact: 'The World Bank put the average cost of sending $200 across a border at 6.49% in early 2025, and 8.78% to Sub-Saharan Africa. The United Nations target is 3%. In the United States, a law that took effect January 1, 2026 raised the cost of sending cash remittances.', choices: one('Send $100, pay $12 to the middlemen') };
   }
   const p = PARTNERS[sp.k];
   const fresh = p.tools.filter(t => !T[t]);
@@ -474,12 +555,19 @@ function choose(s, id, rnd) {
 </script>
 <script>
 const EXTRA = [
-  { name: 'Paysys Labs', place: 'Pakistan', text: 'Turns ordinary accounts at Allied Bank into wallets on the Interledger network, to cut the cost and delay of money sent home to Pakistan.', tags: ['Fair transfers'] },
-  { name: 'ThitsaWorks', place: 'Myanmar and Mexico', text: "Builds connectors so microfinance lenders, mobile money operators, and rural banks can join one real-time payment network. Also the engineering partner for the People's Clearinghouse.", tags: ['Account'] },
-  { name: 'ENEZA', place: 'Kenya', text: 'Links microfinance institutions and cooperatives to lenders worldwide, with a focus on women in rural households, unemployed youth, and people with disabilities.', tags: ['Fair credit'] },
-  { name: 'Mojaloop', place: 'Open source', text: 'Payment-switch software released by the Gates Foundation in 2017 so a country can connect every bank, mobile wallet, and merchant in one loop. It uses Interledger for interoperability.', tags: ['Infrastructure'] },
-  { name: 'Coil and Ripple', place: 'Founding funders', text: 'Interledger was designed in 2015 by Stefan Thomas and Evan Schwartz at Ripple. Coil and Ripple set up the Foundation in 2019 as a vendor-neutral home for the protocol and funded its launch.', tags: ['Funders'] },
-  { name: 'NextGen Higher Education Grants', place: 'Universities', text: 'Funds courses, research, and student projects on open payments and financial inclusion, including The Hague University of Applied Sciences.', tags: ['Education'] }
+  { g: 'cdfi', name: 'Kiva', place: 'Native and Tribal communities, United States', text: 'Before recommending any technology, Kiva is holding listening sessions with Native entrepreneurs, Tribal partners, and Native-serving organizations to understand what keeps affordable capital out of reach.', tags: ['Fair credit'], link: 'https://thefintechtimes.com/interledger-foundation-maps-instant-payment-path-for-us-cdfis/' },
+  { g: 'cdfi', name: 'Access to Capital for Entrepreneurs', place: 'Georgia', text: "ACE is bringing real-time payments into its borrower portal. The longer goal is to judge a loan by a business's cash flow today rather than by an old credit score.", tags: ['Fair credit'], link: 'https://thefintechtimes.com/interledger-foundation-maps-instant-payment-path-for-us-cdfis/' },
+  { g: 'cdfi', name: 'AltCap', place: 'Kansas City region', text: 'AltCap is redesigning how small business owners make payments after their loan closes, based on what its own borrowers say gets in the way.', tags: ['Fair credit'], link: 'https://thefintechtimes.com/interledger-foundation-maps-instant-payment-path-for-us-cdfis/' },
+  { g: 'cdfi', name: 'Village Micro Fund', place: 'United States', text: 'Its EnDAO platform lets cooperatives, savings groups, and investment clubs pool money with shared control. It is researching how those pools can connect to ACH, wire transfers, and FedNow without members ever handling cryptocurrency.', tags: ['Account', 'Fair credit'], link: 'https://thefintechtimes.com/interledger-foundation-maps-instant-payment-path-for-us-cdfis/' },
+  { g: 'world', name: 'Paysys Labs', place: 'Pakistan', text: 'Turns ordinary accounts at Allied Bank into wallets on the Interledger network, to cut the cost and delay of money sent home to Pakistan.', tags: ['Fair transfers'], link: 'https://techeconomy.ng/interledger-foundation-funds-eight-initiatives/' },
+  { g: 'world', name: 'Nepal Internet Foundation', place: 'Nepal', text: "Building the first phase of an open network that connects Nepal's separate digital payment platforms, working with local institutions and cooperatives. A 2026 Digital Financial Services grantee.", tags: ['Account', 'Fair transfers'], link: 'https://interledger.org/grant/grantee-directory' },
+  { g: 'world', name: 'ThitsaWorks', place: 'Myanmar and Mexico', text: "Builds connectors so microfinance lenders, mobile money operators, and rural banks can join one real-time payment network. Also the engineering partner for the People's Clearinghouse.", tags: ['Account'], link: 'https://interledger.org/grant/grantee-directory' },
+  { g: 'world', name: 'AllianceDFA', place: 'South Africa, worldwide network', text: "A global alliance of fintech and digital finance associations, and the first recipient of Interledger's Policy Activation Grant. It works to make national instant payment systems open to fintechs and to the women, rural communities, and small businesses they serve.", tags: ['Policy'], link: 'https://interledger.org/grant/grantee-directory' },
+  { g: 'world', name: 'Mojaloop', place: 'Open source', text: 'Free software a country can use to connect every bank, mobile wallet, and merchant in one real-time payment system. Interledger works closely with the Mojaloop Foundation, and the People\'s Clearinghouse network in Mexico runs on it.', tags: ['Infrastructure'], link: 'https://www.paymentsjournal.com/interledger-steps-up-to-foster-cross-border-payments-in-130-countries/' },
+  { g: 'edu', name: 'Benedict College', place: 'South Carolina', text: "South Carolina's first HBCU-led Interledger program: fintech coursework, a 150-hour internship, and students mentoring youth and minority-owned businesses.", tags: ['NextGen 2026'], link: 'https://interledger.org/grant/grantee-directory' },
+  { g: 'edu', name: 'Atlanta University Center Consortium', place: 'Georgia', text: 'A 12-month program that brings 25 HBCU students into open financial systems through coursework, mentorship, and Interledger projects.', tags: ['NextGen 2026'], link: 'https://interledger.org/grant/grantee-directory' },
+  { g: 'edu', name: 'Alabama A&M University', place: 'Alabama', text: 'A NextGen grantee pairing education and research in open payments and financial services.', tags: ['NextGen 2025'], link: 'https://interledger.org/grant/grantee-directory' },
+  { g: 'edu', name: 'University of Cape Town', place: 'South Africa', text: 'Ran the other original pilot alongside Bowie State, before NextGen opened its first public call.', tags: ['Pilot'], link: 'https://interledger.org/grant/education/nextgen' }
 ];
 const $ = id => document.getElementById(id);
 const esc = t => String(t).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
@@ -599,8 +687,9 @@ document.addEventListener('click', e => {
 
 function buildGuide() {
   const on = Object.keys(PARTNERS).map(k => { const p = PARTNERS[k]; return '<article class="p"><div class="kick">' + esc(p.place) + '</div><h3>' + esc(p.name) + '</h3><p>' + esc(p.story) + '</p><div class="tg">' + p.tools.map(t => '<span>' + TOOLS[t].name + '</span>').join('') + '</div><a href="' + p.link + '" target="_blank" rel="noopener">Source</a></article>'; });
-  const off = EXTRA.map(p => '<article class="p off"><div class="kick">' + esc(p.place) + '</div><h3>' + esc(p.name) + '</h3><p>' + esc(p.text) + '</p><div class="tg">' + p.tags.map(t => '<span>' + t + '</span>').join('') + '</div></article>');
-  $('pgrid').innerHTML = on.concat(off).join('');
+  const card = p => '<article class="p off"><div class="kick">' + esc(p.place) + '</div><h3>' + esc(p.name) + '</h3><p>' + esc(p.text) + '</p><div class="tg">' + p.tags.map(t => '<span>' + t + '</span>').join('') + '</div>' + (p.link ? '<a href="' + p.link + '" target="_blank" rel="noopener">Source</a>' : '') + '</article>';
+  $('pgrid').innerHTML = on.join('');
+  ['cdfi', 'world', 'edu'].forEach(g => { $(g).innerHTML = EXTRA.filter(p => p.g === g).map(card).join(''); });
 }
 function start(data) {
   buildBoard(); buildGuide();
